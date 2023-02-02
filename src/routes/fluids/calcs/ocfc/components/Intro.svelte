@@ -1,4 +1,5 @@
 <script>
+	import { fade, fly } from "svelte/transition";
 	import { ki } from "$lib/utilities";
 	export let typeOfChannel = "rectangular";
 	let isVisible = false;
@@ -9,7 +10,7 @@
 </script>
 
 {#if isVisible}
-	<section>
+	<section in:fly={{ y: -200 }} out:fly={{ y: -200, delay:100}}>
 		This calculator on this page is for normal (uniform) flow in an open channel with a
 		<span style="font-weight: bold; letter-spacing: -0.03em">{typeOfChannel}</span> cross-section.
 		<p />
@@ -28,14 +29,23 @@
 			channel, {@html ki(`y`)} cannot be determined analytically from {@html ki(`Q`)} and is found using
 			an iterative method.
 		{/if}
+		<p />
 	</section>
-	<p/>
-	<button on:click={toggle}>Hide Instructions Above</button>
-{:else}
-	<button on:click={toggle}>Show Instructions</button>
 {/if}
+<!-- {#if isVisible} -->
+<button on:click={toggle}>
+	{#if isVisible}
+		<div>Hide Instructions Above</div>
+	{:else}
+		<div>Show Instructions</div>
+	{/if}
+</button>
+<!-- {:else}
+	<button in:fade={{duration: 400, delay:1000}} out:fade={{duration: 400
+	}} on:click={toggle}>Show Instructions</button> -->
 
-<style>
+<!-- {/if}  -->
+<style lang="scss">
 	section {
 		width: 80%;
 		margin: 0 auto;
@@ -50,5 +60,11 @@
 		outline: none;
 		padding: 0.25em 0.75em;
 		text-shadow: var(--textShadow);
+
+		&:hover {
+			background-color: var(--midGrey);
+			color: var(--primaryDDark);
+			text-shadow: none;
+		}
 	}
 </style>
