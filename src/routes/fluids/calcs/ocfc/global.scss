@@ -17,6 +17,7 @@ Variables
 	--lightShadow: 0.125rem 0.125rem 0.5rem 0.125rem rgba(0, 0, 0, 0.25);
 	--navShadow: -0.25px 5px 3px 0px rgba(0, 0, 0, 0.5);
 	--textShadow: 2px 2px 4px rgba(0, 0, 0, 0.75);
+	--textShadowSmall: 1px 1px 2px rgba(0, 0, 0, 0.75);
 	--mathFontSize: 65%;
 }
 
@@ -64,16 +65,21 @@ img {
 
 section {
 	&.results {
-		width: 80%;
+		margin: 3rem auto;
+		& h1 {
+            color: var(--primaryColor);
+            font-size: 125%;
+            margin: 1em 0 0.5em 0;
+			text-align: left;
+            text-shadow: var(--textShadowSmall);
+			margin: 1em 0 0.5em 0;
+			
+		}
 	}
 	&.fig {
-		margin: 1em auto 0 auto;
+		margin: 0 auto;
 		position: relative;
 	}
-    & .lower-inputs {
-        // display: flex;
-        // border: 1px solid yellow;
-    }
 }
 
 // .lower-inputs {
@@ -131,9 +137,14 @@ Navbar
 	display: none;
 }
 
-// .katex {
-// 	// color: red;
-// }
+.katex {
+	
+    font-size: 110%;
+}
+
+.katex-display > .katex {
+    color: var(--primaryColor);
+}
 
 .container {
 	display: flex;
