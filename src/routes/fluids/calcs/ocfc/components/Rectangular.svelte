@@ -1,4 +1,5 @@
 <script>
+	import NavButton from './NavButton.svelte';
 	import { fade } from "svelte/transition";
 	import { ki, kd, fluids } from "$lib/utilities";
 	// import { rect } from "$lib/rectangular";
@@ -10,7 +11,7 @@
 		extraDig = true;
 
 	let sdigs = 3,
-		wdigs = 5;
+		wdigs = 6;
 
 	$: sds = (num, digs = sdigs) => {
 		let n = num.toString(),
@@ -39,36 +40,42 @@
 		ys = 1.75,
 		QQs = 3.25,
 		ss = 0.1,
-		ns = 0.012,
+		ns = 0.013,
 		gs = 9.81;
 
 	// inputs
-	$: b = Number(sds(bs));
-	$: y = Number(sds(ys));
-	$: QQ = Number(sds(QQs));
-	$: n = Number(sds(ns));
-	$: s = Number(sds(ss));
-	$: g = Number(sds(gs));
+	$: b = sds(bs);
+	$: y = sds(ys);
+	$: QQ = sds(QQs);
+	$: n = sds(ns);
+	$: s = sds(ss);
+	$: g = sds(gs);
 	// calculations
-	$: A = sdw(b * y);
-	$: WP = sdw(b + 2 * y);
+	$: A = sdw(fluids.getArea(b, y));
+	$: WP = sdw(fluids.getWP(b, y));
 	$: R = sdw(A/WP);
 	$: v = sdw(fluids.getV(n, R, s));
 	$: Q = sdw(A*v);
 	$: E = sdw(fluids.getE(y, v, g));
+	$: T = sds(b);
+	$: NF = sdw(fluids.getNF(v, A, T, g));
+	$: yc = sdw(fluids.getYc(Q, g, b));
+	$: Ac = sdw(fluids.getArea(b, yc));
+	$: vc = sdw(fluids.getVfromQandA(Q, Ac));
+	$: Emin = sdw(fluids.getE(yc, vc, g));
+	
 
-	const calculate = () => {
-		return 42;
-	};
-	const processChange = () => {
-		calculate();
-	};
+	
 </script>
+
+
 
 <article>
 	<section>
 		<Intro {typeOfChannel} />
 	</section>
+
+	
 
 	<section class="radios">
 		<label class="yQlayout">
@@ -94,7 +101,7 @@
 					alt="rectangular channel section by depth" />
 			{/if}
 
-			<form on:submit|preventDefault={calculate}>
+			<form>
 				<label class="b">
 					{@html ki(`\\large b=`)}
 					<input type="number" step="any" required bind:value={bs} />
@@ -117,7 +124,7 @@
 			</form>
 		</div>
 
-		<form on:submit|preventDefault={calculate}>
+		<form>
 			<div class="lower-inputs">
 				<label class="slope">
 					{@html ki(`\\large S=`)}
@@ -151,7 +158,7 @@
 						solution={kd(`
                             \\begin{aligned}
                                 A &= by \\\\
-                                &= ${sds(bs)}\\, \\mathsf{m} \\times ${sds(ys)}\\, \\mathsf{m} \\\\
+                                &= ${b}\\, \\mathsf{m} \\times ${y}\\, \\mathsf{m} \\\\
                                 &= ${A}\\, \\mathsf{m^2}
                             \\end{aligned}
                         `)} />
@@ -161,7 +168,7 @@
 						solution={kd(`
                             \\begin{aligned}
                                 WP &= b+2y \\\\
-                                &= ${sds(bs)}\\, \\mathsf{m} + 2\\times ${sds(ys)}\\, \\mathsf{m} \\\\
+                                &= ${b}\\, \\mathsf{m} + 2\\times ${y}\\, \\mathsf{m} \\\\
                                 &= ${WP}\\, \\mathsf{m}
                             \\end{aligned}
                         `)} />
@@ -170,8 +177,8 @@
 						solution={kd(`
                             \\begin{aligned}
                                 R &= A/W\\!P \\\\
-                                &= ${sdw(A)}\\, \\mathsf{m^2} / ${sdw(WP)}\\, \\mathsf{m} \\\\
-                                &= ${sdw(R)} \\mathsf{m}
+                                &= ${A}\\, \\mathsf{m^2} / ${WP}\\, \\mathsf{m} \\\\
+                                &= ${R} \\mathsf{m}
                             \\end{aligned}
                         `)} />
 					<Card
@@ -179,8 +186,8 @@
 						solution={kd(`
                             \\begin{aligned}
                                v &= \\frac 1n R^{2/3} S^{1/2} \\\\
-							   &= \\frac{1}{${n}} \\left(${sdw(R)}\\right)^{2/3} \\left(${sds(s)}\\right)^{1/2} \\\\
-							   &= ${sdw(v)} \\, \\mathsf{m/s}
+							   &= \\frac{1}{${n}} \\left(${R}\\right)^{2/3} \\left(${s}\\right)^{1/2} \\\\
+							   &= ${v} \\, \\mathsf{m/s}
                             \\end{aligned}
                         `)} />
 					<Card
@@ -188,21 +195,82 @@
 						solution={kd(`
                             \\begin{aligned}
                                Q &= Av \\\\
-							   &= ${sdw(A)}\\, \\mathsf{m^2}\\times ${sdw(v)}\\, \\mathsf{m/s} \\\\
-							   &= ${sdw(Q)} \\, \\mathsf{m^3/s}
+							   &= ${A}\\, \\mathsf{m^2}\\times ${v}\\, \\mathsf{m/s} \\\\
+							   &= ${Q} \\, \\mathsf{m^3/s}
                             \\end{aligned}
                         `)} />
 					<Card
 						answer="Specific Energy: {ki(`E = ${sds(E)}\\, \\mathsf{m}`)}  "
 						solution={kd(`
                             \\begin{aligned}
-                               Q &= Av \\\\
-							   &= ${sdw(A)}\\, \\mathsf{m^2}\\times ${sdw(v)}\\, \\mathsf{m/s} \\\\
-							   &= ${sdw(Q)} \\, \\mathsf{m^3/s}
+                               E &= y+\\frac{v^2}{2g} \\\\
+							   &= ${y}\\, \\mathsf{m}+\\frac{(${v} \\, \\mathsf{m/s)^2} }
+							   		{2(${g}\\, \\mathsf{m/s^2}) } \\\\
+							   &= ${E}\\,\\mathsf{m}
                             \\end{aligned}
                         `)} />
-						
+					<Card
+						answer="Free Surface: {ki(`T = ${sds(T)}\\, \\mathsf{m}`)}  "
+						solution={kd(`
+                            \\begin{aligned}
+                               T &= b \\\\
+							   &= ${sds(b)}\\, \\mathsf{m} \\\\
+							   
+                            \\end{aligned}
+                        `)} />
+					<Card
+						answer="Froude Number: {ki(`N_F = ${sds(NF)}`)}  "
+						solution={kd(`
+                            \\begin{aligned}
+                               N_F &=  \\frac{v}{\\sqrt{g(A/T)}} \\\\							   
+							   &=  \\frac{${v}\\, \\mathsf{m/s}}{\\sqrt{${g}\\, \\mathsf{m/s^2}(${sdw(A)}\\, \\mathsf{m^2}/${sds(T)}\\, \\mathsf{m})}} \\\\
+							   &= ${sdw(NF)}
+                            \\end{aligned}
+                        `)} />
+				</section>
+				<section>
+					<h1>Critical Flow</h1>
+					
+					<Card
+						answer="For the {ki(`Q=${sdw(Q)} \\, \\mathsf{m^3\\!/s}`)} above, Critical Depth {ki(`yc=${sds(yc)} \\, \\mathsf{m}`)}"						
+						solution={kd(`
+                            \\begin{aligned}
+                               	N_F &= 1 \\\\
+								\\Rightarrow v_c &= \\sqrt{ g(A_c/T_c)} \\\\
+								\\Rightarrow \\left(\\frac{Q}{A_c}\\right)^2 &= g(A_c/T_c) \\\\
+								\\Rightarrow \\frac{Q^2}{g} &= \\frac{A_c^3}{T_c} \\\\
+								&= \\frac{\\left(by_c\\right)^3}{b}	\\\\
+								&= b^2y_c^3 \\\\
+								\\Rightarrow y_c^3 &= \\frac{Q^2}{b^2g} \\\\
+								\\Rightarrow y_c &= \\sqrt[3]{\\frac{Q^2}{b^2g}} \\\\
+								\\Rightarrow y_c &= \\sqrt[3]{\\frac{(${Q}\\, \\mathsf{m^3\\!/s})^2}{(${sds(b)}\\, \\mathsf{m} )^2(${g}\\, \\mathsf{m/s^2})}}\\\\
+								&= ${yc}\\, \\mathsf{m}
 
+                            \\end{aligned}
+                        `)} />
+					<Card
+						answer="Critical Velocity: {ki(` v_c = ${sds(vc)}  \\,\\mathsf{m/s}`)}  "
+						solution={kd(`
+							\\begin{aligned}
+								A_c &= by_c \\\\
+								&= ${b}\\, \\mathsf{m}\\times ${yc}\\, \\mathsf{m} \\\\
+								&= ${Ac}\\, \\mathsf{m^2}\\\\\\\\
+								v_c &= Q/A_c \\\\
+								&= \\frac{${Q}\\, \\mathsf{m^3\\!/s}}{${Ac}\\, \\mathsf{m^2}} \\\\
+								&= ${vc} \\,\\mathsf{m/s}
+							\\end{aligned}	`)} />
+					<Card
+						answer="Minimum Specific Energy: {ki(`E_{min} = ${sds(
+							Emin)}\\, \\mathsf{m}`)}"
+						solution={kd(`
+							\\begin{aligned}
+								E_{min} &= y_c+\\frac{ v_c^2 }{ 2g } \\\\
+								&= ${yc}\\, \\mathsf{m}+\\frac{ (${vc}\\, \\mathsf{m/s})^2 }{ 2(${g}\\, \\mathsf{m/s^2}) } \\\\
+								&= ${Emin} \\,\\mathsf{m}
+							\\end{aligned}
+						`)}/>
+
+						
 				</section>
 			{/if}
 		{:else}
@@ -249,7 +317,6 @@
 			}
 		}
 		.lower-inputs {
-			// border: 1px solid black;
 			display: flex;
 			justify-content: space-between;
 			margin-top: -1em;

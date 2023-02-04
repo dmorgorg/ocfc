@@ -46,16 +46,29 @@ export const utils = {
 };
 
 export const fluids = {
+	getArea: (b, y) => {
+		return b * y;
+	},
+	getWP: (b, y) => {
+		return +b + 2 * y;
+	},
 	getV: (n, R, S) => {
 		return (1 / n) * R ** (2 / 3) * (S / 100) ** 0.5;
 	},
-	getNF: (v, A, T, g) =>{
+	getNF: (v, A, T, g) => {
 		return v / ((g * A) / T) ** 0.5;
 	},
+	// variables are strings which convert fine with * and / but be careful with + to avoid concatenation!
 	getE: (y, v, g) => {
-		return y + v ** 2 / 2 / g;
+		return v ** 2 / 2 / g + +y;
 	},
 	getCriticalSlope: (n, vc, Rc) => {
-		return (((n * vc) / Rc ** (2 / 3)) ** 2 * 100);
+		return ((n * vc) / Rc ** (2 / 3)) ** 2 * 100;
 	},
+	getYc: (Q, g, b)=> {
+		return (Q * Q / g / b / b) ** (1 / 3);
+	},
+	getVfromQandA: (Q, A) => {
+		return Q / A;
+	}
 };
