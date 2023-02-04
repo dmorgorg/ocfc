@@ -3,23 +3,23 @@
 	export let answer = "";
 	export let solution = "";
 	let displayCalc = false;
-	let card;
+	// let card;
 
-	function scroll() {
-		if (displayCalc) {
-			card.scrollIntoView({
-				alignToTop: false,
-			});
-		}
-	}
+	// function scroll() {
+	// 	if (displayCalc) {
+	// 		card.scrollIntoView({
+	// 			alignToTop: false,
+	// 		});
+	// 	}
+	// }
 
 	function toggleDisplay() {
 		displayCalc = !displayCalc;
 	}
 </script>
 
-<article class="card" on:click={toggleDisplay} on:click={scroll} bind:this={card}>
-	<!-- <article class="card" on:click={toggleDisplay}> -->
+<!-- <article class="card" on:click={toggleDisplay} on:click={scroll} bind:this={card}> -->
+<article class="card" on:click={toggleDisplay}>
 	<section class="answer">
 		<div>{@html answer}</div>
 		<button class="display-btn">
