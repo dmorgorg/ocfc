@@ -52,9 +52,22 @@ export const fluids = {
 	getWP: (b, y) => {
 		return +b + 2 * y;
 	},
-	getV: (n, R, S) => {
-		return (1 / n) * R ** (2 / 3) * (S / 100) ** 0.5;
+	getR: (A, WP) => {
+		return A / WP;
 	},
+	getV: (n, R, s) => {
+		return (1 / n) * R ** (2 / 3) * (s / 100) ** 0.5;
+	},
+	getQfromAandV: (A, v) => {
+		return A * v;
+	},
+	// get Q as a function of only y for binary search
+	// getQfromY: (y) => {
+	 	// var A = +b * y;
+	 	// let v = fluids.getV(n, fluids.getR(fluids.getArea(b, y), fluids.getWP(b, y)), s);
+	 	// return A * v;
+	// 	return 42*y;
+	// },
 	getNF: (v, A, T, g) => {
 		return v / ((g * A) / T) ** 0.5;
 	},
@@ -70,5 +83,24 @@ export const fluids = {
 	},
 	getVfromQandA: (Q, A) => {
 		return Q / A;
-	}
+	},
+	getCriticalSlope: (n, vc, Rc) => {
+		return ((n * vc) / Rc ** (2 / 3)) ** 2 * 100;
+	},
+	// getYfromQ: (underY = 0, overY = 100) =>  {
+	// 	let delta = 1 / 10 ** (wdigs + 1),
+	// 		mid = (underY + overY) / 2;
+	// 	console.log(mid);
+
+	// 	if (Math.abs(underY - overY) < delta) {
+	// 		return Number(sdw((underY + overY) * 0.5));
+	// 	}
+
+	// 	// search;
+	// 	if (getQfromY(mid) < QQ) {
+	// 		return fluids.getYfromQ(mid, overY);
+	// 	} else {
+	// 		return fluids.getYfromQ(underY, mid);
+	// 	}
+	// }
 };

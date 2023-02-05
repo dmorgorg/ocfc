@@ -3,23 +3,28 @@
 	export let answer = "";
 	export let solution = "";
 	let displayCalc = false;
-	// let card;
+	let card;
 
-	// function scroll() {
-	// 	if (displayCalc) {
-	// 		card.scrollIntoView({
-	// 			alignToTop: false,
-	// 		});
-	// 	}
-	// }
+	function scroll() {
+		if (displayCalc) {
+			card.scrollIntoView({
+				alignToTop: false,
+			});
+		}
+	}
 
-	function toggleDisplay() {
+	function toggle() {
 		displayCalc = !displayCalc;
+		if (displayCalc) {
+			let dropdown = document.querySelector(".solution");
+			dropdown.scrollIntoView({ behavior: "smooth"});
+		}
 	}
 </script>
 
 <!-- <article class="card" on:click={toggleDisplay} on:click={scroll} bind:this={card}> -->
-<article class="card" on:click={toggleDisplay}>
+
+<article class="card" on:click={toggle} on:keydown={toggle} tabindex="0" role="button" bind:this={card}>
 	<section class="answer">
 		<div>{@html answer}</div>
 		<button class="display-btn">
@@ -32,7 +37,7 @@
 
 	{#if displayCalc}
 		<section class="solution" transition:fade={{ duration: 500 }}>
-			{@html solution}
+			<div>{@html solution}</div>
 		</section>
 	{/if}
 </article>
