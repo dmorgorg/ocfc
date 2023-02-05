@@ -69,7 +69,7 @@
 	// calculations for y specified
 	$: A = sdw(fluids.getArea(b, y));
 	$: WP = sdw(fluids.getWP(b, y));
-	$: R = sdw(fluids.getArea(A, WP));
+	$: R = sdw(fluids.getR(A, WP));
 	$: v = sdw(fluids.getV(n, R, s));
 	$: Q = sdw(fluids.getQfromAandV(A, v));
 	$: E = sdw(fluids.getE(y, v, g));
@@ -78,7 +78,7 @@
 	$: yc = sdw(fluids.getYc(Q, g, b));
 	$: WPc = sdw(fluids.getWP(b, yc));
 	$: Ac = sdw(fluids.getArea(b, yc));
-	$: Rc = sdw(fluids.getArea(Ac, WPc));
+	$: Rc = sdw(fluids.getR(Ac, WPc));
 	$: vc = sdw(fluids.getVfromQandA(Q, Ac));
 	$: Emin = sdw(fluids.getE(yc, vc, g));
 	$: Sc = sdw(fluids.getCriticalSlope(n, vc, Rc));
@@ -86,6 +86,15 @@
 	$: yQ = sdw(getYfromQ());
 	$: AQ = sdw(fluids.getArea(b, yQ));
 	$: vQ = sdw(fluids.getVfromQandA(QQ, AQ));
+	$: EQ = sdw(fluids.getE(yQ, vQ, g));
+	$: NFQ = sdw(fluids.getNF(vQ, AQ, T, g));
+	$: ycQ = sdw(fluids.getYc(QQ, g, b));
+	$: WPcQ = sdw(fluids.getWP(b, ycQ));
+	$: AcQ = sdw(fluids.getArea(b, ycQ));
+	$: RcQ = sdw(fluids.getR(AcQ, WPcQ));
+	$: vcQ = sdw(fluids.getVfromQandA(QQ, AcQ));
+	$: EminQ = sdw(fluids.getE(ycQ, vcQ, g));
+	$: ScQ = sdw(fluids.getCriticalSlope(n, vcQ, RcQ));
 </script>
 
 <article>
@@ -241,7 +250,7 @@
 						solution={kd(`
                             \\begin{aligned}
                                N_F &=  \\frac{v}{\\sqrt{g(A/T)}} \\\\							   
-							   &=  \\frac{${v}\\, \\mathsf{m/s}}{\\sqrt{${g}\\, \\mathsf{m/s^2}(${sdw(A)}\\, \\mathsf{m^2}/${sds(
+							   &=  \\frac{${v}\\, \\mathsf{m/s}}{\\sqrt{(${g}\\, \\mathsf{m/s^2})\\cdot(${sdw(A)}\\, \\mathsf{m^2}/${sds(
 							T
 						)}\\, \\mathsf{m})}} \\\\
 							   &= ${sdw(NF)}
@@ -348,14 +357,106 @@
 					`)} />
 				<Card
 					answer="Average Flow Velocity: {ki(`${sds(vQ)}\\, \\mathsf{m/s} `)}"
-					solution= {kd(`
+					solution={kd(`
 						\\begin{aligned} 
 							v &= Q/A \\\\
 						 	&= \\frac{${QQ}\\, \\mathsf{m^3\\!/s}}{${AQ}\\, \\mathsf{m^2}} \\\\					
 							&= ${vQ} \\, \\mathsf{m/s}
-						\\end{aligned}`)}		
-								
-				/>
+						\\end{aligned}`)} />
+				<Card
+					answer="Specific Energy: {ki(`E=${sds(EQ)}\\, \\mathsf{m} `)}"
+					solution={kd(`
+						\\begin{aligned} 
+							E &= y+\\frac{v^2}{g} \\\\
+						 	&= ${yQ}\\, \\mathsf{m}+\\frac{(${vQ}\\, \\mathsf{m/s})^2}{${g}\\, \\mathsf{m/s^2}} \\\\					
+							&= ${EQ} \\, \\mathsf{m}
+						\\end{aligned}`)} />
+				<Card
+					answer="Free Surface: {ki(`T = ${sds(T)}\\, \\mathsf{m}`)}  "
+					solution={kd(`
+						\\begin{aligned}
+							T &= b \\\\
+							&= ${sds(b)}\\, \\mathsf{m} \\\\							
+						\\end{aligned}
+				`)} />
+				<Card
+					answer="Froude Number: {ki(`N_F = ${sds(NFQ)}`)}  "
+					solution={kd(`
+						\\begin{aligned}
+							N_F &=  \\frac{v}{\\sqrt{g(A/T)}} \\\\							   
+							&=  \\frac{${vQ}\\, \\mathsf{m/s}}{\\sqrt{(${g}\\, \\mathsf{m/s^2})\\cdot(${sdw(AQ)}\\, \\mathsf{m^2}/${sds(
+						T
+					)}\\, \\mathsf{m})}} \\\\
+							&= ${sdw(NFQ)}
+						\\end{aligned}
+				`)} />
+				<section>
+					<h1>Critical Flow</h1>
+
+					<Card
+						answer="For the {ki(`Q=${sdw(QQ)} \\, \\mathsf{m^3\\!/s}`)} above, Critical Depth {ki(
+							`yc=${sds(ycQ)} \\, \\mathsf{m}`
+						)}"
+						solution={kd(`
+                            \\begin{aligned}
+                               	N_F &= 1 \\\\
+								\\Rightarrow v_c &= \\sqrt{ g(A_c/T_c)} \\\\
+								\\Rightarrow \\left(\\frac{Q}{A_c}\\right)^2 &= g(A_c/T_c) \\\\
+								\\Rightarrow \\frac{Q^2}{g} &= \\frac{A_c^3}{T_c} \\\\
+								&= \\frac{\\left(by_c\\right)^3}{b}	\\\\
+								&= b^2y_c^3 \\\\
+								\\Rightarrow y_c^3 &= \\frac{Q^2}{b^2g} \\\\
+								\\Rightarrow y_c &= \\sqrt[3]{\\frac{Q^2}{b^2g}} \\\\
+								\\Rightarrow y_c &= \\sqrt[3]{\\frac{(${QQ}\\, \\mathsf{m^3\\!/s})^2}{(${sds(
+							b
+						)}\\, \\mathsf{m} )^2(${g}\\, \\mathsf{m/s^2})}}\\\\
+								&= ${ycQ}\\, \\mathsf{m}
+
+                            \\end{aligned}
+                        `)} />
+					<Card
+						answer="Critical Velocity: {ki(` v_c = ${sds(vcQ)}  \\,\\mathsf{m/s}`)}  "
+						solution={kd(`
+							\\begin{aligned}
+								A_c &= by_c \\\\
+								&= ${b}\\, \\mathsf{m}\\times ${ycQ}\\, \\mathsf{m} \\\\
+								&= ${AcQ}\\, \\mathsf{m^2}\\\\\\\\
+								v_c &= Q/A_c \\\\
+								&= \\frac{${QQ}\\, \\mathsf{m^3\\!/s}}{${AcQ}\\, \\mathsf{m^2}} \\\\
+								&= ${vcQ} \\,\\mathsf{m/s}
+							\\end{aligned}	`)} />
+					<Card
+						answer="Minimum Specific Energy: {ki(`E_{min} = ${sds(EminQ)}\\, \\mathsf{m}`)}"
+						solution={kd(`
+							\\begin{aligned}
+								E_{min} &= y_c+\\frac{ v_c^2 }{ 2g } \\\\
+								&= ${ycQ}\\, \\mathsf{m}+\\frac{ (${vcQ}\\, \\mathsf{m/s})^2 }{ 2(${g}\\, \\mathsf{m/s^2}) } \\\\
+								&= ${EminQ} \\,\\mathsf{m}
+							\\end{aligned}
+						`)} />
+					<Card
+						answer="Slope for Critical Flow: {ki(`S_c = ${sds(ScQ)}\\%`)}"
+						solution={kd(`
+							\\begin{aligned}
+								A_c &= by_c \\\\
+								&= ${b}\\, \\mathsf{m}\\times ${ycQ}\\, \\mathsf{m} \\\\
+								&= ${AcQ} \\,\\mathsf{m^2} \\\\ \\\\
+
+								W\\!P_c &= b + 2y_c \\\\
+								&= ${b}\\, \\mathsf{m}+2(${ycQ}\\, \\mathsf{m}) \\\\
+								&= ${WPcQ}\\, \\mathsf{m}\\\\\\\\
+
+								R_c &= A_c/P_c \\\\
+								&= \\frac{${AcQ}\\, \\mathsf{m^2}}{${WPcQ}\\, \\mathsf{m}} \\\\
+								&= ${Rc}\\,\\mathsf{m}\\\\\\\\
+
+								\\Rightarrow S_c &= \\left(\\frac { nv_c }{ R_c^{2/3} }\\right)^2 \\\\
+								&= \\left(\\frac{${n}\\times ${vcQ}\\, \\mathsf{m/s} }{ (${RcQ}\\, \\mathsf{m})^{2/3} }\\right)^2\\\\
+								&= ${ScQ / 100} \\\\
+								&= ${ScQ}\\% 								
+							\\end{aligned}
+						`)} />
+				</section>
 			</section>
 		{/if}
 	</section>

@@ -11,7 +11,7 @@
 
 <div class="container">
 	<nav class="nav">
-		<h1 class="nav-title">open channel normal flow calculator</h1>
+		<h1 class="nav-title">open channel flow calculator</h1>
 		<div class="nav-links">
 			<NavButton bind:current name="rectangular">rectangular</NavButton>
 			<NavButton bind:current name="triangular">triangular</NavButton>
