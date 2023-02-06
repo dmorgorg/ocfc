@@ -32,7 +32,6 @@
 		<p />
 	</section>
 {/if}
-<!-- {#if isVisible} -->
 <button on:click={toggle}>
 	{#if isVisible}
 		<div>Hide Instructions Above</div>
@@ -40,11 +39,6 @@
 		<div>Show Instructions</div>
 	{/if}
 </button>
-<!-- {:else}
-	<button in:fade={{duration: 400, delay:1000}} out:fade={{duration: 400
-	}} on:click={toggle}>Show Instructions</button> -->
-
-<!-- {/if}  -->
 <style lang="scss">
 	section {
 		width: 80%;

@@ -3,28 +3,28 @@
 	export let answer = "";
 	export let solution = "";
 	let displayCalc = false;
-	let card;
+	// let card;
 
-	function scroll() {
-		if (displayCalc) {
-			card.scrollIntoView({
-				alignToTop: false,
-			});
-		}
-	}
+	// function scroll() {
+	// 	if (displayCalc) {
+	// 		card.scrollIntoView({
+	// 			alignToTop: false,
+	// 		});
+	// 	}
+	// }
 
 	function toggle() {
 		displayCalc = !displayCalc;
-		if (displayCalc) {
-			let dropdown = document.querySelector(".solution");
-			dropdown.scrollIntoView({ behavior: "smooth"});
-		}
+		// if (displayCalc) {
+		// 	let dropdown = document.querySelector(".solution");
+		// 	dropdown.scrollIntoView({ behavior: "smooth"});
+		// }
 	}
 </script>
 
-<!-- <article class="card" on:click={toggleDisplay} on:click={scroll} bind:this={card}> -->
 
-<article class="card" on:click={toggle} on:keydown={toggle} tabindex="0" role="button" bind:this={card}>
+<!-- <article class="card" on:click={toggle} on:keydown={toggle} tabindex="0" role="button" bind:this={card}> -->
+<article class="card" on:click={toggle} on:keydown={toggle} tabindex="0" role="button">
 	<section class="answer">
 		<div>{@html answer}</div>
 		<button class="display-btn">
@@ -51,6 +51,10 @@
 		padding: 0.25rem 1rem;
 		cursor: pointer;
 		text-align: left;
+
+		&:hover {
+			box-shadow: var(--medShadow);
+		}
 
 		& > .answer {
 			display: flex;

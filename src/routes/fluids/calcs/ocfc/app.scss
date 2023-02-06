@@ -15,6 +15,8 @@ Variables
 	--midGrey: #ccc;
 	--mainSpacing: 0.3rem;
 	--lightShadow: 0.125rem 0.125rem 0.5rem 0.125rem rgba(0, 0, 0, 0.25);
+	--medShadow: 0.125rem 0.125rem 0.5rem 0.125rem rgba(0, 0, 0, 0.375);
+	--navShadow: -0.25px 5px 3px 0px rgba(0, 0, 0, 0.5);
 	--navShadow: -0.25px 5px 3px 0px rgba(0, 0, 0, 0.5);
 	--textShadow: 2px 2px 4px rgba(0, 0, 0, 0.75);
 	--textShadowSmall: 1px 1px 2px rgba(0, 0, 0, 0.75);
@@ -68,13 +70,12 @@ section {
 	&.results {
 		margin: 3rem auto;
 		& h1 {
-            color: var(--primaryColor);
-            font-size: 125%;
-            margin: 1em 0 0.5em 0;
-			text-align: left;
-            text-shadow: var(--textShadowTiny);
+			color: var(--primaryColor);
+			font-size: 125%;
 			margin: 1em 0 0.5em 0;
-			
+			text-align: left;
+			text-shadow: var(--textShadowTiny);
+			margin: 1em 0 0.5em 0;
 		}
 	}
 	&.fig {
@@ -129,6 +130,7 @@ Navbar
 			&.active,
 			&.active:hover {
 				color: white;
+				cursor: default;
 			}
 		}
 	}
@@ -139,12 +141,11 @@ Navbar
 }
 
 .katex {
-	
-    font-size: 110%;
+	font-size: 110%;
 }
 
 .katex-display > .katex {
-    color: var(--primaryColor);
+	color: var(--primaryColor);
 }
 
 .container {
@@ -306,7 +307,6 @@ main::-webkit-scrollbar-track {
 	background: var(--primaryColor);
 	background: var(--midGrey);
 	border-radius: 0.5em;
-	
 }
 // handle
 main::-webkit-scrollbar-thumb {

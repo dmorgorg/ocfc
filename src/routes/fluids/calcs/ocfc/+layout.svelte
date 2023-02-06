@@ -1,5 +1,5 @@
-<svelte:head>
-    <title>ocfc</title>
-</svelte:head>
+<script>
+	import "./app.scss";
+</script>
 
 <slot />
