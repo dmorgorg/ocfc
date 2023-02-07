@@ -4,7 +4,7 @@
 	import { ki, kd, fluids, utils } from "$lib/utilities";
 
 	let sdigs = 3,
-		wdigs = 5,
+		wdigs = 6,
 		validS = true,
 		extraDig = true,
 		extraWorkingDig = true;
@@ -146,7 +146,7 @@
 					solution={kd(`
                             \\begin{aligned}
                                v &= \\frac 1n R^{2/3} S^{1/2} \\\\
-							   &= \\frac{1}{${n}} \\left(${R}\\right)^{2/3} \\left(${s}\\right)^{1/2} \\\\
+							   &= \\frac{1}{${n}} \\left(${R}\\right)^{2/3} \\left(${s/100}\\right)^{1/2} \\\\
 							   &= ${v} \\, \\mathsf{m/s}
                             \\end{aligned}
                         `)} />

@@ -4,7 +4,7 @@
 	import { ki, kd, fluids, utils } from "$lib/utilities";
 
 	let sdigs = 3,
-		wdigs = 5,
+		wdigs = 6,
 		validS = true,
 		extraDig = true,
 		extraWorkingDig = false;
