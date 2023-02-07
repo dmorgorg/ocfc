@@ -15,23 +15,36 @@ export const utils = {
 		return (radians / Math.PI) * 180;
 	},
 	// num is a string, sigDigs an integer, returns string with the specified number of sig digs
-	sd: function (num, sigDigs) {
-		return parseFloat(num).toPrecision(sigDigs);
-	},
-	sds: (num, digs = sdigs) => {
-		let n = num,
-			d = digs;
-
-		if (extraDig) {
-			n = num.toString();
-			while (n[0] === "0" || n[0] === ".") {
-				n = n.slice(1);
+	// sd: function (num, sigDigs) {
+	// 	return parseFloat(num).toPrecision(sigDigs);
+	// },
+	sd: (num, digs = 3, extraDig = true) => {
+		if (num && digs) {
+			if (extraDig) {
+				let n = num.toString();
+				while (n[0] === "0" || n[0] === ".") {
+					n = n.slice(1);
+				}
+				if (n[0] == "1") {
+					digs++;
+				}
 			}
+			return parseFloat(num).toPrecision(digs);
 		}
-		if (n[0] == "1") {
-			d++;
+	},
+	sds: (num, digs = 3, extraDig = true) => {
+		if (num && digs) {
+			if (extraDig) {
+				let n = num.toString();
+				while (n[0] === "0" || n[0] === ".") {
+					n = n.slice(1);
+				}
+				if (n[0] == "1") {
+					digs++;
+				}
+			}
+			return parseFloat(num).toPrecision(digs);
 		}
-		return parseFloat(n).toPrecision(d);
 	},
 	// https://www.freecodecamp.org/news/javascript-debounce-example/
 	debounce: function (func, timeout = 1500) {
@@ -63,9 +76,9 @@ export const fluids = {
 	},
 	// get Q as a function of only y for binary search
 	// getQfromY: (y) => {
-	 	// var A = +b * y;
-	 	// let v = fluids.getV(n, fluids.getR(fluids.getArea(b, y), fluids.getWP(b, y)), s);
-	 	// return A * v;
+	// var A = +b * y;
+	// let v = fluids.getV(n, fluids.getR(fluids.getArea(b, y), fluids.getWP(b, y)), s);
+	// return A * v;
 	// 	return 42*y;
 	// },
 	getNF: (v, A, T, g) => {
@@ -78,8 +91,8 @@ export const fluids = {
 	getCriticalSlope: (n, vc, Rc) => {
 		return ((n * vc) / Rc ** (2 / 3)) ** 2 * 100;
 	},
-	getYc: (Q, g, b)=> {
-		return (Q * Q / g / b / b) ** (1 / 3);
+	getYc: (Q, g, b) => {
+		return ((Q * Q) / g / b / b) ** (1 / 3);
 	},
 	getVfromQandA: (Q, A) => {
 		return Q / A;

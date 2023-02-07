@@ -1,31 +1,15 @@
 <script>
 	import Card from "./Card.svelte";
 	import { fade } from "svelte/transition";
-	import { ki, kd, fluids } from "$lib/utilities";
+	import { ki, kd, fluids, utils } from "$lib/utilities";
 
 	let sdigs = 3,
-		wdigs = 6,
+		wdigs = 5,
 		validS = true,
-		extraDig = true;
+		extraDig = true,
+		extraWorkingDig = true;
 
-	$: sds = (num, digs = sdigs) => {
-		let n = num.toString(),
-			d = digs;
-		if (extraDig) {
-			while (n[0] === "0" || n[0] === "." || n[0] === "+" || n[0] === "-") {
-				n = n.slice(1);
-			}
-		}
-		if (n[0] == "1") {
-			d++;
-		}
-		return parseFloat(num).toPrecision(d);
-	};
-	$: sdw = (num, digs = wdigs) => {
-		num = num.toString();
-		return parseFloat(num).toPrecision(digs);
-	};
-	// needs access to n, b, s so has to be in this file?
+// needs access to n, b, s so has to be in this file?
 	$: getQfromY = (y) => {
 		var A = b * y;
 		let v = fluids.getV(n, fluids.getR(fluids.getArea(b, y), fluids.getWP(b, y)), s);
@@ -34,7 +18,6 @@
 	$: getYfromQ = (low = 0, high = 100) => {
 		let delta = 1 / 10 ** (wdigs + 1),
 			mid = (low + high) / 2;
-		// console.log(delta+', '+low+', '+high);
 		if (Math.abs(low - high) < delta) {
 			return (low + high) * 0.5;
 		}
@@ -46,6 +29,8 @@
 		}
 	};
 
+	let sd = utils.sd;
+
 	// variables ending in s are string inputs, bound to numerical input fields
 	let bs = 3,
 		ys = 1.75,
@@ -53,28 +38,30 @@
 		ns = 0.013,
 		gs = 9.81;
 	// inputs
-	$: b = sds(bs);
-	$: y = sds(ys);
-	$: n = Number(sds(ns));
-	$: s = Number(sds(ss));
-	$: g = Number(sds(gs));
+	$: b = sd(bs, sdigs, extraDig);
+	$: y = sd(ys, sdigs, extraDig);
+	$: n = Number(sd(ns, sdigs, extraDig));
+	$: s = Number(sd(ss, sdigs, extraDig));
+	$: g = Number(sd(gs, sdigs, extraDig));
 	// calculations for y specified
-	$: A = sdw(fluids.getArea(b, y));
-	$: WP = sdw(fluids.getWP(b, y));
-	$: R = sdw(fluids.getR(A, WP));
-	$: v = sdw(fluids.getV(n, R, s));
-	$: Q = sdw(fluids.getQfromAandV(A, v));
-	$: E = sdw(fluids.getE(y, v, g));
-	$: T = sds(b);
-	$: NF = sdw(fluids.getNF(v, A, T, g));
-	$: yc = sdw(fluids.getYc(Q, g, b));
-	$: WPc = sdw(fluids.getWP(b, yc));
-	$: Ac = sdw(fluids.getArea(b, yc));
-	$: Rc = sdw(fluids.getR(Ac, WPc));
-	$: vc = sdw(fluids.getVfromQandA(Q, Ac));
-	$: Emin = sdw(fluids.getE(yc, vc, g));
-	$: Sc = sdw(fluids.getCriticalSlope(n, vc, Rc));
+	$: A = sd(fluids.getArea(b, y), wdigs, extraWorkingDig);
+	$: WP = sd(fluids.getWP(b, y), wdigs, extraWorkingDig);
+	$: R = sd(fluids.getR(A, WP), wdigs, extraWorkingDig);
+	$: v = sd(fluids.getV(n, R, s), wdigs, extraWorkingDig);
+	$: Q = sd(fluids.getQfromAandV(A, v), wdigs, extraWorkingDig);
+	$: E = sd(fluids.getE(y, v, g), wdigs, extraWorkingDig);
+	$: T = sd(b, sdigs, extraDig);
+	$: NF = sd(fluids.getNF(v, A, T, g), wdigs, extraWorkingDig);
+	$: yc = sd(fluids.getYc(Q, g, b), wdigs, extraWorkingDig);
+	$: WPc = sd(fluids.getWP(b, yc), wdigs, extraWorkingDig);
+	$: Ac = sd(fluids.getArea(b, yc), wdigs, extraWorkingDig);
+	$: Rc = sd(fluids.getR(Ac, WPc), wdigs, extraWorkingDig);
+	$: vc = sd(fluids.getVfromQandA(Q, Ac), wdigs, extraWorkingDig);
+	$: Emin = sd(fluids.getE(yc, vc, g), wdigs, extraWorkingDig);
+	$: Sc = sd(fluids.getCriticalSlope(n, vc, Rc), wdigs, extraWorkingDig);
 </script>
+
+
 
 <article>
 	<section class="fig">
@@ -85,13 +72,13 @@
 		<form>
 			<label class="b">
 				{@html ki(`\\large b=`)}
-				<input type="number" step="any" required bind:value={bs} />
+				<input type="number" step="any" bind:value={bs} />
 				{@html ki(`\\textsf{m}`)}
 			</label>
 
 			<label class="y">
 				{@html ki(`\\large y=`)}
-				<input type="number" step="any" required bind:value={ys} />
+				<input type="number" step="any" bind:value={ys} />
 				{@html ki(`\\textsf{m}`)}
 			</label>
 		</form>
@@ -118,6 +105,8 @@
 		</form>
 	</section>
 
+	<!-- {sd(A, sdigs, true)}<br/>{sd(WP, sdigs, true)}<br/> {sd(fluids.getR(A, WP))} -->
+
 	<section class="results">
 		{#if !validS}
 			need a slope
@@ -125,7 +114,7 @@
 			<section class="normal">
 				<h1>Normal (Uniform) Flow</h1>
 				<Card
-					answer="Flow Area: {ki(`A = ${sds(A)}\\, \\mathsf{m^2}`)}"
+					answer="Flow Area: {ki(`A = ${sd(A, sdigs, extraDig)}\\, \\mathsf{m^2}`)}"
 					solution={kd(`
                             \\begin{aligned}
                                 A &= by \\\\
@@ -135,7 +124,7 @@
                         `)} />
 
 				<Card
-					answer="Wetted Perimeter: {ki(`W\\!P = ${sds(WP)}\\, \\mathsf{m}`)}"
+					answer="Wetted Perimeter: {ki(`W\\!P = ${sd(WP, sdigs, extraDig)}\\, \\mathsf{m}`)}"
 					solution={kd(`
                             \\begin{aligned}
                                 WP &= b+2y \\\\
@@ -144,7 +133,7 @@
                             \\end{aligned}
                         `)} />
 				<Card
-					answer="Hydraulic Radius: {ki(`R = ${sds(R)}\\, \\mathsf m`)}  "
+					answer="Hydraulic Radius: {ki(`R = ${sd(R, sdigs, extraDig)}\\, \\mathsf m`)}  "
 					solution={kd(`
                             \\begin{aligned}
                                 R &= A/W\\!P \\\\
@@ -153,7 +142,7 @@
                             \\end{aligned}
                         `)} />
 				<Card
-					answer="Average Flow Velocity: {ki(`v = ${sds(v)}\\, \\mathsf{m/s}`)}  "
+					answer="Average Flow Velocity: {ki(`v = ${sd(v, sdigs, extraDig)}\\, \\mathsf{m/s}`)}  "
 					solution={kd(`
                             \\begin{aligned}
                                v &= \\frac 1n R^{2/3} S^{1/2} \\\\
@@ -162,7 +151,7 @@
                             \\end{aligned}
                         `)} />
 				<Card
-					answer="Flow Rate: {ki(`Q = ${sds(Q)}\\, \\mathsf{m^3/s}`)}  "
+					answer="Flow Rate: {ki(`Q = ${sd(Q, sdigs, extraDig)}\\, \\mathsf{m^3/s}`)}  "
 					solution={kd(`
                             \\begin{aligned}
                                Q &= Av \\\\
@@ -171,7 +160,7 @@
                             \\end{aligned}
                         `)} />
 				<Card
-					answer="Specific Energy: {ki(`E = ${sds(E)}\\, \\mathsf{m}`)}  "
+					answer="Specific Energy: {ki(`E = ${sd(E, sdigs, extraDig)}\\, \\mathsf{m}`)}  "
 					solution={kd(`
                             \\begin{aligned}
                                E &= y+\\frac{v^2}{2g} \\\\
@@ -181,23 +170,23 @@
                             \\end{aligned}
                         `)} />
 				<Card
-					answer="Free Surface: {ki(`T = ${sds(T)}\\, \\mathsf{m}`)}  "
+					answer="Free Surface: {ki(`T = ${sd(T, sdigs, extraDig)}\\, \\mathsf{m}`)}  "
 					solution={kd(`
                             \\begin{aligned}
                                T &= b \\\\
-							   &= ${sds(b)}\\, \\mathsf{m} \\\\
+							   &= ${sd(b, sdigs, extraDig)}\\, \\mathsf{m} \\\\
 							   
                             \\end{aligned}
                         `)} />
 				<Card
-					answer="Froude Number: {ki(`N_F = ${sds(NF)}`)}  "
+					answer="Froude Number: {ki(`N_F = ${sd(NF, sdigs, extraDig)}`)}  "
 					solution={kd(`
                             \\begin{aligned}
                                N_F &=  \\frac{v}{\\sqrt{g(A/T)}} \\\\							   
-							   &=  \\frac{${v}\\, \\mathsf{m/s}}{\\sqrt{(${g}\\, \\mathsf{m/s^2})\\cdot(${sdw(A)}\\, \\mathsf{m^2}/${sds(
+							   &=  \\frac{${v}\\, \\mathsf{m/s}}{\\sqrt{(${g}\\, \\mathsf{m/s^2})\\cdot(${sd(A, wdigs, extraWorkingDig)}\\, \\mathsf{m^2}/${sd(
 						T
 					)}\\, \\mathsf{m})}} \\\\
-							   &= ${sdw(NF)}
+							   &= ${sd(NF, wdigs, extraWorkingDig)}
                             \\end{aligned}
                         `)} />
 			</section>
@@ -205,8 +194,8 @@
 				<h1>Critical Flow</h1>
 
 				<Card
-					answer="For the {ki(`Q=${sdw(Q)} \\, \\mathsf{m^3\\!/s}`)} above, Critical Depth {ki(
-						`yc=${sds(yc)} \\, \\mathsf{m}`
+					answer="For the {ki(`Q=${sd(Q, sdigs, extraDig)} \\, \\mathsf{m^3\\!/s}`)} above, Critical Depth {ki(
+						`yc=${sd(yc)} \\, \\mathsf{m}`
 					)}"
 					solution={kd(`
                             \\begin{aligned}
@@ -218,15 +207,15 @@
 								&= b^2y_c^3 \\\\
 								\\Rightarrow y_c^3 &= \\frac{Q^2}{b^2g} \\\\
 								\\Rightarrow y_c &= \\sqrt[3]{\\frac{Q^2}{b^2g}} \\\\
-								\\Rightarrow y_c &= \\sqrt[3]{\\frac{(${Q}\\, \\mathsf{m^3\\!/s})^2}{(${sds(
-						b
+								\\Rightarrow y_c &= \\sqrt[3]{\\frac{(${Q}\\, \\mathsf{m^3\\!/s})^2}{(${sd(
+						b, sdigs, extraDig
 					)}\\, \\mathsf{m} )^2(${g}\\, \\mathsf{m/s^2})}}\\\\
 								&= ${yc}\\, \\mathsf{m}
 
                             \\end{aligned}
                         `)} />
 				<Card
-					answer="Critical Velocity: {ki(` v_c = ${sds(vc)}  \\,\\mathsf{m/s}`)}  "
+					answer="Critical Velocity: {ki(` v_c = ${sd(vc, sdigs, extraDig)}  \\,\\mathsf{m/s}`)}  "
 					solution={kd(`
 							\\begin{aligned}
 								A_c &= by_c \\\\
@@ -237,7 +226,7 @@
 								&= ${vc} \\,\\mathsf{m/s}
 							\\end{aligned}	`)} />
 				<Card
-					answer="Minimum Specific Energy: {ki(`E_{min} = ${sds(Emin)}\\, \\mathsf{m}`)}"
+					answer="Minimum Specific Energy: {ki(`E_{min} = ${sd(Emin, sdigs, extraDig)}\\, \\mathsf{m}`)}"
 					solution={kd(`
 							\\begin{aligned}
 								E_{min} &= y_c+\\frac{ v_c^2 }{ 2g } \\\\
@@ -246,7 +235,7 @@
 							\\end{aligned}
 						`)} />
 				<Card
-					answer="Slope for Critical Flow: {ki(`S_c = ${sds(Sc)}\\%`)}"
+					answer="Slope for Critical Flow: {ki(`S_c = ${sd(Sc, sdigs, extraDig)}\\%`)}"
 					solution={kd(`
 							\\begin{aligned}
 								A_c &= by_c \\\\

@@ -5,7 +5,7 @@
 	import RectangularQ from "./RectangularQ.svelte";
 
 	let typeOfChannel = "rectangular";
-	let specifyY = true;
+	let specifyView = "rectangularY";
 </script>
 
 <article>
@@ -14,11 +14,13 @@
 	</section>
 </article>
 
-<YorQ bind:specifyY />
+<YorQ bind:specifyView />
 
-<div class:hide={!specifyY}>
+<div class:hide={specifyView !== 'rectangularY'}>
 	<RectangularY />
 </div>
-<div class:hide={specifyY}>
+<div class:hide={specifyView !== 'rectangularQ'}>
 	<RectangularQ />
 </div>
+
+
