@@ -11,7 +11,8 @@
 
 {#if isVisible}
 	<section in:fly={{ y: -200 }} out:fly={{ y: -200, delay:100}}>
-		This calculator on this page is for normal (uniform) flow in an open channel with a
+		This calculator on this page is for <span style="font-weight: bold; letter-spacing: -0.03em">normal</span> (uniform) flow and 
+		<span style="font-weight: bold; letter-spacing: -0.03em">critical</span> flow in an open channel with a
 		<span style="font-weight: bold; letter-spacing: -0.03em">{typeOfChannel}</span> cross-section.
 		<p />
 		Clicking on a result panel will display the associated calculations for each result. Clicking again
