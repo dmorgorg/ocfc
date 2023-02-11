@@ -1,7 +1,7 @@
 <script>
 	import Card from "./Card.svelte";
 	import { fade } from "svelte/transition";
-	import { ki, kd, fluids, utils } from "$lib/utilities";
+	import { ki, kd, fluids, utils, rect } from "$lib/utilities";
 
 	let sdigs = 3,
 		wdigs = 6,
@@ -9,25 +9,25 @@
 		extraDig = true,
 		extraWorkingDig = true;
 
-// needs access to n, b, s so has to be in this file?
-	$: getQfromY = (y) => {
-		var A = b * y;
-		let v = fluids.getV(n, fluids.getR(fluids.getArea(b, y), fluids.getWP(b, y)), s);
-		return A * v;
-	};
-	$: getYfromQ = (low = 0, high = 100) => {
-		let delta = 1 / 10 ** (wdigs + 1),
-			mid = (low + high) / 2;
-		if (Math.abs(low - high) < delta) {
-			return (low + high) * 0.5;
-		}
-		// search
-		if (getQfromY(mid) < QQ) {
-			return getYfromQ(mid, high);
-		} else {
-			return getYfromQ(low, mid);
-		}
-	};
+	// needs access to n, b, s so has to be in this file?
+	// $: getQfromY = (y) => {
+	// 	var A = rect.getArea(b, y);
+	// 	let v = fluids.getV(n, fluids.getR(fluids.getArea(b, y), fluids.getWP(b, y)), s);
+	// 	return A * v;
+	// };
+	// $: getYfromQ = (low = 0, high = 100) => {
+	// 	let delta = 1 / 10 ** (wdigs + 1),
+	// 		mid = (low + high) / 2;
+	// 	if (Math.abs(low - high) < delta) {
+	// 		return (low + high) * 0.5;
+	// 	}
+	// 	// search
+	// 	if (getQfromY(mid) < QQ) {
+	// 		return getYfromQ(mid, high);
+	// 	} else {
+	// 		return getYfromQ(low, mid);
+	// 	}
+	// };
 
 	let sd = utils.sd;
 
@@ -44,15 +44,15 @@
 	$: s = Number(sd(ss, sdigs, extraDig));
 	$: g = Number(sd(gs, sdigs, extraDig));
 	// calculations for y specified
-	$: A = sd(fluids.getArea(b, y), wdigs, extraWorkingDig);
-	$: WP = sd(fluids.getWP(b, y), wdigs, extraWorkingDig);
+	$: A = sd(rect.getArea(b, y), wdigs, extraWorkingDig);
+	$: WP = sd(rect.getWP(b, y), wdigs, extraWorkingDig);
 	$: R = sd(fluids.getR(A, WP), wdigs, extraWorkingDig);
 	$: v = sd(fluids.getV(n, R, s), wdigs, extraWorkingDig);
 	$: Q = sd(fluids.getQfromAandV(A, v), wdigs, extraWorkingDig);
 	$: E = sd(fluids.getE(y, v, g), wdigs, extraWorkingDig);
-	$: T = sd(b, sdigs, extraDig);
+	$: T = sd(rect.getT(y, b), sdigs, extraDig);
 	$: NF = sd(fluids.getNF(v, A, T, g), wdigs, extraWorkingDig);
-	$: yc = sd(fluids.getYc(Q, g, b), wdigs, extraWorkingDig);
+	$: yc = sd(rect.getYc(Q, g, b), wdigs, extraWorkingDig);
 	$: WPc = sd(fluids.getWP(b, yc), wdigs, extraWorkingDig);
 	$: Ac = sd(fluids.getArea(b, yc), wdigs, extraWorkingDig);
 	$: Rc = sd(fluids.getR(Ac, WPc), wdigs, extraWorkingDig);
@@ -60,8 +60,6 @@
 	$: Emin = sd(fluids.getE(yc, vc, g), wdigs, extraWorkingDig);
 	$: Sc = sd(fluids.getCriticalSlope(n, vc, Rc), wdigs, extraWorkingDig);
 </script>
-
-
 
 <article>
 	<section class="fig">
@@ -105,8 +103,6 @@
 		</form>
 	</section>
 
-	<!-- {sd(A, sdigs, true)}<br/>{sd(WP, sdigs, true)}<br/> {sd(fluids.getR(A, WP))} -->
-
 	<section class="results">
 		{#if !validS}
 			need a slope
@@ -146,7 +142,7 @@
 					solution={kd(`
                             \\begin{aligned}
                                v &= \\frac 1n R^{2/3} S^{1/2} \\\\
-							   &= \\frac{1}{${n}} \\left(${R}\\right)^{2/3} \\left(${s/100}\\right)^{1/2} \\\\
+							   &= \\frac{1}{${n}} \\left(${R}\\right)^{2/3} \\left(${s / 100}\\right)^{1/2} \\\\
 							   &= ${v} \\, \\mathsf{m/s}
                             \\end{aligned}
                         `)} />
@@ -183,9 +179,11 @@
 					solution={kd(`
                             \\begin{aligned}
                                N_F &=  \\frac{v}{\\sqrt{g(A/T)}} \\\\							   
-							   &=  \\frac{${v}\\, \\mathsf{m/s}}{\\sqrt{(${g}\\, \\mathsf{m/s^2})\\cdot(${sd(A, wdigs, extraWorkingDig)}\\, \\mathsf{m^2}/${sd(
-						T
-					)}\\, \\mathsf{m})}} \\\\
+							   &=  \\frac{${v}\\, \\mathsf{m/s}}{\\sqrt{(${g}\\, \\mathsf{m/s^2})\\cdot(${sd(
+						A,
+						wdigs,
+						extraWorkingDig
+					)}\\, \\mathsf{m^2}/${sd(T)}\\, \\mathsf{m})}} \\\\
 							   &= ${sd(NF, wdigs, extraWorkingDig)}
                             \\end{aligned}
                         `)} />
@@ -208,7 +206,9 @@
 								\\Rightarrow y_c^3 &= \\frac{Q^2}{b^2g} \\\\
 								\\Rightarrow y_c &= \\sqrt[3]{\\frac{Q^2}{b^2g}} \\\\
 								\\Rightarrow y_c &= \\sqrt[3]{\\frac{(${Q}\\, \\mathsf{m^3\\!/s})^2}{(${sd(
-						b, sdigs, extraDig
+						b,
+						sdigs,
+						extraDig
 					)}\\, \\mathsf{m} )^2(${g}\\, \\mathsf{m/s^2})}}\\\\
 								&= ${yc}\\, \\mathsf{m}
 

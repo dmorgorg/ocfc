@@ -1,7 +1,7 @@
 <script>
 	import Card from "./Card.svelte";
 	import { fade } from "svelte/transition";
-	import { ki, kd, fluids, utils } from "$lib/utilities";
+	import { ki, kd, fluids, rect, utils } from "$lib/utilities";
 
 	let sdigs = 3,
 		wdigs = 6,
@@ -47,12 +47,12 @@
 	$: g = Number(gs);
 	// calculations for Q specified
 	$: yQ = sd(getYfromQ(), wdigs, extraWorkingDig);
-	$: AQ = sd(fluids.getArea(b, yQ), wdigs, extraWorkingDig);
+	$: AQ = sd(rect.getArea(b, yQ), wdigs, extraWorkingDig);
 	$: vQ = sd(fluids.getVfromQandA(QQ, AQ), wdigs, extraWorkingDig);
 	$: EQ = sd(fluids.getE(yQ, vQ, g), wdigs, extraWorkingDig);
 	$: T = sd(b, sdigs, extraDig);
 	$: NFQ = sd(fluids.getNF(vQ, AQ, T, g), wdigs, extraWorkingDig);
-	$: ycQ = sd(fluids.getYc(QQ, g, b), wdigs, extraWorkingDig);
+	$: ycQ = sd(rect.getYc(QQ, g, b), wdigs, extraWorkingDig);
 	$: WPcQ = sd(fluids.getWP(b, ycQ), wdigs, extraWorkingDig);
 	$: AcQ = sd(fluids.getArea(b, ycQ), wdigs, extraWorkingDig);
 	$: RcQ = sd(fluids.getR(AcQ, WPcQ), wdigs, extraWorkingDig);

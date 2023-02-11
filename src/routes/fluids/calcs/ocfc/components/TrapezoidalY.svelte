@@ -1,7 +1,7 @@
 <script>
 	import Card from "./Card.svelte";
 	import { fade } from "svelte/transition";
-	import { ki, kd, fluids, utils } from "$lib/utilities";
+	import { ki, kd, fluids, trap, utils } from "$lib/utilities";
 
 	let sdigs = 3,
 		wdigs = 6,
@@ -10,54 +10,60 @@
 		extraWorkingDig = true;
 
 // needs access to n, b, s so has to be in this file?
-	$: getQfromY = (y) => {
-		var A = b * y;
-		let v = fluids.getV(n, fluids.getR(fluids.getArea(b, y), fluids.getWP(b, y)), s);
-		return A * v;
+	$: getNFfromY = (y) => {
+		let A = trap.getArea(y, zl, b, zr);
+		let T = trap.getT(y, zl, b, zr);
+		let v = Q/A;
+		return v/(g*A/T)**0.5;
 	};
-	$: getYfromQ = (low = 0, high = 100) => {
+	$: getYCfromQ = (low = 0, high = 100) => {
 		let delta = 1 / 10 ** (wdigs + 1),
 			mid = (low + high) / 2;
 		if (Math.abs(low - high) < delta) {
 			return (low + high) * 0.5;
-		}
-		// search
-		if (getQfromY(mid) < QQ) {
-			return getYfromQ(mid, high);
+		}		
+		// search		
+		if (getNFfromY(mid) > 1) {
+			return getYCfromQ(mid, high);
 		} else {
-			return getYfromQ(low, mid);
+			return getYCfromQ(low, mid);
 		}
 	};
+	
 
 	let sd = utils.sd;
 
 	// variables ending in s are string inputs, bound to numerical input fields
 	let bs = 3,
-		ys = 1.75,
+		ys = 1.2,
+		zls = 1.5,
+		zrs = 1,
 		ss = 0.1,
 		ns = 0.013,
 		gs = 9.81;
 	// inputs
 	$: b = sd(bs, sdigs, extraDig);
 	$: y = sd(ys, sdigs, extraDig);
+	$: zl = sd(zls, sdigs, extraDig);
+	$: zr = sd(zrs, sdigs, extraDig);
 	$: n = Number(sd(ns, sdigs, extraDig));
 	$: s = Number(sd(ss, sdigs, extraDig));
 	$: g = Number(sd(gs, sdigs, extraDig));
 	// calculations for y specified
-	$: A = sd(fluids.getArea(b, y), wdigs, extraWorkingDig);
-	$: WP = sd(fluids.getWP(b, y), wdigs, extraWorkingDig);
+	$: A = sd(trap.getArea(y, zl, b, zr), wdigs, extraWorkingDig);
+	$: WP = sd(trap.getWP(y, zl, b, zr), wdigs, extraWorkingDig);
 	$: R = sd(fluids.getR(A, WP), wdigs, extraWorkingDig);
 	$: v = sd(fluids.getV(n, R, s), wdigs, extraWorkingDig);
 	$: Q = sd(fluids.getQfromAandV(A, v), wdigs, extraWorkingDig);
 	$: E = sd(fluids.getE(y, v, g), wdigs, extraWorkingDig);
-	$: T = sd(b, sdigs, extraDig);
+	$: T = sd(trap.getT(y, zl, b, zr), sdigs, extraDig);
 	$: NF = sd(fluids.getNF(v, A, T, g), wdigs, extraWorkingDig);
-	$: yc = sd(fluids.getYc(Q, g, b), wdigs, extraWorkingDig);
-	$: WPc = sd(fluids.getWP(b, yc), wdigs, extraWorkingDig);
-	$: Ac = sd(fluids.getArea(b, yc), wdigs, extraWorkingDig);
-	$: Rc = sd(fluids.getR(Ac, WPc), wdigs, extraWorkingDig);
+	$: yc = sd(getYCfromQ(), wdigs, extraWorkingDig);	
+	$: Ac = sd(trap.getArea(yc, zl, b, zr), wdigs, extraWorkingDig);	
 	$: vc = sd(fluids.getVfromQandA(Q, Ac), wdigs, extraWorkingDig);
 	$: Emin = sd(fluids.getE(yc, vc, g), wdigs, extraWorkingDig);
+	$: WPc = sd(trap.getWP(yc, zl, b, zr), wdigs, extraWorkingDig);
+	$: Rc = sd(fluids.getR(Ac, WPc), wdigs, extraWorkingDig);
 	$: Sc = sd(fluids.getCriticalSlope(n, vc, Rc), wdigs, extraWorkingDig);
 </script>
 
@@ -65,7 +71,7 @@
 
 <article>
 	<section class="fig">
-		<div class="width75">
+		<div>
 			<img src="/ocfc/trapezoidalChannelSectionQ.png" alt="trapezoidal channel section" />
 			<img class="super" src="/ocfc/trapezoidalChannelSectionY.png" alt="trapezoidal channel section by depth" />
 		</div>
@@ -80,6 +86,23 @@
 				{@html ki(`\\large y=`)}
 				<input type="number" step="any" bind:value={ys} />
 				{@html ki(`\\textsf{m}`)}
+			</label>
+
+			<label class="zl">
+				{@html ki(`\\large z_L=`)}
+				<input
+					type="number"
+					step="any"
+					bind:value={zls}
+				/>
+			</label>
+			<label class="zr">
+				{@html ki(`\\large z_R=`)}
+				<input
+					type="number"
+					step="any"
+					bind:value={zrs}
+				/>
 			</label>
 		</form>
 
@@ -105,7 +128,7 @@
 		</form>
 	</section>
 
-	<!-- {sd(A, sdigs, true)}<br/>{sd(WP, sdigs, true)}<br/> {sd(fluids.getR(A, WP))} -->
+	{Ac}
 
 	<section class="results">
 		{#if !validS}
@@ -117,8 +140,8 @@
 					answer="Flow Area: {ki(`A = ${sd(A, sdigs, extraDig)}\\, \\mathsf{m^2}`)}"
 					solution={kd(`
                             \\begin{aligned}
-                                A &= by \\\\
-                                &= ${b}\\, \\mathsf{m} \\times ${y}\\, \\mathsf{m} \\\\
+                                A &= \\left(b+\\left(\\frac{z_L+z_R}{2}\\right)\\cdot y\\right)\\cdot y \\\\
+                                &= \\left(${b}\\, \\mathsf{m}+\\left(\\frac{${zl}\\, \\mathsf{m}+${zr}\\, \\mathsf{m}}{2}\\right)\\cdot ${y}\\, \\mathsf{m}\\right)\\cdot ${y}\\, \\mathsf{m} \\\\
                                 &= ${A}\\, \\mathsf{m^2}
                             \\end{aligned}
                         `)} />
@@ -127,8 +150,8 @@
 					answer="Wetted Perimeter: {ki(`W\\!P = ${sd(WP, sdigs, extraDig)}\\, \\mathsf{m}`)}"
 					solution={kd(`
                             \\begin{aligned}
-                                WP &= b+2y \\\\
-                                &= ${b}\\, \\mathsf{m} + 2\\times ${y}\\, \\mathsf{m} \\\\
+                                W\\!P &= b+\\left( \\sqrt{1+z_L^2}+\\sqrt{1+z_R^2}\\right)\\cdot y \\\\
+                                W\\!P &= ${b}\\, \\mathsf{m}+\\left( \\sqrt{1+\\left(${zl}\\, \\mathsf{m}\\right)^2}+\\sqrt{1+\\left(${zr} \\, \\mathsf{m}\\right)^2}\\right)\\cdot ${y}\\, \\mathsf{m} \\\\                                
                                 &= ${WP}\\, \\mathsf{m}
                             \\end{aligned}
                         `)} />
@@ -138,7 +161,7 @@
                             \\begin{aligned}
                                 R &= A/W\\!P \\\\
                                 &= ${A}\\, \\mathsf{m^2} / ${WP}\\, \\mathsf{m} \\\\
-                                &= ${R} \\mathsf{m}
+                                &= ${R}\\, \\mathsf{m}
                             \\end{aligned}
                         `)} />
 				<Card
@@ -173,8 +196,9 @@
 					answer="Free Surface: {ki(`T = ${sd(T, sdigs, extraDig)}\\, \\mathsf{m}`)}  "
 					solution={kd(`
                             \\begin{aligned}
-                               T &= b \\\\
-							   &= ${sd(b, sdigs, extraDig)}\\, \\mathsf{m} \\\\
+                               T &= b + \\left(z_L+z_R\\right)\\cdot y \\\\
+                               T &= ${b}\\, \\mathsf{m} + \\left(${zl}+${zr}\\right)\\cdot ${y} \\, \\mathsf{m} \\\\
+							   &= ${sd(T, wdigs, extraWorkingDig)}\\, \\mathsf{m} \\\\
 							   
                             \\end{aligned}
                         `)} />
@@ -194,32 +218,27 @@
 				<h1>Critical Flow</h1>
 
 				<Card
-					answer="For the {ki(`Q=${sd(Q, sdigs, extraDig)} \\, \\mathsf{m^3\\!/s}`)} above, Critical Depth {ki(
-						`yc=${sd(yc)} \\, \\mathsf{m}`
+					answer="For the {ki(`Q=${Q} \\, \\mathsf{m^3\\!/s}`)} above, Critical Depth {ki(
+						`y_c=${sd(yc)} \\, \\mathsf{m}`
 					)}"
-					solution={kd(`
+					solution="{kd(`
                             \\begin{aligned}
                                	N_F &= 1 \\\\
 								\\Rightarrow v_c &= \\sqrt{ g(A_c/T_c)} \\\\
 								\\Rightarrow \\left(\\frac{Q}{A_c}\\right)^2 &= g(A_c/T_c) \\\\
 								\\Rightarrow \\frac{Q^2}{g} &= \\frac{A_c^3}{T_c} \\\\
-								&= \\frac{\\left(by_c\\right)^3}{b}	\\\\
-								&= b^2y_c^3 \\\\
-								\\Rightarrow y_c^3 &= \\frac{Q^2}{b^2g} \\\\
-								\\Rightarrow y_c &= \\sqrt[3]{\\frac{Q^2}{b^2g}} \\\\
-								\\Rightarrow y_c &= \\sqrt[3]{\\frac{(${Q}\\, \\mathsf{m^3\\!/s})^2}{(${sd(
-						b, sdigs, extraDig
-					)}\\, \\mathsf{m} )^2(${g}\\, \\mathsf{m/s^2})}}\\\\
-								&= ${yc}\\, \\mathsf{m}
-
-                            \\end{aligned}
-                        `)} />
+								&= \\frac{\\left(\\left(b+\\left(\\frac{z_L+z_R}{2}\\right)\\cdot y_c\\right)\\cdot y_c\\right)^3}{b + \\left(z_L+z_R\\right)\\cdot y} \\\\
+								\\Rightarrow \\frac{\\left(${Q} \\, \\mathsf{m^3\\!/s}\\right)^2}{${g} \\, \\mathsf{m/s^2}}&= \\frac{\\left(\\left(${b}\\, \\mathsf{m}+\\left(\\large\\frac{${sd(+zl+ +zr, sdigs, extraDig)}}{2}\\right)\\cdot y_c \\, \\mathsf{m}\\right)\\cdot y_c \\, \\mathsf{m}\\right)^3}{${b}\\, \\mathsf{m} + \\left(${sd(+zl+ +zr, sdigs, extraDig)}\\right)\\cdot y_c\\, \\mathsf{m}} 									
+                            \\end{aligned}`)}
+							<div style='width: 85%; margin-left: 7.5%; '>The expression above cannot be solved directly (analytically) for {ki(`y_c`)}. It may be solved using trial-and-error methods but it is generally more convenient to solve it, without further simplification, using a numerical solver on a scientific calculator or in a spreadsheet app. (This calculator uses an automated type of trial-and-error called a binary search, probably similar to how your scientific calculator does it.)</div>
+							{kd(`y_c=${yc}\\, \\mathsf{m}`)}
+						" />
 				<Card
 					answer="Critical Velocity: {ki(` v_c = ${sd(vc, sdigs, extraDig)}  \\,\\mathsf{m/s}`)}  "
 					solution={kd(`
 							\\begin{aligned}
-								A_c &= by_c \\\\
-								&= ${b}\\, \\mathsf{m}\\times ${yc}\\, \\mathsf{m} \\\\
+								A_c &= \\left(b+\\left(\\frac{z_L+z_R}{2}\\right)\\cdot y\\right)\\cdot y \\\\
+								A_c &= \\left(${b}\\, \\mathsf{m}+\\left(\\frac{${sd(+zl+ +zr, sdigs, extraDig)}}{2}\\right)\\cdot ${yc}\\, \\mathsf{m}\\right)\\cdot ${yc}\\, \\mathsf{m} \\\\
 								&= ${Ac}\\, \\mathsf{m^2}\\\\\\\\
 								v_c &= Q/A_c \\\\
 								&= \\frac{${Q}\\, \\mathsf{m^3\\!/s}}{${Ac}\\, \\mathsf{m^2}} \\\\
@@ -238,12 +257,12 @@
 					answer="Slope for Critical Flow: {ki(`S_c = ${sd(Sc, sdigs, extraDig)}\\%`)}"
 					solution={kd(`
 							\\begin{aligned}
-								A_c &= by_c \\\\
-								&= ${b}\\, \\mathsf{m}\\times ${yc}\\, \\mathsf{m} \\\\
+								A_c &= \\left(b+\\left(\\frac{z_L+z_R}{2}\\right)\\cdot y\\right)\\cdot y \\\\
+								&= \\left(${b}\\, \\mathsf{m}+\\left(\\frac{${sd(+zl+ +zr, sdigs, extraDig)}}{2}\\right)\\cdot ${yc}\\, \\mathsf{m}\\right)\\cdot ${yc}\\, \\mathsf{m} \\\\
 								&= ${Ac} \\,\\mathsf{m^2} \\\\ \\\\
 
-								W\\!P_c &= b + 2y_c \\\\
-								&= ${b}\\, \\mathsf{m}+2(${yc}\\, \\mathsf{m}) \\\\
+								W\\!P_c &= b+\\left( \\sqrt{1+z_L^2}+\\sqrt{1+z_R^2}\\right)\\cdot y_c \\\\
+                                &= ${b}\\, \\mathsf{m}+\\left( \\sqrt{1+\\left(${zl}\\, \\mathsf{m}\\right)^2}+\\sqrt{1+\\left(${zr} \\, \\mathsf{m}\\right)^2}\\right)\\cdot ${y}\\, \\mathsf{m} \\\\ 
 								&= ${WPc}\\, \\mathsf{m}\\\\\\\\
 
 								R_c &= A_c/P_c \\\\
@@ -262,6 +281,7 @@
 </article>
 
 <style lang="scss">
+	
 	section.fig form {
 		input {
 			width: 4.25rem;
@@ -280,15 +300,27 @@
 				color: white;
 				padding: 0.25em;
 				top: 37%;
-				left: 47.5%;
+				left: 50%;
 				background-color: #088;
 			}
 
 			&.b {
-				top: 70%;
-				left: 40%;
+				top: 68%;
+				left: 47%;
 				background-color: #ccc;
 			}
+			 &.zl {
+                top: 55%;
+                left: 13%;
+                background-color: transparent;
+				font-size: 90%;
+            }
+            &.zr {
+                top: 55%;
+                left: 78%;
+                background-color: transparent;
+				font-size: 90%;
+            }
 		}
 		.lower-inputs {
 			display: flex;

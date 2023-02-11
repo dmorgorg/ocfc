@@ -74,13 +74,6 @@ export const fluids = {
 	getQfromAandV: (A, v) => {
 		return A * v;
 	},
-	// get Q as a function of only y for binary search
-	// getQfromY: (y) => {
-	// var A = +b * y;
-	// let v = fluids.getV(n, fluids.getR(fluids.getArea(b, y), fluids.getWP(b, y)), s);
-	// return A * v;
-	// 	return 42*y;
-	// },
 	getNF: (v, A, T, g) => {
 		return v / ((g * A) / T) ** 0.5;
 	},
@@ -91,29 +84,53 @@ export const fluids = {
 	getCriticalSlope: (n, vc, Rc) => {
 		return ((n * vc) / Rc ** (2 / 3)) ** 2 * 100;
 	},
-	getYc: (Q, g, b) => {
-		return ((Q * Q) / g / b / b) ** (1 / 3);
-	},
+	
 	getVfromQandA: (Q, A) => {
 		return Q / A;
 	},
 	getCriticalSlope: (n, vc, Rc) => {
 		return ((n * vc) / Rc ** (2 / 3)) ** 2 * 100;
 	},
-	// getYfromQ: (underY = 0, overY = 100) =>  {
-	// 	let delta = 1 / 10 ** (wdigs + 1),
-	// 		mid = (underY + overY) / 2;
-	// 	console.log(mid);
+};
 
-	// 	if (Math.abs(underY - overY) < delta) {
-	// 		return Number(sdw((underY + overY) * 0.5));
-	// 	}
-
-	// 	// search;
-	// 	if (getQfromY(mid) < QQ) {
-	// 		return fluids.getYfromQ(mid, overY);
-	// 	} else {
-	// 		return fluids.getYfromQ(underY, mid);
-	// 	}
-	// }
+export const rect = {
+	getArea: (b, y) => {
+		return b * y;
+	},
+	getWP: (b, y) => {
+		return +b + 2 * y;
+	},
+	getT: (b) => {
+		return b;
+	},
+	getYc: (Q, g, b) => {
+		return ((Q * Q) / g / b / b) ** (1 / 3);
+	},
+};
+export const trap = {
+	getArea: (y, zl, b, zr) => {
+		return b * y + +((y * y) / 2) * (+zl + +zr);
+	},
+	getWP: (y, zl, b, zr) => {
+		return +b + y * ((1 + zl ** 2) ** 0.5 + (1 + zr ** 2) ** 0.5);
+	},
+	getT: (y, zl, b, zr) => {
+		return +b + +y*(+zl + +zr);
+	}
+};
+export const tri = {
+	getArea: (b, y) => {
+		return b * y;
+	},
+	getWP: (b, y) => {
+		return +b + 2 * y;
+	},
+};
+export const circ = {
+	getArea: (b, y) => {
+		return b * y;
+	},
+	getWP: (b, y) => {
+		return +b + 2 * y;
+	},
 };
