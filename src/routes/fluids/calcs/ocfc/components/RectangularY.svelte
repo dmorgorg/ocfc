@@ -12,7 +12,7 @@
 	// needs access to n, b, s so has to be in this file?
 	// $: getQfromY = (y) => {
 	// 	var A = rect.getArea(b, y);
-	// 	let v = fluids.getV(n, fluids.getR(fluids.getArea(b, y), fluids.getWP(b, y)), s);
+	// 	let v = fluids.getV(n, fluids.getR(fluids.getArea(b, y), fluids.getP(b, y)), s);
 	// 	return A * v;
 	// };
 	// $: getYfromQ = (low = 0, high = 100) => {
@@ -45,17 +45,17 @@
 	$: g = Number(sd(gs, sdigs, extraDig));
 	// calculations for y specified
 	$: A = sd(rect.getArea(b, y), wdigs, extraWorkingDig);
-	$: WP = sd(rect.getWP(b, y), wdigs, extraWorkingDig);
-	$: R = sd(fluids.getR(A, WP), wdigs, extraWorkingDig);
+	$: P = sd(rect.getP(b, y), wdigs, extraWorkingDig);
+	$: R = sd(fluids.getR(A, P), wdigs, extraWorkingDig);
 	$: v = sd(fluids.getV(n, R, s), wdigs, extraWorkingDig);
 	$: Q = sd(fluids.getQfromAandV(A, v), wdigs, extraWorkingDig);
 	$: E = sd(fluids.getE(y, v, g), wdigs, extraWorkingDig);
 	$: T = sd(rect.getT(y, b), sdigs, extraDig);
 	$: NF = sd(fluids.getNF(v, A, T, g), wdigs, extraWorkingDig);
 	$: yc = sd(rect.getYc(Q, g, b), wdigs, extraWorkingDig);
-	$: WPc = sd(fluids.getWP(b, yc), wdigs, extraWorkingDig);
+	$: Pc = sd(fluids.getP(b, yc), wdigs, extraWorkingDig);
 	$: Ac = sd(fluids.getArea(b, yc), wdigs, extraWorkingDig);
-	$: Rc = sd(fluids.getR(Ac, WPc), wdigs, extraWorkingDig);
+	$: Rc = sd(fluids.getR(Ac, Pc), wdigs, extraWorkingDig);
 	$: vc = sd(fluids.getVfromQandA(Q, Ac), wdigs, extraWorkingDig);
 	$: Emin = sd(fluids.getE(yc, vc, g), wdigs, extraWorkingDig);
 	$: Sc = sd(fluids.getCriticalSlope(n, vc, Rc), wdigs, extraWorkingDig);
@@ -120,20 +120,20 @@
                         `)} />
 
 				<Card
-					answer="Wetted Perimeter: {ki(`W\\!P = ${sd(WP, sdigs, extraDig)}\\, \\mathsf{m}`)}"
+					answer="Wetted Perimeter: {ki(`P = ${sd(P, sdigs, extraDig)}\\, \\mathsf{m}`)}"
 					solution={kd(`
                             \\begin{aligned}
-                                WP &= b+2y \\\\
+                                P &= b+2y \\\\
                                 &= ${b}\\, \\mathsf{m} + 2\\times ${y}\\, \\mathsf{m} \\\\
-                                &= ${WP}\\, \\mathsf{m}
+                                &= ${P}\\, \\mathsf{m}
                             \\end{aligned}
                         `)} />
 				<Card
 					answer="Hydraulic Radius: {ki(`R = ${sd(R, sdigs, extraDig)}\\, \\mathsf m`)}  "
 					solution={kd(`
                             \\begin{aligned}
-                                R &= A/W\\!P \\\\
-                                &= ${A}\\, \\mathsf{m^2} / ${WP}\\, \\mathsf{m} \\\\
+                                R &= A/P \\\\
+                                &= ${A}\\, \\mathsf{m^2} / ${P}\\, \\mathsf{m} \\\\
                                 &= ${R} \\mathsf{m}
                             \\end{aligned}
                         `)} />
@@ -242,12 +242,12 @@
 								&= ${b}\\, \\mathsf{m}\\times ${yc}\\, \\mathsf{m} \\\\
 								&= ${Ac} \\,\\mathsf{m^2} \\\\ \\\\
 
-								W\\!P_c &= b + 2y_c \\\\
+								P_c &= b + 2y_c \\\\
 								&= ${b}\\, \\mathsf{m}+2(${yc}\\, \\mathsf{m}) \\\\
-								&= ${WPc}\\, \\mathsf{m}\\\\\\\\
+								&= ${Pc}\\, \\mathsf{m}\\\\\\\\
 
 								R_c &= A_c/P_c \\\\
-								&= \\frac{${Ac}\\, \\mathsf{m^2}}{${WPc}\\, \\mathsf{m}} \\\\
+								&= \\frac{${Ac}\\, \\mathsf{m^2}}{${Pc}\\, \\mathsf{m}} \\\\
 								&= ${Rc}\\,\\mathsf{m}\\\\\\\\
 
 								\\Rightarrow S_c &= \\left(\\frac { nv_c }{ R_c^{2/3} }\\right)^2 \\\\

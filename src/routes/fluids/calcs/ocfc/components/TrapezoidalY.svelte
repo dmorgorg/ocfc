@@ -39,7 +39,7 @@
 		zls = 1.5,
 		zrs = 1,
 		ss = 0.1,
-		ns = 0.013,
+		ns = 0.02,
 		gs = 9.81;
 	// inputs
 	$: b = sd(bs, sdigs, extraDig);
@@ -51,8 +51,8 @@
 	$: g = Number(sd(gs, sdigs, extraDig));
 	// calculations for y specified
 	$: A = sd(trap.getArea(y, zl, b, zr), wdigs, extraWorkingDig);
-	$: WP = sd(trap.getWP(y, zl, b, zr), wdigs, extraWorkingDig);
-	$: R = sd(fluids.getR(A, WP), wdigs, extraWorkingDig);
+	$: P = sd(trap.getP(y, zl, b, zr), wdigs, extraWorkingDig);
+	$: R = sd(fluids.getR(A, P), wdigs, extraWorkingDig);
 	$: v = sd(fluids.getV(n, R, s), wdigs, extraWorkingDig);
 	$: Q = sd(fluids.getQfromAandV(A, v), wdigs, extraWorkingDig);
 	$: E = sd(fluids.getE(y, v, g), wdigs, extraWorkingDig);
@@ -62,8 +62,8 @@
 	$: Ac = sd(trap.getArea(yc, zl, b, zr), wdigs, extraWorkingDig);	
 	$: vc = sd(fluids.getVfromQandA(Q, Ac), wdigs, extraWorkingDig);
 	$: Emin = sd(fluids.getE(yc, vc, g), wdigs, extraWorkingDig);
-	$: WPc = sd(trap.getWP(yc, zl, b, zr), wdigs, extraWorkingDig);
-	$: Rc = sd(fluids.getR(Ac, WPc), wdigs, extraWorkingDig);
+	$: Pc = sd(trap.getP(yc, zl, b, zr), wdigs, extraWorkingDig);
+	$: Rc = sd(fluids.getR(Ac, Pc), wdigs, extraWorkingDig);
 	$: Sc = sd(fluids.getCriticalSlope(n, vc, Rc), wdigs, extraWorkingDig);
 </script>
 
@@ -128,8 +128,6 @@
 		</form>
 	</section>
 
-	{Ac}
-
 	<section class="results">
 		{#if !validS}
 			need a slope
@@ -147,20 +145,20 @@
                         `)} />
 
 				<Card
-					answer="Wetted Perimeter: {ki(`W\\!P = ${sd(WP, sdigs, extraDig)}\\, \\mathsf{m}`)}"
+					answer="Wetted Perimeter: {ki(`P = ${sd(P, sdigs, extraDig)}\\, \\mathsf{m}`)}"
 					solution={kd(`
                             \\begin{aligned}
-                                W\\!P &= b+\\left( \\sqrt{1+z_L^2}+\\sqrt{1+z_R^2}\\right)\\cdot y \\\\
-                                W\\!P &= ${b}\\, \\mathsf{m}+\\left( \\sqrt{1+\\left(${zl}\\, \\mathsf{m}\\right)^2}+\\sqrt{1+\\left(${zr} \\, \\mathsf{m}\\right)^2}\\right)\\cdot ${y}\\, \\mathsf{m} \\\\                                
-                                &= ${WP}\\, \\mathsf{m}
+                                P &= b+\\left( \\sqrt{1+z_L^2}+\\sqrt{1+z_R^2}\\right)\\cdot y \\\\
+                                P &= ${b}\\, \\mathsf{m}+\\left( \\sqrt{1+\\left(${zl}\\, \\mathsf{m}\\right)^2}+\\sqrt{1+\\left(${zr} \\, \\mathsf{m}\\right)^2}\\right)\\cdot ${y}\\, \\mathsf{m} \\\\                                
+                                &= ${P}\\, \\mathsf{m}
                             \\end{aligned}
                         `)} />
 				<Card
 					answer="Hydraulic Radius: {ki(`R = ${sd(R, sdigs, extraDig)}\\, \\mathsf m`)}  "
 					solution={kd(`
                             \\begin{aligned}
-                                R &= A/W\\!P \\\\
-                                &= ${A}\\, \\mathsf{m^2} / ${WP}\\, \\mathsf{m} \\\\
+                                R &= A/P \\\\
+                                &= ${A}\\, \\mathsf{m^2} / ${P}\\, \\mathsf{m} \\\\
                                 &= ${R}\\, \\mathsf{m}
                             \\end{aligned}
                         `)} />
@@ -261,12 +259,12 @@
 								&= \\left(${b}\\, \\mathsf{m}+\\left(\\frac{${sd(+zl+ +zr, sdigs, extraDig)}}{2}\\right)\\cdot ${yc}\\, \\mathsf{m}\\right)\\cdot ${yc}\\, \\mathsf{m} \\\\
 								&= ${Ac} \\,\\mathsf{m^2} \\\\ \\\\
 
-								W\\!P_c &= b+\\left( \\sqrt{1+z_L^2}+\\sqrt{1+z_R^2}\\right)\\cdot y_c \\\\
+								P_c &= b+\\left( \\sqrt{1+z_L^2}+\\sqrt{1+z_R^2}\\right)\\cdot y_c \\\\
                                 &= ${b}\\, \\mathsf{m}+\\left( \\sqrt{1+\\left(${zl}\\, \\mathsf{m}\\right)^2}+\\sqrt{1+\\left(${zr} \\, \\mathsf{m}\\right)^2}\\right)\\cdot ${y}\\, \\mathsf{m} \\\\ 
-								&= ${WPc}\\, \\mathsf{m}\\\\\\\\
+								&= ${Pc}\\, \\mathsf{m}\\\\\\\\
 
 								R_c &= A_c/P_c \\\\
-								&= \\frac{${Ac}\\, \\mathsf{m^2}}{${WPc}\\, \\mathsf{m}} \\\\
+								&= \\frac{${Ac}\\, \\mathsf{m^2}}{${Pc}\\, \\mathsf{m}} \\\\
 								&= ${Rc}\\,\\mathsf{m}\\\\\\\\
 
 								\\Rightarrow S_c &= \\left(\\frac { nv_c }{ R_c^{2/3} }\\right)^2 \\\\
@@ -309,7 +307,7 @@
 				left: 47%;
 				background-color: #ccc;
 			}
-			 &.zl {
+			&.zl {
                 top: 55%;
                 left: 13%;
                 background-color: transparent;

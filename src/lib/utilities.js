@@ -62,11 +62,11 @@ export const fluids = {
 	getArea: (b, y) => {
 		return b * y;
 	},
-	getWP: (b, y) => {
+	getP: (b, y) => {
 		return +b + 2 * y;
 	},
-	getR: (A, WP) => {
-		return A / WP;
+	getR: (A, P) => {
+		return A / P;
 	},
 	getV: (n, R, s) => {
 		return (1 / n) * R ** (2 / 3) * (s / 100) ** 0.5;
@@ -97,7 +97,7 @@ export const rect = {
 	getArea: (b, y) => {
 		return b * y;
 	},
-	getWP: (b, y) => {
+	getP: (b, y) => {
 		return +b + 2 * y;
 	},
 	getT: (b) => {
@@ -111,7 +111,7 @@ export const trap = {
 	getArea: (y, zl, b, zr) => {
 		return b * y + +((y * y) / 2) * (+zl + +zr);
 	},
-	getWP: (y, zl, b, zr) => {
+	getP: (y, zl, b, zr) => {
 		return +b + y * ((1 + zl ** 2) ** 0.5 + (1 + zr ** 2) ** 0.5);
 	},
 	getT: (y, zl, b, zr) => {
@@ -122,7 +122,7 @@ export const tri = {
 	getArea: (b, y) => {
 		return b * y;
 	},
-	getWP: (b, y) => {
+	getP: (b, y) => {
 		return +b + 2 * y;
 	},
 };
@@ -130,7 +130,7 @@ export const circ = {
 	getArea: (b, y) => {
 		return b * y;
 	},
-	getWP: (b, y) => {
+	getP: (b, y) => {
 		return +b + 2 * y;
 	},
 };

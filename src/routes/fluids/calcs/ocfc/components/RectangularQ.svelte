@@ -13,7 +13,7 @@
 	// needs access to n, b, s so has to be in this file?
 	$: getQfromY = (y) => {
 		var A = b * y;
-		let v = fluids.getV(n, fluids.getR(fluids.getArea(b, y), fluids.getWP(b, y)), s);
+		let v = fluids.getV(n, fluids.getR(fluids.getArea(b, y), fluids.getP(b, y)), s);
 		return A * v;
 	};
 	$: getYfromQ = (low = 0, high = 100) => {
@@ -53,9 +53,9 @@
 	$: T = sd(b, sdigs, extraDig);
 	$: NFQ = sd(fluids.getNF(vQ, AQ, T, g), wdigs, extraWorkingDig);
 	$: ycQ = sd(rect.getYc(QQ, g, b), wdigs, extraWorkingDig);
-	$: WPcQ = sd(fluids.getWP(b, ycQ), wdigs, extraWorkingDig);
+	$: PcQ = sd(fluids.getP(b, ycQ), wdigs, extraWorkingDig);
 	$: AcQ = sd(fluids.getArea(b, ycQ), wdigs, extraWorkingDig);
-	$: RcQ = sd(fluids.getR(AcQ, WPcQ), wdigs, extraWorkingDig);
+	$: RcQ = sd(fluids.getR(AcQ, PcQ), wdigs, extraWorkingDig);
 	$: vcQ = sd(fluids.getVfromQandA(QQ, AcQ), wdigs, extraWorkingDig);
 	$: EminQ = sd(fluids.getE(ycQ, vcQ, g), wdigs, extraWorkingDig);
 	$: ScQ = sd(fluids.getCriticalSlope(n, vcQ, RcQ), wdigs, extraWorkingDig);
@@ -218,12 +218,12 @@
 								&= ${b}\\, \\mathsf{m}\\times ${ycQ}\\, \\mathsf{m} \\\\
 								&= ${AcQ} \\,\\mathsf{m^2} \\\\ \\\\
 
-								W\\!P_c &= b + 2y_c \\\\
+								P_c &= b + 2y_c \\\\
 								&= ${b}\\, \\mathsf{m}+2(${ycQ}\\, \\mathsf{m}) \\\\
-								&= ${WPcQ}\\, \\mathsf{m}\\\\\\\\
+								&= ${PcQ}\\, \\mathsf{m}\\\\\\\\
 
 								R_c &= A_c/P_c \\\\
-								&= \\frac{${AcQ}\\, \\mathsf{m^2}}{${WPcQ}\\, \\mathsf{m}} \\\\
+								&= \\frac{${AcQ}\\, \\mathsf{m^2}}{${PcQ}\\, \\mathsf{m}} \\\\
 								&= ${RcQ}\\,\\mathsf{m}\\\\\\\\
 
 								\\Rightarrow S_c &= \\left(\\frac { nv_c }{ R_c^{2/3} }\\right)^2 \\\\
