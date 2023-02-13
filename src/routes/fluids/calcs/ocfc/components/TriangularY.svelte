@@ -9,30 +9,10 @@
 		extraDig = true,
 		extraWorkingDig = true;
 
-// needs access to n, b, s so has to be in this file?
-	// $: getQfromY = (y) => {
-	// 	var A = tri.getArea(y, zl, zr);
-	// 	let v = fluids.getV(n, fluids.getR(fluids.getArea(b, y), fluids.getP(b, y)), s);
-	// 	return A * v;
-	// };
-	$: getYCfromQ = (low = 0, high = 100) => {
-		// let delta = 1 / 10 ** (wdigs + 1),
-		// 	mid = (low + high) / 2;
-		// if (Math.abs(low - high) < delta) {
-		// 	return (low + high) * 0.5;
-		// }
-		// // search
-		// if (getQfromY(mid) < QQ) {
-		// 	return getYfromQ(mid, high);
-		// } else {
-		// 	return getYfromQ(low, mid);
-		// }
-	};
-
 	let sd = utils.sd;
 
 	// variables ending in s are string inputs, bound to numerical input fields
-		let ys = 1.4,
+	let ys = 1.4,
 		zls = 1,
 		zrs = 1,
 		ss = 0.1,
@@ -54,16 +34,14 @@
 	$: E = sd(fluids.getE(y, v, g), wdigs, extraWorkingDig);
 	$: T = sd(tri.getT(y, zl, zr), wdigs, extraWorkingDig);
 	$: NF = sd(fluids.getNF(v, A, T, g), wdigs, extraWorkingDig);
-	$: yc = sd(tri.getYc(Q, zl, zr, g), wdigs, extraWorkingDig);	
-	$: Ac = sd(tri.getArea(yc, zl, zr), wdigs, extraWorkingDig);	
+	$: yc = sd(tri.getYc(Q, zl, zr, g), wdigs, extraWorkingDig);
+	$: Ac = sd(tri.getArea(yc, zl, zr), wdigs, extraWorkingDig);
 	$: vc = sd(fluids.getVfromQandA(Q, Ac), wdigs, extraWorkingDig);
 	$: Emin = sd(fluids.getE(yc, vc, g), wdigs, extraWorkingDig);
 	$: Pc = sd(tri.getP(yc, zl, zr), wdigs, extraWorkingDig);
 	$: Rc = sd(fluids.getR(Ac, Pc), wdigs, extraWorkingDig);
 	$: Sc = sd(fluids.getCriticalSlope(n, vc, Rc), wdigs, extraWorkingDig);
 </script>
-
-
 
 <article>
 	<section class="fig">
@@ -74,19 +52,11 @@
 		<form>
 			<label class="zl">
 				{@html ki(`\\large z_L=`)}
-				<input
-					type="number"
-					step="any"
-					bind:value={zls}
-				/>
+				<input type="number" step="any" bind:value={zls} />
 			</label>
 			<label class="zr">
 				{@html ki(`\\large z_R=`)}
-				<input
-					type="number"
-					step="any"
-					bind:value={zrs}
-				/>
+				<input type="number" step="any" bind:value={zrs} />
 			</label>
 
 			<label class="y">
@@ -117,7 +87,6 @@
 			</div>
 		</form>
 	</section>
-
 
 	<section class="results">
 		{#if !validS}
@@ -161,7 +130,7 @@
 					solution={kd(`
                             \\begin{aligned}
                                v &= \\frac 1n R^{2/3} S^{1/2} \\\\
-							   &= \\frac{1}{${n}} \\left(${R}\\right)^{2/3} \\left(${s/100}\\right)^{1/2} \\\\\\\\
+							   &= \\frac{1}{${n}} \\left(${R}\\right)^{2/3} \\left(${s / 100}\\right)^{1/2} \\\\\\\\
 							   v &= ${v} \\, \\mathsf{m/s}
                             \\end{aligned}
                         `)} />
@@ -201,7 +170,11 @@
 					solution={kd(`
                             \\begin{aligned}
                                N_F &=  \\frac{v}{\\sqrt{g(A/T)}} \\\\							   
-							   &=  \\frac{${v}\\, \\mathsf{m/s}}{\\sqrt{(${g}\\, \\mathsf{m/s^2})\\cdot(${sd(A, wdigs, extraWorkingDig)}\\, \\mathsf{m^2}/${sd(T)}\\, \\mathsf{m})}} \\\\\\\\
+							   &=  \\frac{${v}\\, \\mathsf{m/s}}{\\sqrt{(${g}\\, \\mathsf{m/s^2})\\cdot(${sd(
+						A,
+						wdigs,
+						extraWorkingDig
+					)}\\, \\mathsf{m^2}/${sd(T)}\\, \\mathsf{m})}} \\\\\\\\
 							   N_F &= ${sd(NF, wdigs, extraWorkingDig)}
                             \\end{aligned}
                         `)} />
@@ -213,7 +186,7 @@
 					answer="For the {ki(`Q=${sd(Q, wdigs, extraWorkingDig)} \\, \\mathsf{m^3\\!/s}`)} above, Critical Depth {ki(
 						`y_c=${sd(yc)} \\, \\mathsf{m}`
 					)}"
-					solution="{kd(`
+					solution={kd(`
                             \\begin{aligned}
 								A &=  \\frac{(z_L+z_R)y^2}{2} \\\\
 								T &= (z_L+z_R)y \\\\\\\\
@@ -231,7 +204,7 @@
 								y_c &= ${yc}\\, \\mathsf{m}
                             \\end{aligned}
                         `)}
-						<div style='width: 85%; margin-left: 7.5%; '> Note that a triangular channel is the one section that can be calculated directly (without any iterative methods). <div>" />
+						/>
 				<Card
 					answer="Critical Velocity: {ki(` v_c = ${sd(vc, sdigs, extraDig)}  \\,\\mathsf{m/s}`)}  "
 					solution={kd(`
@@ -305,19 +278,18 @@
 				background-color: transparent;
 			}
 
-			
 			&.zl {
-                top: 64%;
-                left: 30%;
-                background-color: transparent;
+				top: 64%;
+				left: 30%;
+				background-color: transparent;
 				font-size: 90%;
-            }
-            &.zr {
-                top: 64%;
-                left: 63%;
-                background-color: transparent;
+			}
+			&.zr {
+				top: 64%;
+				left: 63%;
+				background-color: transparent;
 				font-size: 90%;
-            }
+			}
 		}
 		.lower-inputs {
 			display: flex;

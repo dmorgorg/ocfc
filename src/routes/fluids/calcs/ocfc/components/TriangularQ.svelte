@@ -34,17 +34,19 @@
 	let sd = utils.sd;
 
 	// variables ending in s are string inputs, bound to numerical input fields
-	let bs = 3,
-		QQs = 3.25,
+			let QQs = 3.25,
+		zls = 1,
+		zrs = 1,
 		ss = 0.1,
 		ns = 0.013,
 		gs = 9.81;
 	// inputs
-	$: b = Number(bs);
-	$: QQ = Number(QQs);
-	$: n = Number(ns);
-	$: s = Number(ss);
-	$: g = Number(gs);
+	$: Q = sd(QQs, sdigs, extraDig);
+	$: zl = sd(zls, sdigs, extraDig);
+	$: zr = sd(zrs, sdigs, extraDig);
+	$: n = Number(sd(ns, sdigs, extraDig));
+	$: s = Number(sd(ss, sdigs, extraDig));
+	$: g = Number(sd(gs, sdigs, extraDig));
 	// calculations for Q specified
 	// $: yQ = sd(getYfromQ(), wdigs, extraWorkingDig);
 	// $: AQ = sd(fluids.getArea(b, yQ), wdigs, extraWorkingDig);
@@ -67,11 +69,14 @@
 			<img src="/ocfc/triangularChannelSectionQ.png" alt="triangular channel section" />
 		</div>
 		<form>
-			<label class="b">
-				{@html ki(`\\large b=`)}
-				<input type="number" step="any" bind:value={bs} />
-				{@html ki(`\\textsf{m}`)}
+			<label class="zl">
+				{@html ki(`\\large z_L=`)}
+				<input type="number" step="any" bind:value={zls} />
 			</label>
+			<label class="zr">
+				{@html ki(`\\large z_R=`)}
+				<input type="number" step="any" bind:value={zrs} />
+			</label>			
 
 			<label class="Q">
 				{@html ki(`\\large Q=`)}
@@ -253,16 +258,23 @@
 			position: absolute;
 			padding: 0 0.25em;
 
-			&.b {
-				top: 70%;
-				left: 40%;
-				background-color: #ccc;
+			&.zl {
+				top: 64%;
+				left: 30%;
+				background-color: transparent;
+				font-size: 90%;
+			}
+			&.zr {
+				top: 64%;
+				left: 63%;
+				background-color: transparent;
+				font-size: 90%;
 			}
 
 			&.Q {
 				top: 37%;
-				left: 37%;
-				background-color: #088;
+				left: 44%;
+				background-color: transparent;
 				padding: 0;
 				color: white;
 			}
