@@ -14,7 +14,7 @@
 	</section>
 </article>
 
-<YorQ bind:specifyView />
+<YorQ bind:specifyView {typeOfChannel}/>
 
 <div class:hide={specifyView !== 'triangularY'}>
 	<TriangularY />

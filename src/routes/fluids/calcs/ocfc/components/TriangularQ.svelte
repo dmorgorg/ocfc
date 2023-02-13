@@ -46,25 +46,25 @@
 	$: s = Number(ss);
 	$: g = Number(gs);
 	// calculations for Q specified
-	$: yQ = sd(getYfromQ(), wdigs, extraWorkingDig);
-	$: AQ = sd(fluids.getArea(b, yQ), wdigs, extraWorkingDig);
-	$: vQ = sd(fluids.getVfromQandA(QQ, AQ), wdigs, extraWorkingDig);
-	$: EQ = sd(fluids.getE(yQ, vQ, g), wdigs, extraWorkingDig);
-	$: T = sd(b, sdigs, extraDig);
-	$: NFQ = sd(fluids.getNF(vQ, AQ, T, g), wdigs, extraWorkingDig);
-	$: ycQ = sd(fluids.getYc(QQ, g, b), wdigs, extraWorkingDig);
-	$: WPcQ = sd(fluids.getWP(b, ycQ), wdigs, extraWorkingDig);
-	$: AcQ = sd(fluids.getArea(b, ycQ), wdigs, extraWorkingDig);
-	$: RcQ = sd(fluids.getR(AcQ, WPcQ), wdigs, extraWorkingDig);
-	$: vcQ = sd(fluids.getVfromQandA(QQ, AcQ), wdigs, extraWorkingDig);
-	$: EminQ = sd(fluids.getE(ycQ, vcQ, g), wdigs, extraWorkingDig);
-	$: ScQ = sd(fluids.getCriticalSlope(n, vcQ, RcQ), wdigs, extraWorkingDig);
+	// $: yQ = sd(getYfromQ(), wdigs, extraWorkingDig);
+	// $: AQ = sd(fluids.getArea(b, yQ), wdigs, extraWorkingDig);
+	// $: vQ = sd(fluids.getVfromQandA(QQ, AQ), wdigs, extraWorkingDig);
+	// $: EQ = sd(fluids.getE(yQ, vQ, g), wdigs, extraWorkingDig);
+	// $: T = sd(b, sdigs, extraDig);
+	// $: NFQ = sd(fluids.getNF(vQ, AQ, T, g), wdigs, extraWorkingDig);
+	// $: ycQ = sd(fluids.getYc(QQ, g, b), wdigs, extraWorkingDig);
+	// $: WPcQ = sd(fluids.getWP(b, ycQ), wdigs, extraWorkingDig);
+	// $: AcQ = sd(fluids.getArea(b, ycQ), wdigs, extraWorkingDig);
+	// $: RcQ = sd(fluids.getR(AcQ, WPcQ), wdigs, extraWorkingDig);
+	// $: vcQ = sd(fluids.getVfromQandA(QQ, AcQ), wdigs, extraWorkingDig);
+	// $: EminQ = sd(fluids.getE(ycQ, vcQ, g), wdigs, extraWorkingDig);
+	// $: ScQ = sd(fluids.getCriticalSlope(n, vcQ, RcQ), wdigs, extraWorkingDig);
 </script>
 
 <article>
 	<section class="fig">
-		<div class="width75">
-			<img src="/ocfc/rectangularChannelSectionQ.png" alt="rectangular channel section" />
+		<div class="width85">
+			<img src="/ocfc/triangularChannelSectionQ.png" alt="triangular channel section" />
 		</div>
 		<form>
 			<label class="b">
@@ -108,7 +108,7 @@
 		{:else}
 			<section class="normal">
 				<h1>Normal (Uniform) Flow</h1>
-				<Card
+				<!-- <Card
 					answer="Depth of flow: {ki(`${sd(yQ, sdigs, extraDig)}\\, \\mathsf{m}`)}"
 					solution="{kd(`
 						\\begin{aligned}
@@ -123,8 +123,8 @@
 					)}. It may be solved using trial-and-error methods but it is generally more convenient to solve it, without further simplification, using a numerical solver on a scientific calculator or in a spreadsheet app. (This calculator uses an automated type of trial-and-error called a binary search, probably similar to how your scientific calculator does it.)</div>
 						{kd(`
 						y=${yQ}\\, \\mathsf{m}
-						`)}" />
-				<Card
+						`)}" /> -->
+				<!-- <Card
 					answer="Flow Area: {ki(`${sd(AQ, sdigs, extraDig)}\\, \\mathsf{m^2}`)} "
 					solution={kd(`
 						\\begin{aligned}
@@ -132,32 +132,32 @@
 							&= ${b}\\, \\mathsf{m}\\times ${yQ}\\, \\mathsf{m} \\\\							
 							&= ${AQ} \\, \\mathsf{m^2}
 						\\end{aligned}
-					`)} />
-				<Card
+					`)} /> -->
+				<!-- <Card
 					answer="Average Flow Velocity: {ki(`${sd(vQ, sdigs, extraDig)}\\, \\mathsf{m/s} `)}"
 					solution={kd(`
 						\\begin{aligned} 
 							v &= Q/A \\\\
 						 	&= \\frac{${QQ}\\, \\mathsf{m^3\\!/s}}{${AQ}\\, \\mathsf{m^2}} \\\\					
 							&= ${vQ} \\, \\mathsf{m/s}
-						\\end{aligned}`)} />
-				<Card
+						\\end{aligned}`)} /> -->
+				<!-- <Card
 					answer="Specific Energy: {ki(`E=${sd(EQ, sdigs, extraDig)}\\, \\mathsf{m} `)}"
 					solution={kd(`
 						\\begin{aligned} 
 							E &= y+\\frac{v^2}{g} \\\\
 						 	&= ${yQ}\\, \\mathsf{m}+\\frac{(${vQ}\\, \\mathsf{m/s})^2}{${g}\\, \\mathsf{m/s^2}} \\\\					
 							&= ${EQ} \\, \\mathsf{m}
-						\\end{aligned}`)} />
-				<Card
+						\\end{aligned}`)} /> -->
+				<!-- <Card
 					answer="Free Surface: {ki(`T = ${sd(T, sdigs, extraDig)}\\, \\mathsf{m}`)}  "
 					solution={kd(`
 						\\begin{aligned}
 							T &= b \\\\
 							&= ${sd(b, sdigs, extraDig)}\\, \\mathsf{m} \\\\							
 						\\end{aligned}
-				`)} />
-				<Card
+				`)} /> -->
+				<!-- <Card
 					answer="Froude Number: {ki(`N_F = ${sd(NFQ, sdigs, extraDig)}`)}  "
 					solution={kd(`
 						\\begin{aligned}
@@ -166,11 +166,11 @@
 						T, sdigs, extraDig)}\\, \\mathsf{m})}} \\\\
 							&= ${sd(NFQ, wdigs, extraWorkingDig)}
 						\\end{aligned}
-				`)} />
+				`)} /> -->
 				<section>
 					<h1>Critical Flow</h1>
 
-					<Card
+					<!-- <Card
 						answer="For the {ki(`Q=${sd(QQ, wdigs, extraWorkingDig)} \\, \\mathsf{m^3\\!/s}`)} above, Critical Depth {ki(
 							`yc=${sd(ycQ, sdigs, extraDig)} \\, \\mathsf{m}`
 						)}"
@@ -189,8 +189,8 @@
 								&= ${ycQ}\\, \\mathsf{m}
 
                             \\end{aligned}
-                        `)} />
-					<Card
+                        `)} /> -->
+					<!-- <Card
 						answer="Critical Velocity: {ki(` v_c = ${sd(vcQ, sdigs, extraDig)}  \\,\\mathsf{m/s}`)}  "
 						solution={kd(`
 							\\begin{aligned}
@@ -200,8 +200,8 @@
 								v_c &= Q/A_c \\\\
 								&= \\frac{${QQ}\\, \\mathsf{m^3\\!/s}}{${AcQ}\\, \\mathsf{m^2}} \\\\
 								&= ${vcQ} \\,\\mathsf{m/s}
-							\\end{aligned}	`)} />
-					<Card
+							\\end{aligned}	`)} /> -->
+					<!-- <Card
 						answer="Minimum Specific Energy: {ki(`E_{min} = ${sd(EminQ, sdigs, extraDig)}\\, \\mathsf{m}`)}"
 						solution={kd(`
 							\\begin{aligned}
@@ -209,8 +209,8 @@
 								&= ${ycQ}\\, \\mathsf{m}+\\frac{ (${vcQ}\\, \\mathsf{m/s})^2 }{ 2(${g}\\, \\mathsf{m/s^2}) } \\\\
 								&= ${EminQ} \\,\\mathsf{m}
 							\\end{aligned}
-						`)} />
-					<Card
+						`)} /> -->
+					<!-- <Card
 						answer="Slope for Critical Flow: {ki(`S_c = ${sd(ScQ, sdigs, extraDig)}\\%`)}"
 						solution={kd(`
 							\\begin{aligned}
@@ -231,7 +231,7 @@
 								&= ${ScQ / 100} \\\\
 								&= ${ScQ}\\% 								
 							\\end{aligned}
-						`)} />
+						`)} /> -->
 				</section>
 			</section>
 		{/if}

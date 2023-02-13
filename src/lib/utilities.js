@@ -119,18 +119,27 @@ export const trap = {
 	}
 };
 export const tri = {
-	getArea: (b, y) => {
-		return b * y;
+	getArea: (y, zl, zr) => {
+		return y**2*(zl/2+zr/2);
 	},
-	getP: (b, y) => {
-		return +b + 2 * y;
+	getP: (y, zl, zr) => {
+		return y * (1 + zl * zl) ** 0.5 + y * (1 + zr * zr) ** 0.5;
 	},
+	getT: (y, zl, zr) => {
+		return y * zl + y * zr;
+	},
+	getYc: (Q, zl, zr, g) => {
+		return (8 * Q * Q / g /(+zl/1+zr/1)**2)**0.2;
+	},
+	getVc: (Q, y, zl, zr) => {
+		return Q / tri.getArea(y, zl, zr);
+	}
 };
 export const circ = {
 	getArea: (b, y) => {
 		return b * y;
 	},
-	getP: (b, y) => {
+	getP: (y) => {
 		return +b + 2 * y;
 	},
 };
