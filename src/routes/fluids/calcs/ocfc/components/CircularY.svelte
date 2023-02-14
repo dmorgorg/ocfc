@@ -67,7 +67,7 @@
 	// $: Sc = sd(fluids.getCriticalSlope(n, vc, Rc), wdigs, extraWorkingDig);
 </script>
 
-{circ.getAlphaRadians(y, r)} => {circ.getAlphaDegrees(y, r)} 
+
 
 <article>
 	<section class="fig">
