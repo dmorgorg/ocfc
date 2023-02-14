@@ -136,10 +136,27 @@ export const tri = {
 	}
 };
 export const circ = {
-	getArea: (b, y) => {
-		return b * y;
+	getAlphaRadians: (y, r) => {
+		return Math.acos(Math.abs(r - y) / r)
 	},
-	getP: (y) => {
-		return +b + 2 * y;
+	getAlphaDegrees: (y, r) => {
+		return utils.deg(circ.getAlphaRadians(y, r));
 	},
+	getThetaRadians: (y, r) => {
+		if (y <= r) {
+			return 2 * circ.getAlphaRadians(y, r);
+		}
+		return 2 * (Math.PI - circ.getAlphaRadians(y, r));
+	},
+	getThetaDegrees: (y, r) => {
+		return utils.deg(circ.getThetaRadians(y, r));
+	},
+	getArea: (thetaR, D) => {
+		return ((thetaR - Math.sin(thetaR)) * D ** 2) / 8;
+	},
+	getP: (thetaR, D) => {
+		return thetaR * D / 2;
+	},
+	
+
 };

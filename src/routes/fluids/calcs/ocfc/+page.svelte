@@ -5,7 +5,7 @@
 	import Trapezoidal from "./components/Trapezoidal.svelte";
 	import Circular from "./components/Circular.svelte";
 
-	let channelType = "triangular";
+	let channelType = "circular";
 </script>
 
 <div class="container">
@@ -22,8 +22,8 @@
 		<div class:hide={channelType !== "trapezoidal"}>
 			<Trapezoidal />
 		</div>
-		<!-- <div class:hide={channelType !== "circular"}>
+		<div class:hide={channelType !== "circular"}>
 			<Circular />
-		</div> -->
+		</div>
 	</main>
 </div>

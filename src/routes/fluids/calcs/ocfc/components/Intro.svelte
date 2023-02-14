@@ -35,7 +35,7 @@
 {/if}
 <button on:click={toggle}>
 	{#if isVisible}
-		<div>Hide Instructions Above</div>
+		<div>Hide Instructions</div>
 	{:else}
 		<div>Show Instructions</div>
 	{/if}
