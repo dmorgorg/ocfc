@@ -46,19 +46,19 @@
 	$: s = Number(ss);
 	$: g = Number(gs);
 	// calculations for Q specified
-	$: yQ = sd(getYfromQ(), wdigs, extraWorkingDig);
-	$: AQ = sd(rect.getArea(b, yQ), wdigs, extraWorkingDig);
-	$: vQ = sd(fluids.getVfromQandA(QQ, AQ), wdigs, extraWorkingDig);
-	$: EQ = sd(fluids.getE(yQ, vQ, g), wdigs, extraWorkingDig);
+	$: y = sd(getYfromQ(), wdigs, extraWorkingDig);
+	$: A = sd(rect.getArea(b, y), wdigs, extraWorkingDig);
+	$: v = sd(fluids.getVfromQandA(QQ, A), wdigs, extraWorkingDig);
+	$: E = sd(fluids.getE(y, v, g), wdigs, extraWorkingDig);
 	$: T = sd(b, sdigs, extraDig);
-	$: NFQ = sd(fluids.getNF(vQ, AQ, T, g), wdigs, extraWorkingDig);
-	$: ycQ = sd(rect.getYc(QQ, g, b), wdigs, extraWorkingDig);
-	$: PcQ = sd(fluids.getP(b, ycQ), wdigs, extraWorkingDig);
-	$: AcQ = sd(fluids.getArea(b, ycQ), wdigs, extraWorkingDig);
-	$: RcQ = sd(fluids.getR(AcQ, PcQ), wdigs, extraWorkingDig);
-	$: vcQ = sd(fluids.getVfromQandA(QQ, AcQ), wdigs, extraWorkingDig);
-	$: EminQ = sd(fluids.getE(ycQ, vcQ, g), wdigs, extraWorkingDig);
-	$: ScQ = sd(fluids.getCriticalSlope(n, vcQ, RcQ), wdigs, extraWorkingDig);
+	$: NF = sd(fluids.getNF(v, A, T, g), wdigs, extraWorkingDig);
+	$: yc = sd(rect.getYc(QQ, g, b), wdigs, extraWorkingDig);
+	$: Pc = sd(fluids.getP(b, yc), wdigs, extraWorkingDig);
+	$: Ac = sd(fluids.getArea(b, yc), wdigs, extraWorkingDig);
+	$: Rc = sd(fluids.getR(Ac, Pc), wdigs, extraWorkingDig);
+	$: vc = sd(fluids.getVfromQandA(QQ, Ac), wdigs, extraWorkingDig);
+	$: Emin = sd(fluids.getE(yc, vc, g), wdigs, extraWorkingDig);
+	$: Sc = sd(fluids.getCriticalSlope(n, vc, Rc), wdigs, extraWorkingDig);
 </script>
 
 <article>
@@ -109,7 +109,7 @@
 			<section class="normal">
 				<h1>Normal (Uniform) Flow</h1>
 				<Card
-					answer="Depth of flow: {ki(`${sd(yQ, sdigs, extraDig)}\\, \\mathsf{m}`)}"
+					answer="Depth of flow: {ki(`${sd(y, sdigs, extraDig)}\\, \\mathsf{m}`)}"
 					solution="{kd(`
 						\\begin{aligned}
 							Q &= \\frac 1n AR^{2/3}S^{1/2} \\\\
@@ -122,32 +122,32 @@
 						`y`
 					)}. It may be solved using trial-and-error methods but it is generally more convenient to solve it, without further simplification, using a numerical solver on a scientific calculator or in a spreadsheet app. (This calculator uses an automated type of trial-and-error called a binary search, probably similar to how your scientific calculator does it.)</div>
 						{kd(`
-						y=${yQ}\\, \\mathsf{m}
+						y=${y}\\, \\mathsf{m}
 						`)}" />
 				<Card
-					answer="Flow Area: {ki(`${sd(AQ, sdigs, extraDig)}\\, \\mathsf{m^2}`)} "
+					answer="Flow Area: {ki(`${sd(A, sdigs, extraDig)}\\, \\mathsf{m^2}`)} "
 					solution={kd(`
 						\\begin{aligned}
 							A &= by \\\\
-							&= ${b}\\, \\mathsf{m}\\times ${yQ}\\, \\mathsf{m} \\\\							
-							&= ${AQ} \\, \\mathsf{m^2}
+							&= ${b}\\, \\mathsf{m}\\times ${y}\\, \\mathsf{m} \\\\							
+							&= ${A} \\, \\mathsf{m^2}
 						\\end{aligned}
 					`)} />
 				<Card
-					answer="Average Flow Velocity: {ki(`${sd(vQ, sdigs, extraDig)}\\, \\mathsf{m/s} `)}"
+					answer="Average Flow Velocity: {ki(`${sd(v, sdigs, extraDig)}\\, \\mathsf{m/s} `)}"
 					solution={kd(`
 						\\begin{aligned} 
 							v &= Q/A \\\\
-						 	&= \\frac{${QQ}\\, \\mathsf{m^3\\!/s}}{${AQ}\\, \\mathsf{m^2}} \\\\					
-							&= ${vQ} \\, \\mathsf{m/s}
+						 	&= \\frac{${QQ}\\, \\mathsf{m^3\\!/s}}{${A}\\, \\mathsf{m^2}} \\\\					
+							&= ${v} \\, \\mathsf{m/s}
 						\\end{aligned}`)} />
 				<Card
-					answer="Specific Energy: {ki(`E=${sd(EQ, sdigs, extraDig)}\\, \\mathsf{m} `)}"
+					answer="Specific Energy: {ki(`E=${sd(E, sdigs, extraDig)}\\, \\mathsf{m} `)}"
 					solution={kd(`
 						\\begin{aligned} 
 							E &= y+\\frac{v^2}{g} \\\\
-						 	&= ${yQ}\\, \\mathsf{m}+\\frac{(${vQ}\\, \\mathsf{m/s})^2}{${g}\\, \\mathsf{m/s^2}} \\\\					
-							&= ${EQ} \\, \\mathsf{m}
+						 	&= ${y}\\, \\mathsf{m}+\\frac{(${v}\\, \\mathsf{m/s})^2}{${g}\\, \\mathsf{m/s^2}} \\\\					
+							&= ${E} \\, \\mathsf{m}
 						\\end{aligned}`)} />
 				<Card
 					answer="Free Surface: {ki(`T = ${sd(T, sdigs, extraDig)}\\, \\mathsf{m}`)}  "
@@ -158,13 +158,13 @@
 						\\end{aligned}
 				`)} />
 				<Card
-					answer="Froude Number: {ki(`N_F = ${sd(NFQ, sdigs, extraDig)}`)}  "
+					answer="Froude Number: {ki(`N_F = ${sd(NF, sdigs, extraDig)}`)}  "
 					solution={kd(`
 						\\begin{aligned}
 							N_F &=  \\frac{v}{\\sqrt{g(A/T)}} \\\\							   
-							&=  \\frac{${vQ}\\, \\mathsf{m/s}}{\\sqrt{(${g}\\, \\mathsf{m/s^2})\\cdot(${sd(AQ, wdigs, extraWorkingDig)}\\, \\mathsf{m^2}/${sd(
+							&=  \\frac{${v}\\, \\mathsf{m/s}}{\\sqrt{(${g}\\, \\mathsf{m/s^2})\\cdot(${sd(A, wdigs, extraWorkingDig)}\\, \\mathsf{m^2}/${sd(
 						T, sdigs, extraDig)}\\, \\mathsf{m})}} \\\\
-							&= ${sd(NFQ, wdigs, extraWorkingDig)}
+							&= ${sd(NF, wdigs, extraWorkingDig)}
 						\\end{aligned}
 				`)} />
 				<section>
@@ -172,7 +172,7 @@
 
 					<Card
 						answer="For the {ki(`Q=${sd(QQ, wdigs, extraWorkingDig)} \\, \\mathsf{m^3\\!/s}`)} above, Critical Depth {ki(
-							`yc=${sd(ycQ, sdigs, extraDig)} \\, \\mathsf{m}`
+							`yc=${sd(yc, sdigs, extraDig)} \\, \\mathsf{m}`
 						)}"
 						solution={kd(`
                             \\begin{aligned}
@@ -186,50 +186,50 @@
 								\\Rightarrow y_c &= \\sqrt[3]{\\frac{Q^2}{b^2g}} \\\\
 								\\Rightarrow y_c &= \\sqrt[3]{\\frac{(${QQ}\\, \\mathsf{m^3\\!/s})^2}{(${sd(
 							b, sdigs, extraDig)}\\, \\mathsf{m} )^2(${g}\\, \\mathsf{m/s^2})}}\\\\
-								&= ${ycQ}\\, \\mathsf{m}
+								&= ${yc}\\, \\mathsf{m}
 
                             \\end{aligned}
                         `)} />
 					<Card
-						answer="Critical Velocity: {ki(` v_c = ${sd(vcQ, sdigs, extraDig)}  \\,\\mathsf{m/s}`)}  "
+						answer="Critical Velocity: {ki(` v_c = ${sd(vc, sdigs, extraDig)}  \\,\\mathsf{m/s}`)}  "
 						solution={kd(`
 							\\begin{aligned}
 								A_c &= by_c \\\\
-								&= ${b}\\, \\mathsf{m}\\times ${ycQ}\\, \\mathsf{m} \\\\
-								&= ${AcQ}\\, \\mathsf{m^2}\\\\\\\\
+								&= ${b}\\, \\mathsf{m}\\times ${yc}\\, \\mathsf{m} \\\\
+								&= ${Ac}\\, \\mathsf{m^2}\\\\\\\\
 								v_c &= Q/A_c \\\\
-								&= \\frac{${QQ}\\, \\mathsf{m^3\\!/s}}{${AcQ}\\, \\mathsf{m^2}} \\\\
-								&= ${vcQ} \\,\\mathsf{m/s}
+								&= \\frac{${QQ}\\, \\mathsf{m^3\\!/s}}{${Ac}\\, \\mathsf{m^2}} \\\\
+								&= ${vc} \\,\\mathsf{m/s}
 							\\end{aligned}	`)} />
 					<Card
-						answer="Minimum Specific Energy: {ki(`E_{min} = ${sd(EminQ, sdigs, extraDig)}\\, \\mathsf{m}`)}"
+						answer="Minimum Specific Energy: {ki(`E_{min} = ${sd(Emin, sdigs, extraDig)}\\, \\mathsf{m}`)}"
 						solution={kd(`
 							\\begin{aligned}
 								E_{min} &= y_c+\\frac{ v_c^2 }{ 2g } \\\\
-								&= ${ycQ}\\, \\mathsf{m}+\\frac{ (${vcQ}\\, \\mathsf{m/s})^2 }{ 2(${g}\\, \\mathsf{m/s^2}) } \\\\
-								&= ${EminQ} \\,\\mathsf{m}
+								&= ${yc}\\, \\mathsf{m}+\\frac{ (${vc}\\, \\mathsf{m/s})^2 }{ 2(${g}\\, \\mathsf{m/s^2}) } \\\\
+								&= ${Emin} \\,\\mathsf{m}
 							\\end{aligned}
 						`)} />
 					<Card
-						answer="Slope for Critical Flow: {ki(`S_c = ${sd(ScQ, sdigs, extraDig)}\\%`)}"
+						answer="Slope for Critical Flow: {ki(`S_c = ${sd(Sc, sdigs, extraDig)}\\%`)}"
 						solution={kd(`
 							\\begin{aligned}
 								A_c &= by_c \\\\
-								&= ${b}\\, \\mathsf{m}\\times ${ycQ}\\, \\mathsf{m} \\\\
-								&= ${AcQ} \\,\\mathsf{m^2} \\\\ \\\\
+								&= ${b}\\, \\mathsf{m}\\times ${yc}\\, \\mathsf{m} \\\\
+								&= ${Ac} \\,\\mathsf{m^2} \\\\ \\\\
 
 								P_c &= b + 2y_c \\\\
-								&= ${b}\\, \\mathsf{m}+2(${ycQ}\\, \\mathsf{m}) \\\\
-								&= ${PcQ}\\, \\mathsf{m}\\\\\\\\
+								&= ${b}\\, \\mathsf{m}+2(${yc}\\, \\mathsf{m}) \\\\
+								&= ${Pc}\\, \\mathsf{m}\\\\\\\\
 
 								R_c &= A_c/P_c \\\\
-								&= \\frac{${AcQ}\\, \\mathsf{m^2}}{${PcQ}\\, \\mathsf{m}} \\\\
-								&= ${RcQ}\\,\\mathsf{m}\\\\\\\\
+								&= \\frac{${Ac}\\, \\mathsf{m^2}}{${Pc}\\, \\mathsf{m}} \\\\
+								&= ${Rc}\\,\\mathsf{m}\\\\\\\\
 
 								\\Rightarrow S_c &= \\left(\\frac { nv_c }{ R_c^{2/3} }\\right)^2 \\\\
-								&= \\left(\\frac{${n}\\times ${vcQ}\\, \\mathsf{m/s} }{ (${RcQ}\\, \\mathsf{m})^{2/3} }\\right)^2\\\\
-								&= ${ScQ / 100} \\\\
-								&= ${ScQ}\\% 								
+								&= \\left(\\frac{${n}\\times ${vc}\\, \\mathsf{m/s} }{ (${Rc}\\, \\mathsf{m})^{2/3} }\\right)^2\\\\
+								&= ${Sc / 100} \\\\
+								&= ${Sc}\\% 								
 							\\end{aligned}
 						`)} />
 				</section>

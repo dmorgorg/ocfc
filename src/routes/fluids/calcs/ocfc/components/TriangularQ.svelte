@@ -1,7 +1,7 @@
 <script>
 	import Card from "./Card.svelte";
 	import { fade } from "svelte/transition";
-	import { ki, kd, fluids, utils } from "$lib/utilities";
+	import { ki, kd, fluids, tri, utils } from "$lib/utilities";
 
 	let sdigs = 3,
 		wdigs = 6,
@@ -10,58 +10,48 @@
 		extraWorkingDig = false;
 
 	
-	// needs access to n, b, s so has to be in this file?
-	$: getQfromY = (y) => {
-		var A = b * y;
-		let v = fluids.getV(n, fluids.getR(fluids.getArea(b, y), fluids.getWP(b, y)), s);
-		return A * v;
+	$: getYfromQ = (Q, zl, zr, s, n) => {
+		let num = Q*n*2**(5/3)*((1+zl*zl)**0.5+(1+zr*zr)**0.5)**(2/3);
+		let den = (s/100)**0.5*(Number(zl) + Number(zr))**(5/3);
+		return (num/den)**(3/8);
 	};
-	$: getYfromQ = (low = 0, high = 100) => {
-		let delta = 1 / 10 ** (wdigs + 1),
-			mid = (low + high) / 2;
-		// console.log(delta+', '+low+', '+high);
-		if (Math.abs(low - high) < delta) {
-			return (low + high) * 0.5;
-		}
-		// search
-		if (getQfromY(mid) < QQ) {
-			return getYfromQ(mid, high);
-		} else {
-			return getYfromQ(low, mid);
-		}
-	};
+	$: getYCfromQ = (Q, zl, zr, g) => {
+		return (8*Q*Q/g/(Number(zl)+Number(zr))**2)**0.2;
+	}
 
 	let sd = utils.sd;
 
 	// variables ending in s are string inputs, bound to numerical input fields
-			let QQs = 3.25,
+			let Qs = 3.25,
 		zls = 1,
 		zrs = 1,
 		ss = 0.1,
 		ns = 0.013,
 		gs = 9.81;
 	// inputs
-	$: Q = sd(QQs, sdigs, extraDig);
+	$: Q = sd(Qs, sdigs, extraDig);
 	$: zl = sd(zls, sdigs, extraDig);
 	$: zr = sd(zrs, sdigs, extraDig);
 	$: n = Number(sd(ns, sdigs, extraDig));
 	$: s = Number(sd(ss, sdigs, extraDig));
 	$: g = Number(sd(gs, sdigs, extraDig));
 	// calculations for Q specified
-	// $: yQ = sd(getYfromQ(), wdigs, extraWorkingDig);
-	// $: AQ = sd(fluids.getArea(b, yQ), wdigs, extraWorkingDig);
-	// $: vQ = sd(fluids.getVfromQandA(QQ, AQ), wdigs, extraWorkingDig);
-	// $: EQ = sd(fluids.getE(yQ, vQ, g), wdigs, extraWorkingDig);
-	// $: T = sd(b, sdigs, extraDig);
-	// $: NFQ = sd(fluids.getNF(vQ, AQ, T, g), wdigs, extraWorkingDig);
-	// $: ycQ = sd(fluids.getYc(QQ, g, b), wdigs, extraWorkingDig);
-	// $: WPcQ = sd(fluids.getWP(b, ycQ), wdigs, extraWorkingDig);
-	// $: AcQ = sd(fluids.getArea(b, ycQ), wdigs, extraWorkingDig);
-	// $: RcQ = sd(fluids.getR(AcQ, WPcQ), wdigs, extraWorkingDig);
-	// $: vcQ = sd(fluids.getVfromQandA(QQ, AcQ), wdigs, extraWorkingDig);
-	// $: EminQ = sd(fluids.getE(ycQ, vcQ, g), wdigs, extraWorkingDig);
-	// $: ScQ = sd(fluids.getCriticalSlope(n, vcQ, RcQ), wdigs, extraWorkingDig);
+	$: y = sd(getYfromQ(Q, zl, zr, s, n), wdigs, extraWorkingDig);
+	$: A = sd(tri.getArea(y, zl, zr), wdigs, extraWorkingDig);
+	$: v = sd(fluids.getVfromQandA(Q, A), wdigs, extraWorkingDig);
+	$: E = sd(fluids.getE(y, v, g), wdigs, extraWorkingDig);
+	$: T = sd(tri.getT(y, zl, zr), sdigs, extraDig);
+	$: NF = sd(fluids.getNF(v, A, T, g), wdigs, extraWorkingDig);
+	$: yc = sd(getYCfromQ(Q, zl, zr, g), wdigs, extraWorkingDig);
+	$: Ac = sd(tri.getArea(yc, zl, zr), wdigs, extraWorkingDig);
+	$: vc = sd(fluids.getVfromQandA(Q, Ac), wdigs, extraWorkingDig);
+	$: Emin = sd(fluids.getE(yc, vc, g), wdigs, extraWorkingDig);
+	$: Pc = sd(tri.getP(yc, zl, zr), wdigs, extraWorkingDig);	
+	$: Rc = sd(fluids.getR(Ac, Pc), wdigs, extraWorkingDig);	
+	$: Sc = sd(fluids.getCriticalSlope(n, vc, Rc), wdigs, extraWorkingDig);
 </script>
+
+
 
 <article>
 	<section class="fig">
@@ -80,7 +70,7 @@
 
 			<label class="Q">
 				{@html ki(`\\large Q=`)}
-				<input type="number" step="any" bind:value={QQs} />
+				<input type="number" step="any" bind:value={Qs} />
 				{@html ki(`\\mathsf{m^3\\!/s}`)}
 			</label>
 		</form>
@@ -113,71 +103,75 @@
 		{:else}
 			<section class="normal">
 				<h1>Normal (Uniform) Flow</h1>
-				<!-- <Card
-					answer="Depth of flow: {ki(`${sd(yQ, sdigs, extraDig)}\\, \\mathsf{m}`)}"
+				<Card
+					answer="Depth of flow: {ki(`y=${sd(y, sdigs, extraDig)}\\, \\mathsf{m}`)}"
 					solution="{kd(`
 						\\begin{aligned}
 							Q &= \\frac 1n AR^{2/3}S^{1/2} \\\\
-							&= \\frac 1n \\cdot by\\cdot\\left(\\frac{by}{b+2y}\\right)^{2/3}\\!\\!\\cdot S^{ 1/2 } \\\\
-							\\Rightarrow ${QQ}\\, \\mathsf{m^3\\!/s} &= \\frac 1{${n}} \\cdot (${b}\\, \\mathsf{m})y\\cdot\\left(\\frac{${b}y}{${b}+2y}\\right)^{2/3}\\!\\!\\cdot\\! (${
-						s / 100
-					})^{ 1/2 } 
+							&= \\frac 1n A(A/P)^{ 2/3 }S^{ 1/2 }  \\\\
+							&= \\frac 1n \\cdot \\frac{A^{5/3}}{P^{2/3}}\\cdot S^{ 1/2 } \\\\
+							&= \\frac 1n \\cdot \\frac{\\left(\\left( z_L+z_R \\right)\\cdot y^2/2 \\right) ^{5/3}}{\\left(\\left(\\sqrt { 1+z_L^2 } + \\sqrt { 1+z_R^2 }\\right)\\cdot y\\right)^{2/3}}\\cdot S^{ 1/2 } \\\\
+							&= \\frac{S^{1/2}}{n} \\cdot \\frac{\\left(z_L+z_R \\right)^{5/3}\\cdot y^{10/3}}{2^{5/3}\\left(\\sqrt { 1+z_L^2 } + \\sqrt { 1+z_R^2 }\\right)^{2/3}\\cdot y^{2/3}} \\\\
+							\\Rightarrow y^{8/3} &= \\frac{Qn}{S^{1/2}} \\cdot \\frac{2^{5/3}\\left(\\sqrt { 1+z_L^2 } + \\sqrt { 1+z_R^2 }\\right)^{2/3}}{\\left(z_L+z_R \\right)^{5/3}} \\\\
+							\\Rightarrow y &= \\left[\\frac{Qn}{S^{1/2}} \\cdot \\frac{2^{5/3}\\left(\\sqrt { 1+z_L^2 } + \\sqrt { 1+z_R^2 }\\right)^{2/3}}{\\left(z_L+z_R \\right)^{5/3}}\\right]^{3/8} \\\\
+							\\Rightarrow y &= \\left[\\frac{${Q}\\times${n}}{${s/100}^{1/2}} \\cdot \\frac{2^{5/3}\\left(\\sqrt { 1+(${zl})^2 } + \\sqrt { 1+(${zr})^2 }\\right)^{2/3}}{\\left(${zl}+${zr} \\right)^{5/3}}\\right]^{3/8} \\\\
+							
+
 						\\end{aligned}`)}
-						<div style='width: 85%; margin-left: 7.5%; '>The expression above cannot be solved directly (analytically) for {ki(
-						`y`
-					)}. It may be solved using trial-and-error methods but it is generally more convenient to solve it, without further simplification, using a numerical solver on a scientific calculator or in a spreadsheet app. (This calculator uses an automated type of trial-and-error called a binary search, probably similar to how your scientific calculator does it.)</div>
+						<div style='width: 85%; margin-left: 7.5%; '>A triangular channel is the only cross-section that can be solved directly (if laboriously) for depth from the volume flow rate.</div>
 						{kd(`
-						y=${yQ}\\, \\mathsf{m}
-						`)}" /> -->
-				<!-- <Card
-					answer="Flow Area: {ki(`${sd(AQ, sdigs, extraDig)}\\, \\mathsf{m^2}`)} "
+						y=${yc}\\, \\mathsf{m}
+						`)}" />
+				<Card
+					answer="Flow Area: {ki(`${sd(A, sdigs, extraDig)}\\, \\mathsf{m^2}`)} "
 					solution={kd(`
 						\\begin{aligned}
-							A &= by \\\\
-							&= ${b}\\, \\mathsf{m}\\times ${yQ}\\, \\mathsf{m} \\\\							
-							&= ${AQ} \\, \\mathsf{m^2}
+							A &= \\left( z_L+z_R \\right)\\cdot y^2/2 \\\\						
+							&= \\left(${zl}+${zr} \\right)\\cdot (${y}\\, \\mathsf{m})^2/2 \\\\\\\\						
+							A &= ${A} \\, \\mathsf{m^2}
 						\\end{aligned}
-					`)} /> -->
-				<!-- <Card
-					answer="Average Flow Velocity: {ki(`${sd(vQ, sdigs, extraDig)}\\, \\mathsf{m/s} `)}"
+					`)} />
+				<Card
+					answer="Average Flow Velocity: {ki(`${sd(v, sdigs, extraDig)}\\, \\mathsf{m/s} `)}"
 					solution={kd(`
 						\\begin{aligned} 
 							v &= Q/A \\\\
-						 	&= \\frac{${QQ}\\, \\mathsf{m^3\\!/s}}{${AQ}\\, \\mathsf{m^2}} \\\\					
-							&= ${vQ} \\, \\mathsf{m/s}
-						\\end{aligned}`)} /> -->
-				<!-- <Card
-					answer="Specific Energy: {ki(`E=${sd(EQ, sdigs, extraDig)}\\, \\mathsf{m} `)}"
+						 	&= \\frac{${Q}\\, \\mathsf{m^3\\!/s}}{${A}\\, \\mathsf{m^2}} \\\\\\\\					
+							v &= ${v} \\, \\mathsf{m/s}
+						\\end{aligned}`)} />
+				<Card
+					answer="Specific Energy: {ki(`E=${sd(E, sdigs, extraDig)}\\, \\mathsf{m} `)}"
 					solution={kd(`
 						\\begin{aligned} 
 							E &= y+\\frac{v^2}{g} \\\\
-						 	&= ${yQ}\\, \\mathsf{m}+\\frac{(${vQ}\\, \\mathsf{m/s})^2}{${g}\\, \\mathsf{m/s^2}} \\\\					
-							&= ${EQ} \\, \\mathsf{m}
-						\\end{aligned}`)} /> -->
-				<!-- <Card
+						 	&= ${y}\\, \\mathsf{m}+\\frac{(${v}\\, \\mathsf{m/s})^2}{${g}\\, \\mathsf{m/s^2}} \\\\\\\\					
+							E &= ${E} \\, \\mathsf{m}
+						\\end{aligned}`)} />
+				<Card
 					answer="Free Surface: {ki(`T = ${sd(T, sdigs, extraDig)}\\, \\mathsf{m}`)}  "
 					solution={kd(`
 						\\begin{aligned}
-							T &= b \\\\
-							&= ${sd(b, sdigs, extraDig)}\\, \\mathsf{m} \\\\							
+							T &= \\left(z_L+z_R\\right)y \\\\
+							 &= \\left(${zl}+${zr}\\right)(${y}\\, \\mathsf{m})\\\\\\\\
+							T &= ${sd(T, wdigs, extraWorkingDig)}\\, \\mathsf{m} \\\\							
 						\\end{aligned}
-				`)} /> -->
-				<!-- <Card
-					answer="Froude Number: {ki(`N_F = ${sd(NFQ, sdigs, extraDig)}`)}  "
+				`)} />
+				<Card
+					answer="Froude Number: {ki(`N_F = ${sd(NF, sdigs, extraDig)}`)}  "
 					solution={kd(`
 						\\begin{aligned}
 							N_F &=  \\frac{v}{\\sqrt{g(A/T)}} \\\\							   
-							&=  \\frac{${vQ}\\, \\mathsf{m/s}}{\\sqrt{(${g}\\, \\mathsf{m/s^2})\\cdot(${sd(AQ, wdigs, extraWorkingDig)}\\, \\mathsf{m^2}/${sd(
-						T, sdigs, extraDig)}\\, \\mathsf{m})}} \\\\
-							&= ${sd(NFQ, wdigs, extraWorkingDig)}
+							&=  \\frac{${v}\\, \\mathsf{m/s}}{\\sqrt{(${g}\\, \\mathsf{m/s^2})\\cdot(${sd(A, wdigs, extraWorkingDig)}\\, \\mathsf{m^2}/${sd(
+						T, sdigs, extraDig)}\\, \\mathsf{m})}} \\\\\\\\
+						N_F	&= ${sd(NF, wdigs, extraWorkingDig)}
 						\\end{aligned}
-				`)} /> -->
+				`)} />
 				<section>
 					<h1>Critical Flow</h1>
 
-					<!-- <Card
-						answer="For the {ki(`Q=${sd(QQ, wdigs, extraWorkingDig)} \\, \\mathsf{m^3\\!/s}`)} above, Critical Depth {ki(
-							`yc=${sd(ycQ, sdigs, extraDig)} \\, \\mathsf{m}`
+					<Card
+						answer="For the {ki(`Q=${sd(Q, sdigs, extraDig)} \\, \\mathsf{m^3\\!/s}`)} above, Critical Depth {ki(
+							`y_c=${sd(yc, sdigs, extraDig)} \\, \\mathsf{m}`
 						)}"
 						solution={kd(`
                             \\begin{aligned}
@@ -185,58 +179,55 @@
 								\\Rightarrow v_c &= \\sqrt{ g(A_c/T_c)} \\\\
 								\\Rightarrow \\left(\\frac{Q}{A_c}\\right)^2 &= g(A_c/T_c) \\\\
 								\\Rightarrow \\frac{Q^2}{g} &= \\frac{A_c^3}{T_c} \\\\
-								&= \\frac{\\left(by_c\\right)^3}{b}	\\\\
-								&= b^2y_c^3 \\\\
-								\\Rightarrow y_c^3 &= \\frac{Q^2}{b^2g} \\\\
-								\\Rightarrow y_c &= \\sqrt[3]{\\frac{Q^2}{b^2g}} \\\\
-								\\Rightarrow y_c &= \\sqrt[3]{\\frac{(${QQ}\\, \\mathsf{m^3\\!/s})^2}{(${sd(
-							b, sdigs, extraDig)}\\, \\mathsf{m} )^2(${g}\\, \\mathsf{m/s^2})}}\\\\
-								&= ${ycQ}\\, \\mathsf{m}
 
+								&= \\frac{\\left(\\left( z_L+z_R \\right)\\cdot y_c^2/2\\right) ^3}{(z_L+z_R)y_c} \\\\
+							 	&= \\frac{\\left( z_L+z_R \\right) ^2}{2^3}\\cdot y^5 \\\\
+								y^5 &= \\frac{8Q^2}{g(z_L+z_R)^2}	\\\\
+								y &= \\left[\\frac{8Q^2}{g(z_L+z_R)^2}\\right]^{0.2}	\\\\
+								&= \\left[\\frac{8(${Q}\\, \\mathsf{m^3\\!/s})^2}{${g}\\, \\mathsf{m/s^2}(${zl}+${zr})^2}\\right]^{0.2}	\\\\\\\\
+								y_c &= ${yc}\\, \\mathsf{m}
                             \\end{aligned}
-                        `)} /> -->
-					<!-- <Card
-						answer="Critical Velocity: {ki(` v_c = ${sd(vcQ, sdigs, extraDig)}  \\,\\mathsf{m/s}`)}  "
+                        `)} />
+					<Card
+						answer="Critical Velocity: {ki(` v_c = ${sd(vc, sdigs, extraDig)}  \\,\\mathsf{m/s}`)}  "
 						solution={kd(`
 							\\begin{aligned}
-								A_c &= by_c \\\\
-								&= ${b}\\, \\mathsf{m}\\times ${ycQ}\\, \\mathsf{m} \\\\
-								&= ${AcQ}\\, \\mathsf{m^2}\\\\\\\\
+								A_c &= \\left( z_L+z_R \\right)\\cdot y_c^2/2 \\\\						
+								&= \\left(${zl}+${zr} \\right)\\cdot (${yc}\\, \\mathsf{m})^2/2 \\\\						
+								A_c &= ${Ac} \\, \\mathsf{m^2} \\\\\\\\
 								v_c &= Q/A_c \\\\
-								&= \\frac{${QQ}\\, \\mathsf{m^3\\!/s}}{${AcQ}\\, \\mathsf{m^2}} \\\\
-								&= ${vcQ} \\,\\mathsf{m/s}
-							\\end{aligned}	`)} /> -->
-					<!-- <Card
-						answer="Minimum Specific Energy: {ki(`E_{min} = ${sd(EminQ, sdigs, extraDig)}\\, \\mathsf{m}`)}"
+								&= \\frac{${Q}\\, \\mathsf{m^3\\!/s}}{${Ac}\\, \\mathsf{m^2}} \\\\\\\\
+								v_c &= ${vc} \\,\\mathsf{m/s}
+							\\end{aligned}	`)} />
+					<Card
+						answer="Minimum Specific Energy: {ki(`E_{min} = ${sd(Emin, sdigs, extraDig)}\\, \\mathsf{m}`)}"
 						solution={kd(`
 							\\begin{aligned}
 								E_{min} &= y_c+\\frac{ v_c^2 }{ 2g } \\\\
-								&= ${ycQ}\\, \\mathsf{m}+\\frac{ (${vcQ}\\, \\mathsf{m/s})^2 }{ 2(${g}\\, \\mathsf{m/s^2}) } \\\\
-								&= ${EminQ} \\,\\mathsf{m}
+								&= ${yc}\\, \\mathsf{m}+\\frac{ (${vc}\\, \\mathsf{m/s})^2 }{ 2(${g}\\, \\mathsf{m/s^2}) } \\\\\\\\
+								E_{min} &= ${Emin} \\,\\mathsf{m}
 							\\end{aligned}
-						`)} /> -->
-					<!-- <Card
-						answer="Slope for Critical Flow: {ki(`S_c = ${sd(ScQ, sdigs, extraDig)}\\%`)}"
+						`)} />
+					<Card
+						answer="Slope for Critical Flow: {ki(`S_c = ${sd(Sc, sdigs, extraDig)}\\%`)}"
 						solution={kd(`
 							\\begin{aligned}
-								A_c &= by_c \\\\
-								&= ${b}\\, \\mathsf{m}\\times ${ycQ}\\, \\mathsf{m} \\\\
-								&= ${AcQ} \\,\\mathsf{m^2} \\\\ \\\\
-
-								W\\!P_c &= b + 2y_c \\\\
-								&= ${b}\\, \\mathsf{m}+2(${ycQ}\\, \\mathsf{m}) \\\\
-								&= ${WPcQ}\\, \\mathsf{m}\\\\\\\\
-
+								A_c &= \\left( z_L+z_R \\right)\\cdot y_c^2/2 \\\\						
+								&= \\left(${zl}+${zr} \\right)\\cdot (${yc}\\, \\mathsf{m})^2/2 \\\\						
+								&= ${Ac} \\, \\mathsf{m^2} \\\\
+								P_c &= \\left( \\sqrt{1+z_L^2} + \\sqrt{1+z_L^2} \\right) \\\\
+								&= \\left( \\sqrt{1+(${zl})^2} + \\sqrt{1+(${zr})^2} \\right) \\\\								
+								&= ${Pc}\\, \\mathsf{m}\\\\
 								R_c &= A_c/P_c \\\\
-								&= \\frac{${AcQ}\\, \\mathsf{m^2}}{${WPcQ}\\, \\mathsf{m}} \\\\
-								&= ${RcQ}\\,\\mathsf{m}\\\\\\\\
+								&= \\frac{${Ac}\\, \\mathsf{m^2}}{${Pc}\\, \\mathsf{m}} \\\\
+								&= ${Rc}\\,\\mathsf{m}\\\\\\\\
 
 								\\Rightarrow S_c &= \\left(\\frac { nv_c }{ R_c^{2/3} }\\right)^2 \\\\
-								&= \\left(\\frac{${n}\\times ${vcQ}\\, \\mathsf{m/s} }{ (${RcQ}\\, \\mathsf{m})^{2/3} }\\right)^2\\\\
-								&= ${ScQ / 100} \\\\
-								&= ${ScQ}\\% 								
+								&= \\left(\\frac{${n}\\times ${vc}\\, \\mathsf{m/s} }{ (${Rc}\\, \\mathsf{m})^{2/3} }\\right)^2\\\\
+								&= ${Sc / 100} \\\\\\\\
+								S_c &= ${Sc}\\% 								
 							\\end{aligned}
-						`)} /> -->
+						`)} />
 				</section>
 			</section>
 		{/if}
