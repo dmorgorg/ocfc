@@ -157,6 +157,8 @@ export const circ = {
 	getP: (thetaR, D) => {
 		return thetaR * D / 2;
 	},
-	
+	getT: (alpha, D) => {
+		return D * Math.sin(utils.rad(alpha));
+	}
 
 };

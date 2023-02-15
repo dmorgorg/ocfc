@@ -34,7 +34,7 @@
 	// variables ending in s are string inputs, bound to numerical input fields
 	let Ds = 1.5,
 		ys = .5,
-		ss = 0.1,
+		ss = 0.2,
 		ns = 0.013,
 		gs = 9.81;
 	// inputs
@@ -48,6 +48,7 @@
 	y = y > D ? D : y;
 	$: r = sd(D/2, sdigs, extraDig);
 	$: alpha = sd(circ.getAlphaDegrees(y, r), wdigs, extraWorkingDig);
+	$: alphaRad = sd(circ.getAlphaRadians(y, r), wdigs, extraWorkingDig);
 	$: theta = sd(circ.getThetaDegrees(y, r), wdigs, extraWorkingDig);
 	$: thetaRad = sd(circ.getThetaRadians(y, r), wdigs, extraWorkingDig);
 	$: A = sd(circ.getArea(thetaRad, D), wdigs, extraWorkingDig);
@@ -56,8 +57,8 @@
 	$: v = sd(fluids.getV(n, R, s), wdigs, extraWorkingDig);
 	$: Q = sd(fluids.getQfromAandV(A, v), wdigs, extraWorkingDig);
 	$: E = sd(fluids.getE(y, v, g), wdigs, extraWorkingDig);
-	// $: T = sd(b, sdigs, extraDig);
-	// $: NF = sd(fluids.getNF(v, A, T, g), wdigs, extraWorkingDig);
+	$: T = sd(circ.getT(alpha, D), wdigs, extraWorkingDig);
+	$: NF = sd(fluids.getNF(v, A, T, g), wdigs, extraWorkingDig);
 	// $: yc = sd(tri.getYc(Q, g, b), wdigs, extraWorkingDig);
 	// $: Pc = sd(tri.getP(b, yc), wdigs, extraWorkingDig);
 	// $: Ac = sd(fluids.getArea(b, yc), wdigs, extraWorkingDig);
@@ -222,6 +223,25 @@
 									E &= ${E}\\,\\mathsf{m}
 								\\end{aligned}
                         `)} />
+						<Card
+							answer="Free Surface: {ki(`T = ${sd(T, sdigs, extraDig)}\\, \\mathsf{m}`)}  "
+							solution={kd(`
+								\\begin{aligned}
+									T &= 2AB \\\\
+									&= D\\sin \\alpha \\\\
+									&= ${D}\\, \\mathsf{m}\\cdot\\sin ${alpha}^\\circ \\\\\\\\
+									T &= ${T}\\, \\mathsf{m}							
+								\\end{aligned}
+                        `)} />
+						<Card
+							answer="Froude Number: {ki(`N_F = ${sd(NF, sdigs, extraDig)}`)}  "
+							solution={kd(`
+                            	\\begin{aligned}
+									N_F &=  \\frac{v}{\\sqrt{g(A/T)}} \\\\							   
+									&=  \\frac{${v}\\, \\mathsf{m/s}}{\\sqrt{(${g}\\, \\mathsf{m/s^2})\\cdot(${A}\\, \\mathsf{m^2}/${T}\\, \\mathsf{m})}} \\\\\\\\
+									N_F &= ${NF}
+								\\end{aligned}
+                        `)} />
 					
 				{/if}
 				<!-- <Card
@@ -304,9 +324,9 @@
 			<section>
 				<h1>Critical Flow</h1>
 
-				<!-- <Card
-					answer="For the {ki(`Q=${sd(Q, sdigs, extraDig)} \\, \\mathsf{m^3\\!/s}`)} above, Critical Depth {ki(
-						`yc=${sd(yc)} \\, \\mathsf{m}`
+				<Card
+					answer="For the {ki(`Q=${sd(Q, wdigs, extraWorkingDig)} \\, \\mathsf{m^3\\!/s}`)} above, Critical Depth {ki(
+						`yc=${sd(y)} \\, \\mathsf{m}`
 					)}"
 					solution={kd(`
                             \\begin{aligned}
@@ -314,17 +334,14 @@
 								\\Rightarrow v_c &= \\sqrt{ g(A_c/T_c)} \\\\
 								\\Rightarrow \\left(\\frac{Q}{A_c}\\right)^2 &= g(A_c/T_c) \\\\
 								\\Rightarrow \\frac{Q^2}{g} &= \\frac{A_c^3}{T_c} \\\\
-								&= \\frac{\\left(by_c\\right)^3}{b}	\\\\
-								&= b^2y_c^3 \\\\
-								\\Rightarrow y_c^3 &= \\frac{Q^2}{b^2g} \\\\
-								\\Rightarrow y_c &= \\sqrt[3]{\\frac{Q^2}{b^2g}} \\\\
-								\\Rightarrow y_c &= \\sqrt[3]{\\frac{(${Q}\\, \\mathsf{m^3\\!/s})^2}{(${sd(
-						b, sdigs, extraDig
-					)}\\, \\mathsf{m} )^2(${g}\\, \\mathsf{m/s^2})}}\\\\
-								&= ${yc}\\, \\mathsf{m}
+								&= \\frac{\\left((\\theta-\\sin \\theta)D^2/8\\right)^3}{D\\sin\\alpha}
+
+
+
+								
 
                             \\end{aligned}
-                        `)} /> -->
+                        `)} />
 				<!-- <Card
 					answer="Critical Velocity: {ki(` v_c = ${sd(vc, sdigs, extraDig)}  \\,\\mathsf{m/s}`)}  "
 					solution={kd(`
