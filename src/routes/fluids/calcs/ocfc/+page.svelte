@@ -5,11 +5,7 @@
   import Trapezoidal from "./components/Trapezoidal.svelte";
   import Circular from "./components/Circular.svelte";
 
-<<<<<<< HEAD
-	let channelType = "circular";
-=======
   let channelType = "circular";
->>>>>>> 08c8687855c8cb3e85ad30a279fcb74dbf5012dc
 </script>
 
 <div class="container">

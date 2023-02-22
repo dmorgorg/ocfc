@@ -139,93 +139,85 @@
         <Card
           answer="Flow Area: {ki(`A = ${sds(A)}\\, \\mathsf{m^2}`)}"
           solution={kd(`
-                            \\begin{aligned}
-                                A &= \\left(b+\\left(\\frac{z_L+z_R}{2}\\right)\\cdot y\\right)\\cdot y \\\\
-                                &= \\left(${b}\\, \\mathsf{m}+\\left(\\frac{${zl}\\, \\mathsf{m}+${zr}\\, \\mathsf{m}}{2}\\right)\\cdot ${y}\\, \\mathsf{m}\\right)\\cdot ${y}\\, \\mathsf{m} \\\\
-                                &= ${A}\\, \\mathsf{m^2}
-                            \\end{aligned}
-                        `)}
+              \\begin{aligned}
+                  A &= \\left(b+\\left(\\frac{z_L+z_R}{2}\\right)\\cdot y\\right)\\cdot y \\\\
+                  &= \\left(${b}\\, \\mathsf{m}+\\left(\\frac{${zl}\\, \\mathsf{m}+${zr}\\, \\mathsf{m}}{2}\\right)\\cdot ${y}\\, \\mathsf{m}\\right)\\cdot ${y}\\, \\mathsf{m} \\\\
+                  &= ${A}\\, \\mathsf{m^2}
+              \\end{aligned}
+          `)}
         />
 
         <Card
           answer="Wetted Perimeter: {ki(`P = ${sds(P)}\\, \\mathsf{m}`)}"
           solution={kd(`
-                            \\begin{aligned}
-                                P &= b+\\left( \\sqrt{1+z_L^2}+\\sqrt{1+z_R^2}\\right)\\cdot y \\\\
-                                P &= ${b}\\, \\mathsf{m}+\\left( \\sqrt{1+\\left(${zl}\\, \\mathsf{m}\\right)^2}+\\sqrt{1+\\left(${zr} \\, \\mathsf{m}\\right)^2}\\right)\\cdot ${y}\\, \\mathsf{m} \\\\                                
-                                &= ${P}\\, \\mathsf{m}
-                            \\end{aligned}
-                        `)}
+            \\begin{aligned}
+                P &= b+\\left( \\sqrt{1+z_L^2}+\\sqrt{1+z_R^2}\\right)\\cdot y \\\\
+                P &= ${b}\\, \\mathsf{m}+\\left( \\sqrt{1+\\left(${zl}\\, \\mathsf{m}\\right)^2}+\\sqrt{1+\\left(${zr} \\, \\mathsf{m}\\right)^2}\\right)\\cdot ${y}\\, \\mathsf{m} \\\\                                
+                &= ${P}\\, \\mathsf{m}
+            \\end{aligned}
+        `)}
         />
         <Card
           answer="Hydraulic Radius: {ki(`R = ${sds(R)}\\, \\mathsf m`)}  "
           solution={kd(`
-                            \\begin{aligned}
-                                R &= A/P \\\\
-                                &= ${A}\\, \\mathsf{m^2} / ${P}\\, \\mathsf{m} \\\\
-                                &= ${R}\\, \\mathsf{m}
-                            \\end{aligned}
-                        `)}
+              \\begin{aligned}
+                  R &= A/P \\\\
+                  &= ${A}\\, \\mathsf{m^2} / ${P}\\, \\mathsf{m} \\\\
+                  &= ${R}\\, \\mathsf{m}
+              \\end{aligned}
+          `)}
         />
         <Card
           answer="Average Flow Velocity: {ki(
             `v = ${sds(v)}\\, \\mathsf{m/s}`
           )}  "
           solution={kd(`
-                            \\begin{aligned}
-                               v &= \\frac 1n R^{2/3} S^{1/2} \\\\
-							   &= \\frac{1}{${n}} \\left(${R}\\right)^{2/3} \\left(${
-            s / 100
-          }\\right)^{1/2} \\\\
-							   &= ${v} \\, \\mathsf{m/s}
-                            \\end{aligned}
-                        `)}
+              \\begin{aligned}
+                  v &= \\frac 1n R^{2/3} S^{1/2} \\\\
+							    &= \\frac{1}{${n}} \\left(${R}\\right)^{2/3} \\left(${s / 100}\\right)^{1/2} \\\\
+							    &= ${v} \\, \\mathsf{m/s}
+              \\end{aligned}
+          `)}
         />
         <Card
           answer="Flow Rate: {ki(`Q = ${sds(Q)}\\, \\mathsf{m^3/s}`)}  "
           solution={kd(`
-                            \\begin{aligned}
-                               Q &= Av \\\\
-							   &= ${A}\\, \\mathsf{m^2}\\times ${v}\\, \\mathsf{m/s} \\\\
-							   &= ${Q} \\, \\mathsf{m^3/s}
-                            \\end{aligned}
-                        `)}
+              \\begin{aligned}
+                  Q &= Av \\\\
+                  &= ${A}\\, \\mathsf{m^2}\\times ${v}\\, \\mathsf{m/s} \\\\
+                  &= ${Q} \\, \\mathsf{m^3/s}
+              \\end{aligned}
+          `)}
         />
         <Card
           answer="Specific Energy: {ki(`E = ${sds(E)}\\, \\mathsf{m}`)}  "
           solution={kd(`
-                            \\begin{aligned}
-                               E &= y+\\frac{v^2}{2g} \\\\
-							   &= ${y}\\, \\mathsf{m}+\\frac{(${v} \\, \\mathsf{m/s)^2} }
-							   		{2(${g}\\, \\mathsf{m/s^2}) } \\\\
-							   &= ${E}\\,\\mathsf{m}
-                            \\end{aligned}
-                        `)}
+              \\begin{aligned}
+                  E &= y+\\frac{v^2}{2g} \\\\
+							    &= ${y}\\, \\mathsf{m}+\\frac{(${v} \\, \\mathsf{m/s)^2} } 2(${g}\\, \\mathsf{m/s^2}) } \\\\
+							    &= ${E}\\,\\mathsf{m}
+              \\end{aligned}
+          `)}
         />
         <Card
           answer="Free Surface: {ki(`T = ${sds(T)}\\, \\mathsf{m}`)}  "
           solution={kd(`
-                            \\begin{aligned}
-                               T &= b + \\left(z_L+z_R\\right)\\cdot y \\\\
-                               T &= ${b}\\, \\mathsf{m} + \\left(${zl}+${zr}\\right)\\cdot ${y} \\, \\mathsf{m} \\\\
-							   &= ${sdw(T)}\\, \\mathsf{m} \\\\
-							   
-                            \\end{aligned}
-                        `)}
+              \\begin{aligned}
+                  T &= b + \\left(z_L+z_R\\right)\\cdot y \\\\
+                  T &= ${b}\\, \\mathsf{m} + \\left(${zl}+${zr}\\right)\\cdot ${y} \\, \\mathsf{m} \\\\
+							    &= ${sdw(T)}\\, \\mathsf{m} \\\\							   
+              \\end{aligned}
+          `)}
         />
         <Card
           answer="Froude Number: {ki(`N_F = ${sds(NF)}`)}  "
           solution={kd(`
-                            \\begin{aligned}
-                               N_F &=  \\frac{v}{\\sqrt{g(A/T)}} \\\\							   
-							   &=  \\frac{${v}\\, \\mathsf{m/s}}{\\sqrt{(${g}\\, \\mathsf{m/s^2})\\cdot(${sdw(
-            A,
-            wdigs,
-            extraWorkingDig
-          )}\\, \\mathsf{m^2}/${sds(T)}\\, \\mathsf{m})}} \\\\
-							   &= ${sdw(NF)}
-                            \\end{aligned}
-                        `)}
+              \\begin{aligned}
+                  N_F &=  \\frac{v}{\\sqrt{g(A/T)}} \\\\							   
+							    &=  \\frac{${v}\\, \\mathsf{m/s}}{\\sqrt{(${g}\\, \\mathsf{m/s^2})\\cdot(${sdw(A )}\\, \\mathsf{m^2}/${sds(T)}\\, \\mathsf{m})}} \\\\
+							    &= ${sdw(NF)}
+              \\end{aligned}
+          `)}
         />
       </section>
       <section>
@@ -236,28 +228,22 @@
             `Q=${Q} \\, \\mathsf{m^3\\!/s}`
           )} above, Critical Depth {ki(`y_c=${sds(yc)} \\, \\mathsf{m}`)}"
           solution="{kd(`
-                            \\begin{aligned}
-                               	N_F &= 1 \\\\
-								\\Rightarrow v_c &= \\sqrt{ g(A_c/T_c)} \\\\
-								\\Rightarrow \\left(\\frac{Q}{A_c}\\right)^2 &= g(A_c/T_c) \\\\
-								\\Rightarrow \\frac{Q^2}{g} &= \\frac{A_c^3}{T_c} \\\\
-								&= \\frac{\\left(\\left(b+\\left(\\frac{z_L+z_R}{2}\\right)\\cdot y_c\\right)\\cdot y_c\\right)^3}{b + \\left(z_L+z_R\\right)\\cdot y} \\\\
-								\\Rightarrow \\frac{\\left(${Q} \\, \\mathsf{m^3\\!/s}\\right)^2}{${g} \\, \\mathsf{m/s^2}}&= \\frac{\\left(\\left(${b}\\, \\mathsf{m}+\\left(\\large\\frac{${sds(
-            +zl + +zr
-          )}}{2}\\right)\\cdot y_c \\, \\mathsf{m}\\right)\\cdot y_c \\, \\mathsf{m}\\right)^3}{${b}\\, \\mathsf{m} + \\left(${sds(
-            +zl + +zr
-          )}\\right)\\cdot y_c\\, \\mathsf{m}} 									
-                            \\end{aligned}`)}
-							<div style='width: 85%; margin-left: 7.5%; '>The expression above cannot be solved directly (analytically) for {ki(
-            `y_c`
-          )}. It may be solved using trial-and-error methods but it is generally more convenient to solve it, without further simplification, using a numerical solver on a scientific calculator or in a spreadsheet app. (This calculator uses an automated type of trial-and-error called a binary search, probably similar to how your scientific calculator does it.)</div>
+              \\begin{aligned}
+                  N_F &= 1 \\\\
+                  \\Rightarrow v_c &= \\sqrt{ g(A_c/T_c)} \\\\
+                  \\Rightarrow \\left(\\frac{Q}{A_c}\\right)^2 &= g(A_c/T_c) \\\\
+                  \\Rightarrow \\frac{Q^2}{g} &= \\frac{A_c^3}{T_c} \\\\
+                  &= \\frac{\\left(\\left(b+\\left(\\frac{z_L+z_R}{2}\\right)\\cdot y_c\\right)\\cdot y_c\\right)^3}{b + \\left(z_L+z_R\\right)\\cdot y} \\\\
+								  \\Rightarrow \\frac{\\left(${Q} \\, \\mathsf{m^3\\!/s}\\right)^2}{${g} \\, \\mathsf{m/s^2}}&= \\frac{\\left(\\left(${b}\\, \\mathsf{m}+\\left(\\large\\frac{${sds(+zl + +zr)}}{2}\\right)\\cdot y_c \\, \\mathsf{m}\\right)\\cdot y_c \\, \\mathsf{m}\\right)^3}{${b}\\, \\mathsf{m} + \\left(${sds(+zl + +zr)}\\right)\\cdot y_c\\, \\mathsf{m}} 									
+              \\end{aligned}`)}
+
+							<div style='width: 85%; margin-left: 7.5%; '>The expression above cannot be solved directly (analytically) for {ki(`y_c`)}. It may be solved using trial-and-error methods but it is generally more convenient to solve it, without further simplification, using a numerical solver on a scientific calculator or in a spreadsheet app. (This calculator uses an automated type of trial-and-error called a binary search, probably similar to how your scientific calculator does it.)</div>
+
 							{kd(`y_c=${yc}\\, \\mathsf{m}`)}
 						"
         />
         <Card
-          answer="Critical Velocity: {ki(
-            ` v_c = ${sds(vc)}  \\,\\mathsf{m/s}`
-          )}  "
+          answer="Critical Velocity: {ki(`v_c = ${sds(vc)}  \\,\\mathsf{m/s}`)} "
           solution={kd(`
 							\\begin{aligned}
 								A_c &= \\left(b+\\left(\\frac{z_L+z_R}{2}\\right)\\cdot y\\right)\\cdot y \\\\
@@ -271,9 +257,7 @@
 							\\end{aligned}	`)}
         />
         <Card
-          answer="Minimum Specific Energy: {ki(
-            `E_{min} = ${sds(Emin)}\\, \\mathsf{m}`
-          )}"
+          answer="Minimum Specific Energy: {ki(`E_{min} = ${sds(Emin)}\\, \\mathsf{m}` )}"
           solution={kd(`
 							\\begin{aligned}
 								E_{min} &= y_c+\\frac{ v_c^2 }{ 2g } \\\\
@@ -286,26 +270,22 @@
           answer="Slope for Critical Flow: {ki(`S_c = ${sds(Sc)}\\%`)}"
           solution={kd(`
 							\\begin{aligned}
-								A_c &= \\left(b+\\left(\\frac{z_L+z_R}{2}\\right)\\cdot y\\right)\\cdot y \\\\
-								&= \\left(${b}\\, \\mathsf{m}+\\left(\\frac{${sds(
-            +zl + +zr,
-            sdigs,
-            extraDig
-          )}}{2}\\right)\\cdot ${yc}\\, \\mathsf{m}\\right)\\cdot ${yc}\\, \\mathsf{m} \\\\
-								&= ${Ac} \\,\\mathsf{m^2} \\\\ \\\\
+                  A_c &= \\left(b+\\left(\\frac{z_L+z_R}{2}\\right)\\cdot y\\right)\\cdot y \\\\
+                  &= \\left(${b}\\, \\mathsf{m}+\\left(\\frac{${sds(+zl + +zr)}}{2}\\right)\\cdot ${yc}\\, \\mathsf{m}\\right)\\cdot ${yc}\\, \\mathsf{m} \\\\
+                  &= ${Ac} \\,\\mathsf{m^2} \\\\ \\\\
 
-								P_c &= b+\\left( \\sqrt{1+z_L^2}+\\sqrt{1+z_R^2}\\right)\\cdot y_c \\\\
-                                &= ${b}\\, \\mathsf{m}+\\left( \\sqrt{1+\\left(${zl}\\, \\mathsf{m}\\right)^2}+\\sqrt{1+\\left(${zr} \\, \\mathsf{m}\\right)^2}\\right)\\cdot ${y}\\, \\mathsf{m} \\\\ 
-								&= ${Pc}\\, \\mathsf{m}\\\\\\\\
+                  P_c &= b+\\left( \\sqrt{1+z_L^2}+\\sqrt{1+z_R^2}\\right)\\cdot y_c \\\\
+                  &= ${b}\\, \\mathsf{m}+\\left( \\sqrt{1+\\left(${zl}\\, \\mathsf{m}\\right)^2}+\\sqrt{1+\\left(${zr} \\, \\mathsf{m}\\right)^2}\\right)\\cdot ${y}\\, \\mathsf{m} \\\\ 
+                  &= ${Pc}\\, \\mathsf{m}\\\\\\\\
 
-								R_c &= A_c/P_c \\\\
-								&= \\frac{${Ac}\\, \\mathsf{m^2}}{${Pc}\\, \\mathsf{m}} \\\\
-								&= ${Rc}\\,\\mathsf{m}\\\\\\\\
+                  R_c &= A_c/P_c \\\\
+                  &= \\frac{${Ac}\\, \\mathsf{m^2}}{${Pc}\\, \\mathsf{m}} \\\\
+                  &= ${Rc}\\,\\mathsf{m}\\\\\\\\
 
-								\\Rightarrow S_c &= \\left(\\frac { nv_c }{ R_c^{2/3} }\\right)^2 \\\\
-								&= \\left(\\frac{${n}\\times ${vc}\\, \\mathsf{m/s} }{ (${Rc}\\, \\mathsf{m})^{2/3} }\\right)^2\\\\
-								&= ${Sc / 100} \\\\
-								&= ${Sc}\\% 								
+                  \\Rightarrow S_c &= \\left(\\frac { nv_c }{ R_c^{2/3} }\\right)^2 \\\\
+                  &= \\left(\\frac{${n}\\times ${vc}\\, \\mathsf{m/s} }{ (${Rc}\\, \\mathsf{m})^{2/3} }\\right)^2\\\\
+                  &= ${Sc / 100} \\\\
+                  &= ${Sc}\\% 								
 							\\end{aligned}
 						`)}
         />

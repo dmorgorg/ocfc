@@ -10,7 +10,7 @@
 			<NavButton bind:channelType name="rectangular">rectangular</NavButton>
 			<NavButton bind:channelType name="triangular">triangular</NavButton>
 			<NavButton bind:channelType name="trapezoidal">trapezoidal</NavButton>
-			<NavButton bind:channelType name="circular"><s>circular</s></NavButton>
+			<NavButton bind:channelType name="circular">circular</NavButton>
 		</div>
 		
 	</nav>
