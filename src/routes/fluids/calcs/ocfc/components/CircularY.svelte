@@ -59,6 +59,7 @@
 	$: E = sd(fluids.getE(y, v, g), wdigs, extraWorkingDig);
 	$: T = sd(circ.getT(alpha, D), wdigs, extraWorkingDig);
 	$: NF = sd(fluids.getNF(v, A, T, g), wdigs, extraWorkingDig);
+	$: thetaCcoefficient = sd(512*Q*Q/D**5/g, wdigs, extraWorkingDig);
 	// $: yc = sd(tri.getYc(Q, g, b), wdigs, extraWorkingDig);
 	// $: Pc = sd(tri.getP(b, yc), wdigs, extraWorkingDig);
 	// $: Ac = sd(fluids.getArea(b, yc), wdigs, extraWorkingDig);
@@ -68,7 +69,7 @@
 	// $: Sc = sd(fluids.getCriticalSlope(n, vc, Rc), wdigs, extraWorkingDig);
 </script>
 
-
+{thetaCcoefficient}
 
 <article>
 	<section class="fig">
@@ -228,7 +229,7 @@
 							solution={kd(`
 								\\begin{aligned}
 									T &= 2AB \\\\
-									&= D\\sin \\alpha \\\\
+									&= D\\sin \\alpha \\quad(=D\\sin \\left(\\theta/2)\\right)\\\\
 									&= ${D}\\, \\mathsf{m}\\cdot\\sin ${alpha}^\\circ \\\\\\\\
 									T &= ${T}\\, \\mathsf{m}							
 								\\end{aligned}
@@ -244,104 +245,33 @@
                         `)} />
 					
 				{/if}
-				<!-- <Card
-					answer="Flow Area: {ki(`A = ${sd(A, sdigs, extraDig)}\\, \\mathsf{m^2}`)}"
-					solution={kd(`
-                            \\begin{aligned}
-                                A &= by \\\\
-                                &= ${b}\\, \\mathsf{m} \\times ${y}\\, \\mathsf{m} \\\\
-                                &= ${A}\\, \\mathsf{m^2}
-                            \\end{aligned}
-                        `)} /> -->
-
-				<!-- <Card
-					answer="Wetted Perimeter: {ki(`P = ${sd(P, sdigs, extraDig)}\\, \\mathsf{m}`)}"
-					solution={kd(`
-                            \\begin{aligned}
-                                P &= b+2y \\\\
-                                &= ${b}\\, \\mathsf{m} + 2\\times ${y}\\, \\mathsf{m} \\\\
-                                &= ${P}\\, \\mathsf{m}
-                            \\end{aligned}
-                        `)} /> -->
-				<!-- <Card
-					answer="Hydraulic Radius: {ki(`R = ${sd(R, sdigs, extraDig)}\\, \\mathsf m`)}  "
-					solution={kd(`
-                            \\begin{aligned}
-                                R &= A/P \\\\
-                                &= ${A}\\, \\mathsf{m^2} / ${P}\\, \\mathsf{m} \\\\
-                                &= ${R} \\mathsf{m}
-                            \\end{aligned}
-                        `)} /> -->
-				<!-- <Card
-					answer="Average Flow Velocity: {ki(`v = ${sd(v, sdigs, extraDig)}\\, \\mathsf{m/s}`)}  "
-					solution={kd(`
-                            \\begin{aligned}
-                               v &= \\frac 1n R^{2/3} S^{1/2} \\\\
-							   &= \\frac{1}{${n}} \\left(${R}\\right)^{2/3} \\left(${s/100}\\right)^{1/2} \\\\
-							   &= ${v} \\, \\mathsf{m/s}
-                            \\end{aligned}
-                        `)} /> -->
-				<!-- <Card
-					answer="Flow Rate: {ki(`Q = ${sd(Q, sdigs, extraDig)}\\, \\mathsf{m^3/s}`)}  "
-					solution={kd(`
-                            \\begin{aligned}
-                               Q &= Av \\\\
-							   &= ${A}\\, \\mathsf{m^2}\\times ${v}\\, \\mathsf{m/s} \\\\
-							   &= ${Q} \\, \\mathsf{m^3/s}
-                            \\end{aligned}
-                        `)} /> -->
-				<!-- <Card
-					answer="Specific Energy: {ki(`E = ${sd(E, sdigs, extraDig)}\\, \\mathsf{m}`)}  "
-					solution={kd(`
-                            \\begin{aligned}
-                               E &= y+\\frac{v^2}{2g} \\\\
-							   &= ${y}\\, \\mathsf{m}+\\frac{(${v} \\, \\mathsf{m/s)^2} }
-							   		{2(${g}\\, \\mathsf{m/s^2}) } \\\\
-							   &= ${E}\\,\\mathsf{m}
-                            \\end{aligned}
-                        `)} /> -->
-				<!-- <Card
-					answer="Free Surface: {ki(`T = ${sd(T, sdigs, extraDig)}\\, \\mathsf{m}`)}  "
-					solution={kd(`
-                            \\begin{aligned}
-                               T &= b \\\\
-							   &= ${sd(b, sdigs, extraDig)}\\, \\mathsf{m} \\\\
-							   
-                            \\end{aligned}
-                        `)} /> -->
-				<!-- <Card
-					answer="Froude Number: {ki(`N_F = ${sd(NF, sdigs, extraDig)}`)}  "
-					solution={kd(`
-                            \\begin{aligned}
-                               N_F &=  \\frac{v}{\\sqrt{g(A/T)}} \\\\							   
-							   &=  \\frac{${v}\\, \\mathsf{m/s}}{\\sqrt{(${g}\\, \\mathsf{m/s^2})\\cdot(${sd(A, wdigs, extraWorkingDig)}\\, \\mathsf{m^2}/${sd(
-						T
-					)}\\, \\mathsf{m})}} \\\\
-							   &= ${sd(NF, wdigs, extraWorkingDig)}
-                            \\end{aligned}
-                        `)} /> -->
+				
 			</section>
 			<section>
 				<h1>Critical Flow</h1>
+				{#if y < D/2}
 
 				<Card
 					answer="For the {ki(`Q=${sd(Q, wdigs, extraWorkingDig)} \\, \\mathsf{m^3\\!/s}`)} above, Critical Depth {ki(
 						`yc=${sd(y)} \\, \\mathsf{m}`
 					)}"
-					solution={kd(`
+					solution="{kd(`
                             \\begin{aligned}
                                	N_F &= 1 \\\\
 								\\Rightarrow v_c &= \\sqrt{ g(A_c/T_c)} \\\\
 								\\Rightarrow \\left(\\frac{Q}{A_c}\\right)^2 &= g(A_c/T_c) \\\\
 								\\Rightarrow \\frac{Q^2}{g} &= \\frac{A_c^3}{T_c} \\\\
-								&= \\frac{\\left((\\theta-\\sin \\theta)D^2/8\\right)^3}{D\\sin\\alpha}
+								&= \\frac{\\left((\\theta_c-\\sin \\theta_c)D^2/8\\right)^3}{D\\sin(\\theta_c/2)} \\\\
+								&= \\frac{(\\theta_c-\\sin \\theta_c)^3\\cdot D^5}{512\\sin(\\theta_c/2)} \\\\
 
-
-
-								
-
+								\\frac{(\\theta_c-\\sin \\theta_c)^3}{\\sin(\\theta_c/2)} &= \\frac{512Q^2}{D^5g} \\\\
+								&= \\frac{512(${Q}\\, \\mathsf{m^3\\!/s})^2}{(${D}\\, \\mathsf{m})^5(${g}\\, \\mathsf{m/s^2})} \\\\\\\\
+								\\frac{(\\theta_c-\\sin \\theta_c)^3}{\\sin(\\theta_c/2)}&= ${thetaCcoefficient}
                             \\end{aligned}
-                        `)} />
+                        `)} 
+						<div style='width: 85%; margin-left: 7.5%; '>This equatioin in {ki(`\\theta_c`)} can not be solved analytically. It must be solved for {ki(`\\theta_c`)} numerically (iteratively), using either trial and error, a solver in a calculator (in radian mode!) or by using a function in a spreadsheet. </div>
+						" />
+					{/if}
 				<!-- <Card
 					answer="Critical Velocity: {ki(` v_c = ${sd(vc, sdigs, extraDig)}  \\,\\mathsf{m/s}`)}  "
 					solution={kd(`
