@@ -198,16 +198,16 @@
 								&= ${b}\\, \\mathsf{m}\\times ${ycQ}\\, \\mathsf{m} \\\\
 								&= ${AcQ}\\, \\mathsf{m^2}\\\\\\\\
 								v_c &= Q/A_c \\\\
-								&= \\frac{${QQ}\\, \\mathsf{m^3\\!/s}}{${AcQ}\\, \\mathsf{m^2}} \\\\
-								&= ${vcQ} \\,\\mathsf{m/s}
+								&= \\frac{${QQ}\\, \\mathsf{m^3\\!/s}}{${AcQ}\\, \\mathsf{m^2}} \\\\ \\\\
+								v_c &= ${vcQ} \\,\\mathsf{m/s}
 							\\end{aligned}	`)} />
 					<Card
 						answer="Minimum Specific Energy: {ki(`E_{min} = ${sd(EminQ, sdigs, extraDig)}\\, \\mathsf{m}`)}"
 						solution={kd(`
 							\\begin{aligned}
 								E_{min} &= y_c+\\frac{ v_c^2 }{ 2g } \\\\
-								&= ${ycQ}\\, \\mathsf{m}+\\frac{ (${vcQ}\\, \\mathsf{m/s})^2 }{ 2(${g}\\, \\mathsf{m/s^2}) } \\\\
-								&= ${EminQ} \\,\\mathsf{m}
+								&= ${ycQ}\\, \\mathsf{m}+\\frac{ (${vcQ}\\, \\mathsf{m/s})^2 }{ 2(${g}\\, \\mathsf{m/s^2}) } \\\\ \\\\
+								E &= ${EminQ} \\,\\mathsf{m}
 							\\end{aligned}
 						`)} />
 					<Card
@@ -220,7 +220,7 @@
 
 								P_c &= b + 2y_c \\\\
 								&= ${b}\\, \\mathsf{m}+2(${ycQ}\\, \\mathsf{m}) \\\\
-								&= ${PcQ}\\, \\mathsf{m}\\\\\\\\
+								&= ${PcQ}\\, \\mathsf{m} \\\\ \\\\
 
 								R_c &= A_c/P_c \\\\
 								&= \\frac{${AcQ}\\, \\mathsf{m^2}}{${PcQ}\\, \\mathsf{m}} \\\\
