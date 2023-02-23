@@ -124,14 +124,12 @@ export const tri = {
 };
 export const circ = {
   getAlphaRadians: (y, r) => {
-    y = y > 2 * r ? 2 * r : y;
     return Math.acos(Math.abs(r - y) / r);
   },
   getAlphaDegrees: (y, r) => {
     return utils.deg(circ.getAlphaRadians(y, r));
   },
   getThetaRadians: (y, r) => {
-    y = y > 2 * r ? 2 * r : y;
     if (y <= r) {
       return 2 * circ.getAlphaRadians(y, r);
     }
