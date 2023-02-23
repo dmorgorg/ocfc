@@ -5,7 +5,7 @@
 	import TriangularQ from "./TriangularQ.svelte";
 
 	let typeOfChannel = "triangular";
-	let specifyView = "triangularQ";
+	let specifyView = "triangularY";
 </script>
 
 <article>

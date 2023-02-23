@@ -9,7 +9,15 @@
 		extraDig = true,
 		extraWorkingDig = true;
 
-	let sd = utils.sd;
+	
+	const sdw = (num) => {
+		return utils.sd(num, wdigs, extraWorkingDig);
+	};
+
+	const sds = (num) => {
+		return utils.sd(num, sdigs, extraDig);
+	};
+	
 
 	// variables ending in s are string inputs, bound to numerical input fields
 	let ys = 1.4,
@@ -19,28 +27,28 @@
 		ns = 0.013,
 		gs = 9.81;
 	// inputs
-	$: y = sd(ys, sdigs, extraDig);
-	$: zl = sd(zls, sdigs, extraDig);
-	$: zr = sd(zrs, sdigs, extraDig);
-	$: n = Number(sd(ns, sdigs, extraDig));
-	$: s = Number(sd(ss, sdigs, extraDig));
-	$: g = Number(sd(gs, sdigs, extraDig));
+	$: y = sdw(ys, sdigs, extraDig);
+	$: zl = sdw(zls, sdigs, extraDig);
+	$: zr = sdw(zrs, sdigs, extraDig);
+	$: n = Number(sdw(ns, sdigs, extraDig));
+	$: s = Number(sdw(ss, sdigs, extraDig));
+	$: g = Number(sdw(gs, sdigs, extraDig));
 	// calculations for y specified
-	$: A = sd(tri.getArea(y, zl, zr), wdigs, extraWorkingDig);
-	$: P = sd(tri.getP(y, zl, zr), wdigs, extraWorkingDig);
-	$: R = sd(fluids.getR(A, P), wdigs, extraWorkingDig);
-	$: v = sd(fluids.getV(n, R, s), wdigs, extraWorkingDig);
-	$: Q = sd(fluids.getQfromAandV(A, v), wdigs, extraWorkingDig);
-	$: E = sd(fluids.getE(y, v, g), wdigs, extraWorkingDig);
-	$: T = sd(tri.getT(y, zl, zr), wdigs, extraWorkingDig);
-	$: NF = sd(fluids.getNF(v, A, T, g), wdigs, extraWorkingDig);
-	$: yc = sd(tri.getYc(Q, zl, zr, g), wdigs, extraWorkingDig);
-	$: Ac = sd(tri.getArea(yc, zl, zr), wdigs, extraWorkingDig);
-	$: vc = sd(fluids.getVfromQandA(Q, Ac), wdigs, extraWorkingDig);
-	$: Emin = sd(fluids.getE(yc, vc, g), wdigs, extraWorkingDig);
-	$: Pc = sd(tri.getP(yc, zl, zr), wdigs, extraWorkingDig);
-	$: Rc = sd(fluids.getR(Ac, Pc), wdigs, extraWorkingDig);
-	$: Sc = sd(fluids.getCriticalSlope(n, vc, Rc), wdigs, extraWorkingDig);
+	$: A = sdw(tri.getArea(y, zl, zr), wdigs, extraWorkingDig);
+	$: P = sdw(tri.getP(y, zl, zr), wdigs, extraWorkingDig);
+	$: R = sdw(fluids.getR(A, P), wdigs, extraWorkingDig);
+	$: v = sdw(fluids.getV(n, R, s), wdigs, extraWorkingDig);
+	$: Q = sdw(fluids.getQfromAandV(A, v), wdigs, extraWorkingDig);
+	$: E = sdw(fluids.getE(y, v, g), wdigs, extraWorkingDig);
+	$: T = sdw(tri.getT(y, zl, zr), wdigs, extraWorkingDig);
+	$: NF = sdw(fluids.getNF(v, A, T, g), wdigs, extraWorkingDig);
+	$: yc = sdw(tri.getYc(Q, zl, zr, g), wdigs, extraWorkingDig);
+	$: Ac = sdw(tri.getArea(yc, zl, zr), wdigs, extraWorkingDig);
+	$: vc = sdw(fluids.getVfromQandA(Q, Ac), wdigs, extraWorkingDig);
+	$: Emin = sdw(fluids.getE(yc, vc, g), wdigs, extraWorkingDig);
+	$: Pc = sdw(tri.getP(yc, zl, zr), wdigs, extraWorkingDig);
+	$: Rc = sdw(fluids.getR(Ac, Pc), wdigs, extraWorkingDig);
+	$: Sc = sdw(fluids.getCriticalSlope(n, vc, Rc), wdigs, extraWorkingDig);
 </script>
 
 <article>
@@ -95,47 +103,47 @@
 			<section class="normal">
 				<h1>Normal (Uniform) Flow</h1>
 				<Card
-					answer="Flow Area: {ki(`A = ${sd(A, sdigs, extraDig)}\\, \\mathsf{m^2}`)}"
+					answer="Flow Area: {ki(`A = ${sds(A, sdigs, extraDig)}\\, \\mathsf{m^2}`)}"
 					solution={kd(`
-                            \\begin{aligned}
-                                A &= \\frac{\\left(z_L\\cdot y\\right) y}{2} + \\frac{\\left(z_R y\\right)\\cdot y}{2} \\\\
-                                &= \\frac{\\left(z_L+z_R\\right)y^2}{2} \\\\
-                                &= \\frac{\\left(${zl}+${zr}\\right)\\left(${y}\\, \\mathsf{m}\\right)^2}{2} \\\\\\\\
-                                A &= ${A}\\, \\mathsf{m^2}
-                            \\end{aligned}
-                        `)} />
+						\\begin{aligned}
+							A &= \\frac{\\left(z_L\\cdot y\\right) y}{2} + \\frac{\\left(z_R y\\right)\\cdot y}{2} \\\\
+							&= \\frac{\\left(z_L+z_R\\right)y^2}{2} \\\\
+							&= \\frac{\\left(${zl}+${zr}\\right)\\left(${y}\\, \\mathsf{m}\\right)^2}{2} \\\\\\\\
+							A &= ${A}\\, \\mathsf{m^2}
+						\\end{aligned}
+					`)} />
 
 				<Card
-					answer="Wetted Perimeter: {ki(`P = ${sd(P, sdigs, extraDig)}\\, \\mathsf{m}`)}"
+					answer="Wetted Perimeter: {ki(`P = ${sds(P, sdigs, extraDig)}\\, \\mathsf{m}`)}"
 					solution={kd(`
-                            \\begin{aligned}
-                                P &= \\sqrt{y^2+(z_L\\!\\cdot\\!y)^2} + \\sqrt{y^2+(z_R\\!\\cdot\\!y)^2} \\\\
-                                 &= \\left(\\sqrt{(1+z_L^2)} + \\sqrt{(1+z_R^2)}\\right)\\cdot y \\\\
-                                 &= \\left(\\sqrt{1+(${zl})^2} + \\sqrt{1+(${zr})^2}\\right)\\cdot ${y}\\, \\mathsf{m} \\\\\\\\
-                                
-                                P &= ${P}\\, \\mathsf{m}
-                            \\end{aligned}
-                        `)} />
+						\\begin{aligned}
+							P &= \\sqrt{y^2+(z_L\\!\\cdot\\!y)^2} + \\sqrt{y^2+(z_R\\!\\cdot\\!y)^2} \\\\
+								&= \\left(\\sqrt{(1+z_L^2)} + \\sqrt{(1+z_R^2)}\\right)\\cdot y \\\\
+								&= \\left(\\sqrt{1+(${zl})^2} + \\sqrt{1+(${zr})^2}\\right)\\cdot ${y}\\, \\mathsf{m} \\\\\\\\
+							
+							P &= ${P}\\, \\mathsf{m}
+						\\end{aligned}
+					`)} />
 				<Card
-					answer="Hydraulic Radius: {ki(`R = ${sd(R, sdigs, extraDig)}\\, \\mathsf m`)}  "
+					answer="Hydraulic Radius: {ki(`R = ${sds(R, sdigs, extraDig)}\\, \\mathsf m`)}  "
 					solution={kd(`
-                            \\begin{aligned}
-                                R &= A/P \\\\
-                                &= \\frac{${A}\\, \\mathsf{m^2}}{ ${P}\\, \\mathsf{m}} \\\\\\\\
-                                R&= ${R} \\mathsf{m}
-                            \\end{aligned}
-                        `)} />
+						\\begin{aligned}
+							R &= A/P \\\\
+							&= \\frac{${A}\\, \\mathsf{m^2}}{ ${P}\\, \\mathsf{m}} \\\\\\\\
+							R&= ${R} \\mathsf{m}
+						\\end{aligned}
+					`)} />
 				<Card
-					answer="Average Flow Velocity: {ki(`v = ${sd(v, sdigs, extraDig)}\\, \\mathsf{m/s}`)}  "
+					answer="Average Flow Velocity: {ki(`v = ${sds(v, sdigs, extraDig)}\\, \\mathsf{m/s}`)}  "
 					solution={kd(`
-                            \\begin{aligned}
-                               v &= \\frac 1n R^{2/3} S^{1/2} \\\\
-							   &= \\frac{1}{${n}} \\left(${R}\\right)^{2/3} \\left(${s / 100}\\right)^{1/2} \\\\\\\\
-							   v &= ${v} \\, \\mathsf{m/s}
-                            \\end{aligned}
-                        `)} />
+						\\begin{aligned}
+							v &= \\frac 1n R^{2/3} S^{1/2} \\\\
+							&= \\frac{1}{${n}} \\left(${R}\\right)^{2/3} \\left(${s / 100}\\right)^{1/2} \\\\\\\\
+							v &= ${v} \\, \\mathsf{m/s}
+						\\end{aligned}
+					`)} />
 				<Card
-					answer="Flow Rate: {ki(`Q = ${sd(Q, sdigs, extraDig)}\\, \\mathsf{m^3/s}`)}  "
+					answer="Flow Rate: {ki(`Q = ${sds(Q, sdigs, extraDig)}\\, \\mathsf{m^3/s}`)}  "
 					solution={kd(`
                             \\begin{aligned}
                                Q &= Av \\\\
@@ -144,7 +152,7 @@
                             \\end{aligned}
                         `)} />
 				<Card
-					answer="Specific Energy: {ki(`E = ${sd(E, sdigs, extraDig)}\\, \\mathsf{m}`)}  "
+					answer="Specific Energy: {ki(`E = ${sds(E, sdigs, extraDig)}\\, \\mathsf{m}`)}  "
 					solution={kd(`
                             \\begin{aligned}
                                E &= y+\\frac{v^2}{2g} \\\\
@@ -154,7 +162,7 @@
                             \\end{aligned}
                         `)} />
 				<Card
-					answer="Free Surface: {ki(`T = ${sd(T, sdigs, extraDig)}\\, \\mathsf{m}`)}  "
+					answer="Free Surface: {ki(`T = ${sds(T, sdigs, extraDig)}\\, \\mathsf{m}`)}  "
 					solution={kd(`
                             \\begin{aligned}
                                	T &= z_L\\!\\cdot\\!y + z_R\\!\\cdot\\!y \\\\
@@ -166,16 +174,16 @@
                             \\end{aligned}
                         `)} />
 				<Card
-					answer="Froude Number: {ki(`N_F = ${sd(NF, sdigs, extraDig)}`)}  "
+					answer="Froude Number: {ki(`N_F = ${sds(NF, sdigs, extraDig)}`)}  "
 					solution={kd(`
                             \\begin{aligned}
                                N_F &=  \\frac{v}{\\sqrt{g(A/T)}} \\\\							   
-							   &=  \\frac{${v}\\, \\mathsf{m/s}}{\\sqrt{(${g}\\, \\mathsf{m/s^2})\\cdot(${sd(
+							   &=  \\frac{${v}\\, \\mathsf{m/s}}{\\sqrt{(${g}\\, \\mathsf{m/s^2})\\cdot(${sdw(
 						A,
 						wdigs,
 						extraWorkingDig
-					)}\\, \\mathsf{m^2}/${sd(T)}\\, \\mathsf{m})}} \\\\\\\\
-							   N_F &= ${sd(NF, wdigs, extraWorkingDig)}
+					)}\\, \\mathsf{m^2}/${sds(T)}\\, \\mathsf{m})}} \\\\\\\\
+							   N_F &= ${sdw(NF, wdigs, extraWorkingDig)}
                             \\end{aligned}
                         `)} />
 			</section>
@@ -183,13 +191,13 @@
 				<h1>Critical Flow</h1>
 
 				<Card
-					answer="For the {ki(`Q=${sd(Q, wdigs, extraWorkingDig)} \\, \\mathsf{m^3\\!/s}`)} above, Critical Depth {ki(
-						`y_c=${sd(yc)} \\, \\mathsf{m}`
+					answer="For the {ki(`Q=${sdw(Q, wdigs, extraWorkingDig)} \\, \\mathsf{m^3\\!/s}`)} above, Critical Depth {ki(
+						`y_c=${sds(yc)} \\, \\mathsf{m}`
 					)}"
 					solution={kd(`
                             \\begin{aligned}
 								A &=  \\frac{(z_L+z_R)y^2}{2} \\\\
-								T &= (z_L+z_R)y \\\\\\\\
+		s						T &= (z_L+z_R)y \\\\\\\\
 
 								N_F &= 1 \\\\
 								\\Rightarrow v_c &= \\sqrt{ g(A_c/T_c)} \\\\
@@ -206,7 +214,7 @@
                         `)}
 						/>
 				<Card
-					answer="Critical Velocity: {ki(` v_c = ${sd(vc, sdigs, extraDig)}  \\,\\mathsf{m/s}`)}  "
+					answer="Critical Velocity: {ki(` v_c = ${sds(vc, sdigs, extraDig)}  \\,\\mathsf{m/s}`)}  "
 					solution={kd(`
 							\\begin{aligned}
 								A_c &= \\frac{\\left(z_L+z_R\\right)y_c^2}{2} \\\\
@@ -220,7 +228,7 @@
 								
 							\\end{aligned}	`)} />
 				<Card
-					answer="Minimum Specific Energy: {ki(`E_{min} = ${sd(Emin, sdigs, extraDig)}\\, \\mathsf{m}`)}"
+					answer="Minimum Specific Energy: {ki(`E_{min} = ${sds(Emin, sdigs, extraDig)}\\, \\mathsf{m}`)}"
 					solution={kd(`
 							\\begin{aligned}
 								E_{min} &= y_c+\\frac{ v_c^2 }{ 2g } \\\\
@@ -229,7 +237,7 @@
 							\\end{aligned}
 						`)} />
 				<Card
-					answer="Slope for Critical Flow: {ki(`S_c = ${sd(Sc, sdigs, extraDig)}\\%`)}"
+					answer="Slope for Critical Flow: {ki(`S_c = ${sds(Sc, sdigs, extraDig)}\\%`)}"
 					solution={kd(`
 							\\begin{aligned}
 								A_c &= \\frac{\\left(z_L+z_R\\right)y_c^2}{2} \\\\

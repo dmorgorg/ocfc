@@ -10,13 +10,13 @@
 		extraWorkingDig = false;
 
 	$: getYfromQ = (Q, zl, zr, s, n) => {
-		let num = Q*n*2**(5/3)*((1+zl*zl)**0.5+(1+zr*zr)**0.5)**(2/3);
-		let den = (s/100)**0.5*(Number(zl) + Number(zr))**(5/3);
-		return (num/den)**(3/8);
+		let num = Q * n * 2 ** (5 / 3) * ((1 + zl * zl) ** 0.5 + (1 + zr * zr) ** 0.5) ** (2 / 3);
+		let den = (s / 100) ** 0.5 * (Number(zl) + Number(zr)) ** (5 / 3);
+		return (num / den) ** (3 / 8);
 	};
 	$: getYCfromQ = (Q, zl, zr, g) => {
-		return (8*Q*Q/g/(Number(zl)+Number(zr))**2)**0.2;
-	}
+		return ((8 * Q * Q) / g / (Number(zl) + Number(zr)) ** 2) ** 0.2;
+	};
 
 	const sdw = (num) => {
 		return utils.sd(num, wdigs, extraWorkingDig);
@@ -27,7 +27,7 @@
 	};
 
 	// variables ending in s are string inputs, bound to numerical input fields
-			let Qs = 3.25,
+	let Qs = 3.25,
 		zls = 1,
 		zrs = 1,
 		ss = 0.1,
@@ -51,8 +51,8 @@
 	$: Ac = sdw(tri.getArea(yc, zl, zr));
 	$: vc = sdw(fluids.getVfromQandA(Q, Ac));
 	$: Emin = sdw(fluids.getE(yc, vc, g));
-	$: Pc = sdw(tri.getP(yc, zl, zr));	
-	$: Rc = sdw(fluids.getR(Ac, Pc));	
+	$: Pc = sdw(tri.getP(yc, zl, zr));
+	$: Rc = sdw(fluids.getR(Ac, Pc));
 	$: Sc = sdw(fluids.getCriticalSlope(n, vc, Rc));
 </script>
 
@@ -69,7 +69,7 @@
 			<label class="zr">
 				{@html ki(`\\large z_R=`)}
 				<input type="number" step="any" bind:value={zrs} />
-			</label>			
+			</label>
 
 			<label class="Q">
 				{@html ki(`\\large Q=`)}
@@ -117,7 +117,9 @@
 							&= \\frac{S^{1/2}}{n} \\cdot \\frac{\\left(z_L+z_R \\right)^{5/3}\\cdot y^{10/3}}{2^{5/3}\\left(\\sqrt { 1+z_L^2 } + \\sqrt { 1+z_R^2 }\\right)^{2/3}\\cdot y^{2/3}} \\\\
 							\\Rightarrow y^{8/3} &= \\frac{Qn}{S^{1/2}} \\cdot \\frac{2^{5/3}\\left(\\sqrt { 1+z_L^2 } + \\sqrt { 1+z_R^2 }\\right)^{2/3}}{\\left(z_L+z_R \\right)^{5/3}} \\\\
 							\\Rightarrow y &= \\left[\\frac{Qn}{S^{1/2}} \\cdot \\frac{2^{5/3}\\left(\\sqrt { 1+z_L^2 } + \\sqrt { 1+z_R^2 }\\right)^{2/3}}{\\left(z_L+z_R \\right)^{5/3}}\\right]^{3/8} \\\\
-							\\Rightarrow y &= \\left[\\frac{${Q}\\times${n}}{${s/100}^{1/2}} \\cdot \\frac{2^{5/3}\\left(\\sqrt { 1+(${zl})^2 } + \\sqrt { 1+(${zr})^2 }\\right)^{2/3}}{\\left(${zl}+${zr} \\right)^{5/3}}\\right]^{3/8} \\\\
+							\\Rightarrow y &= \\left[\\frac{${Q}\\times${n}}{${
+						s / 100
+					}^{1/2}} \\cdot \\frac{2^{5/3}\\left(\\sqrt { 1+(${zl})^2 } + \\sqrt { 1+(${zr})^2 }\\right)^{2/3}}{\\left(${zl}+${zr} \\right)^{5/3}}\\right]^{3/8} \\\\
 							
 
 						\\end{aligned}`)}
@@ -163,7 +165,9 @@
 					solution={kd(`
 						\\begin{aligned}
 							N_F &=  \\frac{v}{\\sqrt{g(A/T)}} \\\\							   
-							&=  \\frac{${v}\\, \\mathsf{m/s}}{\\sqrt{(${g}\\, \\mathsf{m/s^2})\\cdot(${sdw(A)}\\, \\mathsf{m^2}/${sds(T)}\\, \\mathsf{m})}} \\\\\\\\
+							&=  \\frac{${v}\\, \\mathsf{m/s}}{\\sqrt{(${g}\\, \\mathsf{m/s^2})\\cdot(${sdw(A)}\\, \\mathsf{m^2}/${sds(
+						T
+					)}\\, \\mathsf{m})}} \\\\\\\\
 						N_F	&= ${sdw(NF)}
 						\\end{aligned}
 				`)} />

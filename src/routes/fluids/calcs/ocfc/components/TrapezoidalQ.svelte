@@ -53,7 +53,7 @@
 
 	let sd = utils.sd;
 	const sdw = (num) => {
-		return utils.sd(num, wdigs, exraWorkingDig);
+		return utils.sd(num, wdigs, extraWorkingDig);
 	};
 
 	const sds = (num) => {
@@ -82,7 +82,7 @@
 	$: v = sdw(fluids.getVfromQandA(QQ, A));
 	$: E = sdw(fluids.getE(y, v, g));
 	$: T = sdw(trap.getT(y, zl, b, zr));
-	$: NF = swd(fluids.getNF(v, A, T, g));
+	$: NF = sdw(fluids.getNF(v, A, T, g));
 	$: yc = sdw(getYCfromQ());	
 	$: Ac = sdw(trap.getArea(yc, zl, b, zr));	
 	$: vc = sdw(fluids.getVfromQandA(QQ, Ac));

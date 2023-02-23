@@ -190,22 +190,12 @@
           `)}
         />
         <Card
-          answer="Specific Energy: {ki(`E = ${sds(E)}\\, \\mathsf{m}`)}  "
-          solution={kd(`
-              \\begin{aligned}
-                  E &= y+\\frac{v^2}{2g} \\\\
-							    &= ${y}\\, \\mathsf{m}+\\frac{(${v} \\, \\mathsf{m/s)^2} } 2(${g}\\, \\mathsf{m/s^2}) } \\\\
-							    &= ${E}\\,\\mathsf{m}
-              \\end{aligned}
-          `)}
-        />
-        <Card
           answer="Free Surface: {ki(`T = ${sds(T)}\\, \\mathsf{m}`)}  "
           solution={kd(`
               \\begin{aligned}
                   T &= b + \\left(z_L+z_R\\right)\\cdot y \\\\
-                  T &= ${b}\\, \\mathsf{m} + \\left(${zl}+${zr}\\right)\\cdot ${y} \\, \\mathsf{m} \\\\
-							    &= ${sdw(T)}\\, \\mathsf{m} \\\\							   
+                  &= ${b}\\, \\mathsf{m} + \\left( ${zl}+${zr} \\right)\\cdot ${y}	\\, \\mathsf{m}	\\\\ \\\\
+                  T &= ${sdw(T)} \\, \\mathsf{m}	   
               \\end{aligned}
           `)}
         />
@@ -224,9 +214,9 @@
         <h1>Critical Flow</h1>
 
         <Card
-          answer="For the {ki(
+          answer="For {ki(
             `Q=${Q} \\, \\mathsf{m^3\\!/s}`
-          )} above, Critical Depth {ki(`y_c=${sds(yc)} \\, \\mathsf{m}`)}"
+          )}, Critical Depth {ki(`y_c=${sds(yc)} \\, \\mathsf{m}`)}"
           solution="{kd(`
               \\begin{aligned}
                   N_F &= 1 \\\\

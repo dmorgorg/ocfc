@@ -167,38 +167,39 @@
 								\\theta_\\mathsf{rad} &= ${sdw(thetaRad)}
                             \\end{aligned}
                         `)} />
-					<Card
-						answer="Flow Area: {ki(`A = ${sds(A)}\\, \\mathsf{m^2}`)}"
-						solution="{kd(`
+				{/if}
+				<Card
+					answer="Flow Area: {ki(`A = ${sds(A)}\\, \\mathsf{m^2}`)}"
+					solution="{kd(`
                             \\begin{aligned}
                                 A &= \\frac{(\\theta-\\sin\\theta)D^2}{8}
 							\\end{aligned}
 							`)}
 							<div style='width: 85%; margin-left: 7.5%; '>This area formula requires {ki(
-							`\\theta`
-						)} to be in radians. Rather than switching my calculator to radian mode (and possibly forgetting to change it back...), I choose to use {ki(
-							`\\sin(${theta})`
-						)} with {ki(`\\theta`)} in degrees and my calculator in degree mode, noting that {ki(
-							`\\sin\\theta_{\\mathsf{rad}}`
-						)} in radian mode has the same value as {ki(`\\sin\\theta`)} in degree mode.</div>
+						`\\theta`
+					)} to be in radians. Rather than switching my calculator to radian mode (and possibly forgetting to change it back...), I choose to use {ki(
+						`\\sin(${theta})`
+					)} with {ki(`\\theta`)} in degrees and my calculator in degree mode, noting that {ki(
+						`\\sin\\theta_{\\mathsf{rad}}`
+					)} in radian mode has the same value as {ki(`\\sin\\theta`)} in degree mode.</div>
 							{kd(`
 							\\begin{aligned}                               
                                 A &= \\frac{(${thetaRad}-\\sin ${theta}^\\circ)\\cdot (${D}\\, \\mathsf{m})^2}{8} \\\\\\\\
                                 A &= ${A}\\, \\mathsf{m^2}
                             \\end{aligned}
                         `)}" />
-					<Card
-						answer="Wetted Perimeter: {ki(`P = ${sds(P)}\\, \\mathsf m`)}  "
-						solution={kd(`
+				<Card
+					answer="Wetted Perimeter: {ki(`P = ${sds(P)}\\, \\mathsf m`)}  "
+					solution={kd(`
 								\\begin{aligned}
 									P &= \\theta_{\\mathsf{rad}}\\cdot\\frac{D}{2}\\\\
 									&= ${thetaRad}\\cdot\\frac{${D}\\, \\mathsf{m}}{2} \\\\\\\\
 									P &= ${P}\\, \\mathsf{m}
 								\\end{aligned}
                         `)} />
-					<Card
-						answer="Hydraulic Radius: {ki(`R = ${sds(R)}\\, \\mathsf m`)}  "
-						solution="{kd(`
+				<Card
+					answer="Hydraulic Radius: {ki(`R = ${sds(R)}\\, \\mathsf m`)}  "
+					solution="{kd(`
 								\\begin{aligned}
 									R &= A/P \\\\
 									&= \\frac{${A}\\, \\mathsf{m^2}}{ ${P}\\, \\mathsf{m}} \\\\\\\\
@@ -213,54 +214,53 @@
 									R &= ${R} \\mathsf{m}
 								\\end{aligned}
                         `)}" />
-					<Card
-						answer="Average Flow Velocity: {ki(`v = ${sds(v)}\\, \\mathsf{m/s}`)}  "
-						solution={kd(`
+				<Card
+					answer="Average Flow Velocity: {ki(`v = ${sds(v)}\\, \\mathsf{m/s}`)}  "
+					solution={kd(`
 								\\begin{aligned}
 									v &= \\frac 1n R^{2/3} S^{1/2} \\\\
 									&= \\frac{1}{${n}} \\left(${R}\\right)^{2/3} \\left(${s / 100}\\right)^{1/2} \\\\\\\\
 									v &= ${v} \\, \\mathsf{m/s}
 								\\end{aligned}
                         `)} />
-					<Card
-						answer="Flow Rate: {ki(`Q = ${sds(Q)}\\, \\mathsf{m^3/s}`)}  "
-						solution={kd(`
-								\\begin{aligned}
-									Q &= Av \\\\
-									&= ${A}\\, \\mathsf{m^2}\\times ${v}\\, \\mathsf{m/s} \\\\\\\\
-									Q &= ${Q} \\, \\mathsf{m^3/s}
-								\\end{aligned}
+				<Card
+					answer="Flow Rate: {ki(`Q = ${sds(Q)}\\, \\mathsf{m^3/s}`)}  "
+					solution={kd(`
+						\\begin{aligned}
+							Q &= Av \\\\
+							&= ${A}\\, \\mathsf{m^2}\\times ${v}\\, \\mathsf{m/s} \\\\\\\\
+							Q &= ${Q} \\, \\mathsf{m^3/s}
+						\\end{aligned}
                         `)} />
-					<Card
-						answer="Specific Energy: {ki(`E = ${sds(E)}\\, \\mathsf{m}`)}  "
-						solution={kd(`
-								\\begin{aligned}
-									E &= y+\\frac{v^2}{2g} \\\\
-									&= ${y}\\, \\mathsf{m}+\\frac{(${v} \\, \\mathsf{m/s)^2} }
-											{2(${g}\\, \\mathsf{m/s^2}) } \\\\\\\\
-									E &= ${E}\\,\\mathsf{m}
-								\\end{aligned}
-                        `)} />
-					<Card
-						answer="Free Surface: {ki(`T = ${sds(T)}\\, \\mathsf{m}`)}  "
-						solution={kd(`
-								\\begin{aligned}
-									T &= 2AB \\\\
-									&= D\\sin \\alpha \\quad(=D\\sin \\left(\\theta/2)\\right)\\\\
-									&= ${D}\\, \\mathsf{m}\\cdot\\sin ${alpha}^\\circ \\\\\\\\
-									T &= ${T}\\, \\mathsf{m}							
-								\\end{aligned}
-                        `)} />
-					<Card
-						answer="Froude Number: {ki(`N_F = ${sds(NF)}`)}  "
-						solution={kd(`
-                \\begin{aligned}
-									N_F &=  \\frac{v}{\\sqrt{g(A/T)}} \\\\							   
-									&=  \\frac{${v}\\, \\mathsf{m/s}}{\\sqrt{(${g}\\, \\mathsf{m/s^2})\\cdot(${A}\\, \\mathsf{m^2}/${T}\\, \\mathsf{m})}} \\\\\\\\
-									N_F &= ${NF}
-								\\end{aligned}
-                        `)} />
-				{/if}
+				<Card
+					answer="Specific Energy: {ki(`E = ${sds(E)}\\, \\mathsf{m}`)}  "
+					solution={kd(`
+						\\begin{aligned}
+							E &= y+\\frac{v^2}{2g} \\\\
+							&= ${y}\\, \\mathsf{m}+\\frac{(${v} \\, \\mathsf{m/s)^2} }
+									{2(${g}\\, \\mathsf{m/s^2}) } \\\\\\\\
+							E &= ${E}\\,\\mathsf{m}
+						\\end{aligned}
+					`)} />
+				<Card
+					answer="Free Surface: {ki(`T = ${sds(T)}\\, \\mathsf{m}`)}  "
+					solution={kd(`
+						\\begin{aligned}
+							T &= 2AB \\\\
+							&= D\\sin \\alpha \\quad(=D\\sin \\left(\\theta/2)\\right)\\\\
+							&= ${D}\\, \\mathsf{m}\\cdot\\sin ${alpha}^\\circ \\\\\\\\
+							T &= ${T}\\, \\mathsf{m}							
+						\\end{aligned}
+					`)} />
+				<Card
+					answer="Froude Number: {ki(`N_F = ${sds(NF)}`)}  "
+					solution={kd(`
+						\\begin{aligned}
+							N_F &=  \\frac{v}{\\sqrt{g(A/T)}} \\\\							   
+							&=  \\frac{${v}\\, \\mathsf{m/s}}{\\sqrt{(${g}\\, \\mathsf{m/s^2})\\cdot(${A}\\, \\mathsf{m^2}/${T}\\, \\mathsf{m})}} \\\\\\\\
+							N_F &= ${NF}
+						\\end{aligned}
+					`)} />
 			</section>
 			<section>
 				<h1>Critical Flow</h1>
@@ -270,17 +270,17 @@
 							`yc=${sds(y)} \\, \\mathsf{m}`
 						)}"
 						solution="{kd(`
-                \\begin{aligned}
-                    N_F &= 1 \\\\
-								    \\Rightarrow v_c &= \\sqrt{ g(A_c/T_c)} \\\\
-								    \\Rightarrow \\left(\\frac{Q}{A_c}\\right)^2 &= g(A_c/T_c) \\\\
-								    \\Rightarrow \\frac{Q^2}{g} &= \\frac{A_c^3}{T_c} \\\\
-								    &= \\frac{\\left((\\theta_c-\\sin \\theta_c)D^2/8\\right)^3}{D\\sin(\\theta_c/2)} \\\\
-								    &= \\frac{(\\theta_c-\\sin \\theta_c)^3\\cdot D^5}{512\\sin(\\theta_c/2)} \\\\
-								    \\frac{(\\theta_c-\\sin \\theta_c)^3}{\\sin(\\theta_c/2)} &= \\frac{512Q^2}{D^5g} \\\\
-								    &= \\frac{512(${Q}\\, \\mathsf{m^3\\!/s})^2}{(${D}\\, \\mathsf{m})^5(${g}\\, \\mathsf{m/s^2})} \\\\\\\\
-								    \\frac{(\\theta_c-\\sin \\theta_c)^3}{\\sin(\\theta_c/2)}&= ${thetaCriticalCoeff}
-                \\end{aligned}
+							\\begin{aligned}
+								N_F &= 1 \\\\
+								\\Rightarrow v_c &= \\sqrt{ g(A_c/T_c)} \\\\
+								\\Rightarrow \\left(\\frac{Q}{A_c}\\right)^2 &= g(A_c/T_c) \\\\
+								\\Rightarrow \\frac{Q^2}{g} &= \\frac{A_c^3}{T_c} \\\\
+								&= \\frac{\\left((\\theta_c-\\sin \\theta_c)D^2/8\\right)^3}{D\\sin(\\theta_c/2)} \\\\
+								&= \\frac{(\\theta_c-\\sin \\theta_c)^3\\cdot D^5}{512\\sin(\\theta_c/2)} \\\\
+								\\frac{(\\theta_c-\\sin \\theta_c)^3}{\\sin(\\theta_c/2)} &= \\frac{512Q^2}{D^5g} \\\\
+								&= \\frac{512(${Q}\\, \\mathsf{m^3\\!/s})^2}{(${D}\\, \\mathsf{m})^5(${g}\\, \\mathsf{m/s^2})} \\\\\\\\
+								\\frac{(\\theta_c-\\sin \\theta_c)^3}{\\sin(\\theta_c/2)}&= ${thetaCriticalCoeff}
+                			\\end{aligned}
             `)} 
 						<div style='width: 85%; margin-left: 7.5%; '>This equation in {ki(
 							`\\theta_c`

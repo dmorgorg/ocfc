@@ -5,7 +5,7 @@
 	import TrapezoidalQ from "./TrapezoidalQ.svelte";
 
 	let typeOfChannel = "trapezoidal";
-	let specifyView = "trapezoidalQ";
+	let specifyView = "trapezoidalY";
 </script>
 
 <article>
