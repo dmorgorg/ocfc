@@ -9,7 +9,6 @@
 		extraDig = true,
 		extraWorkingDig = false;
 
-	
 	$: getYfromQ = (Q, zl, zr, s, n) => {
 		let num = Q*n*2**(5/3)*((1+zl*zl)**0.5+(1+zr*zr)**0.5)**(2/3);
 		let den = (s/100)**0.5*(Number(zl) + Number(zr))**(5/3);
@@ -19,7 +18,6 @@
 		return (8*Q*Q/g/(Number(zl)+Number(zr))**2)**0.2;
 	}
 
-	let sd = utils.sd;
 	const sdw = (num) => {
 		return utils.sd(num, wdigs, extraWorkingDig);
 	};
@@ -57,8 +55,6 @@
 	$: Rc = sdw(fluids.getR(Ac, Pc));	
 	$: Sc = sdw(fluids.getCriticalSlope(n, vc, Rc));
 </script>
-
-
 
 <article>
 	<section class="fig">
