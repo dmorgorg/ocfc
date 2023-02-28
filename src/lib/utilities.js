@@ -19,8 +19,9 @@ export const utils = {
   // 	return parseFloat(num).toPrecision(sigDigs);
   // },
   sd: (num, digs = 3, extraDig = true) => {
-    if (num && digs) {
-      if (extraDig) {
+    if (num === null) return 0;
+    if (extraDig) {
+        if(num !== null){
         let n = num.toString();
         while (n[0] === "0" || n[0] === ".") {
           n = n.slice(1);
@@ -29,18 +30,20 @@ export const utils = {
           digs++;
         }
       }
+      }
       return parseFloat(num).toPrecision(digs);
-    }
+    // }
   },
+  delay: 1500,
 
   // https://www.freecodecamp.org/news/javascript-debounce-example/
-  debounce: function (func, timeout = 1500) {
+  debounce: function (func, delay = this.delay) {
     let timer;
     return (...args) => {
       clearTimeout(timer);
       timer = setTimeout(() => {
         func.apply(this, args);
-      }, timeout);
+      }, delay);
     };
   },
 };

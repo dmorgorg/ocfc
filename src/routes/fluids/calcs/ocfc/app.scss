@@ -58,7 +58,7 @@ main {
 }
 
 img {
-	width: 100%;
+	width: 90%;
 
 	&.super {
 		position: absolute;
@@ -138,6 +138,12 @@ Navbar
 
 .hide {
 	display: none;
+}
+// img {
+// 	display: none;
+// }
+.show {
+	display: block;
 }
 
 .katex {

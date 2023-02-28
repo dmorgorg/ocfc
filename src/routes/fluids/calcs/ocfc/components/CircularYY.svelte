@@ -28,9 +28,8 @@
 	};
 
 	// calculations for y specified
-	y = y < 0 ? 0 : y;
-	y = y > D ? D : y;
-	$: r = sds(D / 2);
+
+
 	$: alpha = sdw(circ.getAlphaDegrees(y, r));
 	// $: alphaRad = sdw(circ.getAlphaRadians(y, r));
 	$: theta = sdw(circ.getThetaDegrees(y, r));
@@ -57,14 +56,10 @@
 
 
 
-	<!-- <section class="results">
-		 {#if !validS}
-			need a slope
-		{:else}
-			<section class="normal">
-				<h1>Normal (Uniform) Flow</h1>
-				{#if y < D / 2}
-					less than half 
+	<!-- 
+			
+				
+				
 					 <Card
 						answer={ki(`\\alpha = ${sdw(alpha)}^\\circ`)}
 						solution={kd(`
