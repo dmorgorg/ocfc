@@ -3,7 +3,7 @@
 	// import { fade } from "svelte/transition";
 	import { ki, kd, fluids, utils, circ } from "$lib/utilities";
 
-	let sdigs = 6,
+	let sdigs = 3,
 		wdigs = 6,
 		validS = true,
 		extraDig = true,
