@@ -396,7 +396,7 @@
 
 			<!-- </section>
 	<section class="results"> -->
-			<h1>Critical Flow</h1>
+			<!-- <h1>Critical Flow</h1>
 			<Card
 				answer="For the {ki(`Q=${sdw(Q)} \\, \\mathsf{m^3\\!/s}`)} above, Critical Depth {ki(
 					`yc=${sds(yc)} \\, \\mathsf{m}`
@@ -420,7 +420,7 @@
 					`\\theta_c`
 				)} numerically (iteratively), using either trial and error, a solver in a calculator (in radian mode!) or by using a function in a spreadsheet. </div>
 			{kd(`\\theta_c = ${thetaCrad}\\, \\mathsf{(radians)}`)}
-			" />
+			" /> -->
 		{/if}
 	</section>
 </article>
