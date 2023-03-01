@@ -136,15 +136,22 @@ Navbar
 	}
 }
 
+
+
 .hide {
 	display: none;
+
+	// position: absolute;
+	// visibility: hidden;
+	// opacity: 0;
+	// transition: visibility 0s, opacity 0.5s linear;
 }
 // img {
 // 	display: none;
 // }
-.show {
-	display: block;
-}
+// .show {
+// 	display: block;
+// }
 
 .katex {
 	font-size: 110%;
