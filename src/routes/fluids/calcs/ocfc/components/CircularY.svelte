@@ -8,7 +8,7 @@
 		validS = true,
 		extraDig = true,
 		extraWorkingDig = true,
-		initDepth = 1.5,
+		initDepth = .5,
 		initDiam = 1.5,
 		initSlope = 0.1,
 		initN = 0.013,
