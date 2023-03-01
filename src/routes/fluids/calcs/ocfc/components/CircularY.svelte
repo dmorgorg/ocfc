@@ -9,7 +9,7 @@
 		extraDig = true,
 		extraWorkingDig = true,
 		initDepth = 1.5,
-		initDiam = 1.5,
+		initDiam = .5,
 		initSlope = 0.1,
 		initN = 0.013,
 		initG = 9.81;
@@ -229,7 +229,7 @@
 							P &= ${P}\\, \\mathsf{m}
 						\\end{aligned}
 				`)} />
-				{:else if y===D}
+			{:else if y === D}
 				<Card
 					answer="Flow Area: {ki(`A = ${sds(A)}\\, \\mathsf{m^2}`)}"
 					solution={kd(`
@@ -328,16 +328,27 @@
 					\\end{aligned}
 				`)} />
 			{/if}
-			<Card
-				answer="Hydraulic Radius: {ki(`R = ${sds(R)}\\, \\mathsf m`)}  "
-				solution="{kd(`
+			{#if y == D / 2 || y == D}
+				<Card
+					answer="Hydraulic Radius: {ki(`R = ${sds(R)}\\, \\mathsf m`)}  "
+					solution={kd(`
+				\\begin{aligned}
+					R &= A/P \\\\
+					&= \\frac{${A}\\, \\mathsf{m^2}}{ ${P}\\, \\mathsf{m}} \\\\\\\\
+					R &= ${R} \\mathsf{m}
+				\\end{aligned}
+			`)} />
+			{:else}
+				<Card
+					answer="Hydraulic Radius: {ki(`R = ${sds(R)}\\, \\mathsf m`)}  "
+					solution="{kd(`
 				\\begin{aligned}
 					R &= A/P \\\\
 					&= \\frac{${A}\\, \\mathsf{m^2}}{ ${P}\\, \\mathsf{m}} \\\\\\\\
 					R &= ${R} \\mathsf{m}
 				\\end{aligned}
 			`)} 
-			<div style='width: 85%; margin-left: 7.5%; '>Alternatively, there is a well-known formula that calculates the hydraulic radius directly without first calculating the wetted perimeter:</div>
+			<div style='width: 85%; margin-left: 7.5%; '>Alternatively, use this formula that calculates the hydraulic radius directly without first calculating the wetted perimeter:</div>
 			{kd(`
 				\\begin{aligned}
 					R &= \\left[\\frac{\\theta_{\\mathsf{rad}}-\\sin\\theta}{\\theta_\\mathsf{rad}} \\right] \\cdot \\frac D4 \\\\
@@ -345,6 +356,7 @@
 					R &= ${R} \\mathsf{m}
 				\\end{aligned}
 			`)}" />
+			{/if}
 			<Card
 				answer="Average Flow Velocity: {ki(`v = ${sds(v)}\\, \\mathsf{m/s}`)}  "
 				solution={kd(`
