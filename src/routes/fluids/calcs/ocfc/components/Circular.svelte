@@ -19,8 +19,9 @@
 <div class:hide={specifyView !== 'circularY'}>
 	<CircularY />
 </div>
-<!-- <div class:hide={specifyView !== 'circularQ'}>
-	<CircularQ />
-</div> -->
+<div class:hide={specifyView !== 'circularQ'}>
+	<!-- <CircularQ /> -->
+	Coming soon!
+</div>
 
 
