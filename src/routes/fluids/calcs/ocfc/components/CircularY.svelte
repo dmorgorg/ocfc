@@ -250,59 +250,30 @@
 							P &= ${P}\\, \\mathsf{m}
 						\\end{aligned}
 				`)} />
-			{:else if y < D / 2 && y > 0}
+			{:else if y < D / 2}
 				<Card
 					answer={ki(`\\alpha = ${sdw(alpha)}^\\circ`)}
 					solution={kd(`
-				\\begin{aligned}
-					\\alpha &= \\cos^{-1} \\left(\\frac{OA}{OB} \\right)\\\\
-					&= \\cos^{-1} \\left(\\frac{D/2-y}{D/2} \\right)\\\\
-					&= \\cos^{-1} \\left(\\frac{${r}\\, \\mathsf{m}-${sds(y)}\\, \\mathsf{m}}{${r}\\, \\mathsf{m}} \\right)\\\\\\\\
-					\\alpha &= ${sdw(alpha)}^\\circ
-				\\end{aligned}
-			`)} />
+						\\begin{aligned}
+							\\alpha &= \\cos^{-1} \\left(\\frac{OA}{OB} \\right)\\\\
+							&= \\cos^{-1} \\left(\\frac{D/2-y}{D/2} \\right)\\\\
+							&= \\cos^{-1} \\left(\\frac{${r}\\, \\mathsf{m}-${sds(y)}\\, \\mathsf{m}}{${r}\\, \\mathsf{m}} \\right)\\\\\\\\
+							\\alpha &= ${sdw(alpha)}^\\circ
+						\\end{aligned}
+					`)} />
 				<Card
 					answer={ki(`\\theta = ${sdw(theta)}^\\circ\\quad (=${thetaRad}\\;\\mathsf{rad})`)}
 					solution={kd(`
-				\\begin{aligned}
-					\\theta &= 2 \\alpha \\\\
-					&= 2 \\left(${alpha}^\\circ \\right)\\\\
-					&= ${2 * alpha}^\\circ \\\\\\\\
-					
-					\\theta_\\mathsf{rad} &= \\theta\\cdot\\frac{\\pi}{180^\\circ} \\\\
-					&= ${theta}\\cdot\\frac{\\pi}{180^\\circ} \\\\\\\\
-					\\theta_\\mathsf{rad} &= ${sdw(thetaRad)}
-				\\end{aligned}
-			`)} />
-				<Card
-					answer="Flow Area: {ki(`A = ${sds(A)}\\, \\mathsf{m^2}`)}"
-					solution="{kd(`
-				\\begin{aligned}
-					A &= \\frac{(\\theta-\\sin\\theta)D^2}{8}
-				\\end{aligned}
-				`)}
-				<div style='width: 85%; margin-left: 7.5%; '>This area formula requires {ki(
-						`\\theta`
-					)} to be in radians. Rather than switching my calculator to radian mode (and possibly forgetting to change it back...), I choose to use {ki(
-						`\\sin(${theta}^\\circ)`
-					)} with {ki(`\\theta`)} in degrees and my calculator in degree mode, noting that {ki(
-						`\\sin\\theta_{\\mathsf{rad}}`
-					)} in radian mode has the same value as {ki(`\\sin\\theta`)} in degree mode.</div>
-					{kd(`
-					\\begin{aligned}                               
-						A &= \\frac{(${thetaRad}-\\sin ${theta}^\\circ)\\cdot (${Ds}\\, \\mathsf{m})^2}{8} \\\\\\\\
-						A &= ${A}\\, \\mathsf{m^2}
-					\\end{aligned}
-				`)}" />
-				<Card
-					answer="Wetted Perimeter: {ki(`P = ${sds(P)}\\, \\mathsf m`)}  "
-					solution={kd(`
-				\\begin{aligned}
-					P &= \\theta_{\\mathsf{rad}}\\cdot\\frac{D}{2}\\\\
-					&= ${thetaRad}\\cdot\\frac{${Ds}\\, \\mathsf{m}}{2} \\\\\\\\
-					P &= ${P}\\, \\mathsf{m}
-				\\end{aligned}
-		`)} />
+						\\begin{aligned}
+							\\theta &= 2 \\alpha \\\\
+							&= 2 \\left(${alpha}^\\circ \\right)\\\\
+							&= ${2 * alpha}^\\circ \\\\\\\\
+							
+							\\theta_\\mathsf{rad} &= \\theta\\cdot\\frac{\\pi}{180^\\circ} \\\\
+							&= ${theta}\\cdot\\frac{\\pi}{180^\\circ} \\\\\\\\
+							\\theta_\\mathsf{rad} &= ${sdw(thetaRad)}
+						\\end{aligned}
+					`)} />
 			{:else if y > D / 2}
 				<Card
 					answer={ki(`\\alpha = ${sdw(alpha)}^\\circ`)}
@@ -328,6 +299,7 @@
 					\\end{aligned}
 				`)} />
 			{/if}
+
 			{#if y == D / 2 || y == D}
 				<Card
 					answer="Hydraulic Radius: {ki(`R = ${sds(R)}\\, \\mathsf m`)}  "
@@ -339,6 +311,35 @@
 				\\end{aligned}
 			`)} />
 			{:else}
+				<Card
+					answer="Flow Area: {ki(`A = ${sds(A)}\\, \\mathsf{m^2}`)}"
+					solution="{kd(`
+						\\begin{aligned}
+							A &= \\frac{(\\theta-\\sin\\theta)D^2}{8}
+						\\end{aligned}
+						`)}
+						<div style='width: 85%; margin-left: 7.5%; '>This area formula requires {ki(
+						`\\theta`
+					)} to be in radians. Rather than switching my calculator to radian mode (and possibly forgetting to change it back...), I choose to use {ki(
+						`\\sin(${theta}^\\circ)`
+					)} with {ki(`\\theta`)} in degrees and my calculator in degree mode, noting that {ki(
+						`\\sin\\theta_{\\mathsf{rad}}`
+					)} in radian mode has the same value as {ki(`\\sin\\theta`)} in degree mode.</div>
+							{kd(`
+							\\begin{aligned}                               
+								A &= \\frac{(${thetaRad}-\\sin ${theta}^\\circ)\\cdot (${Ds}\\, \\mathsf{m})^2}{8} \\\\\\\\
+								A &= ${A}\\, \\mathsf{m^2}
+							\\end{aligned}
+						`)}" />
+				<Card
+					answer="Wetted Perimeter: {ki(`P = ${sds(P)}\\, \\mathsf m`)}  "
+					solution={kd(`
+						\\begin{aligned}
+							P &= \\theta_{\\mathsf{rad}}\\cdot\\frac{D}{2}\\\\
+							&= ${thetaRad}\\cdot\\frac{${Ds}\\, \\mathsf{m}}{2} \\\\\\\\
+							P &= ${P}\\, \\mathsf{m}
+						\\end{aligned}
+				`)} />
 				<Card
 					answer="Hydraulic Radius: {ki(`R = ${sds(R)}\\, \\mathsf m`)}  "
 					solution="{kd(`
