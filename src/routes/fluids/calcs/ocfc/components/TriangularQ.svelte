@@ -59,7 +59,7 @@
 <article>
 	<section class="fig">
 		<div class="width85">
-			<img src="/ocfc/triangularChannelSectionQ.png" alt="triangular channel section" />
+			<img src="/ocfc/triangularChannelSection.png" alt="triangular channel section" />
 		</div>
 		<form>
 			<label class="zl">

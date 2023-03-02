@@ -8,7 +8,7 @@
 		validS = true,
 		extraDig = true,
 		extraWorkingDig = true,
-		initDepth = .5,
+		initDepth = 1,
 		initDiam = 1.5,
 		initSlope = 0.1,
 		initN = 0.013,
@@ -18,10 +18,11 @@
 	$: getNFfromY = (y) => {
 		const r = D / 2;
 		const thetaRad = circ.getThetaRadians(y, r);
+		const alpha = circ.getAlphaDegrees(y, r);
 		const T = circ.getT(alpha, D);
 		const A = circ.getArea(thetaRad, D);
 		const v = Q / A;
-		return Number(fluids.getNF(v, A, T, g));
+		return fluids.getNF(v, A, T, g);
 	};
 
 	$: getYc = (shallow = 0, deep = D) => {
@@ -131,41 +132,43 @@
 
 <article>
 	<section class="fig">
-		<div class:hide={!(y === D)} class:show={y === D}>
-			<img src="/ocfc/circ10.png" alt="full circular pipe" />
-		</div>
-		<div class:hide={!(y >= 0.925 * D && y < D)} class:show={y >= 0.925 * D && y < D}>
-			<img src="/ocfc/circMax.png" alt="max flow depth circular pipe" />
-		</div>
-		<div class:hide={!(y >= 0.85 * D && y < 0.925 * D)} class:show={y >= 0.85 * D && y < 0.925 * D}>
-			<img src="/ocfc/circ9.png" alt="90% flow depth circular pipe" />
-		</div>
-		<div class:hide={!(y >= 0.75 * D && y < 0.85 * D)} class:show={y >= 0.75 * D && y < 0.85 * D}>
-			<img src="/ocfc/circ8.png" alt="80% flow depth circular pipe" />
-		</div>
-		<div class:hide={!(y >= 0.65 * D && y < 0.75 * D)} class:show={y >= 0.65 * D && y < 0.75 * D}>
-			<img src="/ocfc/circ7.png" alt="70% flow depth circular pipe" />
-		</div>
-		<div class:hide={!(y > 0.5 * D && y < 0.65 * D)} class:show={y > 0.5 * D && y < 0.65 * D}>
-			<img src="/ocfc/circ6.png" alt="60% flow depth circular pipe" />
-		</div>
-		<div class:hide={!(y === 0.5 * D)} class:show={y === 0.5 * D}>
-			<img src="/ocfc/circ5.png" alt="50% flow depth circular pipe" />
-		</div>
-		<div class:hide={!(y >= 0.35 * D && y < 0.5 * D)} class:show={y >= 0.35 * D && y < 0.5 * D}>
-			<img src="/ocfc/circ4.png" alt="40% flow depth circular pipe" />
-		</div>
-		<div class:hide={!(y >= 0.25 * D && y < 0.35 * D)} class:show={y >= 0.25 * D && y < 0.35 * D}>
-			<img src="/ocfc/circ3.png" alt="30% flow depth circular pipe" />
-		</div>
-		<div class:hide={!(y >= 0.15 * D && y < 0.25 * D)} class:show={y >= 0.15 * D && y < 0.25 * D}>
-			<img src="/ocfc/circ2.png" alt="20% flow depth circular pipe" />
-		</div>
-		<div class:hide={!(y > 0 && y < 0.15 * D)} class:show={y > 0 && y < 0.15 * D}>
-			<img src="/ocfc/circ1.png" alt="10% flow depth circular pipe" />
-		</div>
-		<div class:hide={!(y === 0)} class:show={!(y === 0)}>
-			<img src="/ocfc/circ0.png" alt="empty circular pipe" />
+		<div class="width90">
+			<div class:hide={!(y === D)} class:show={y === D}>
+				<img src="/ocfc/circ10.png" alt="full circular pipe" />
+			</div>
+			<div class:hide={!(y >= 0.925 * D && y < D)} class:show={y >= 0.925 * D && y < D}>
+				<img src="/ocfc/circMax.png" alt="max flow depth circular pipe" />
+			</div>
+			<div class:hide={!(y >= 0.85 * D && y < 0.925 * D)} class:show={y >= 0.85 * D && y < 0.925 * D}>
+				<img src="/ocfc/circ9.png" alt="90% flow depth circular pipe" />
+			</div>
+			<div class:hide={!(y >= 0.75 * D && y < 0.85 * D)} class:show={y >= 0.75 * D && y < 0.85 * D}>
+				<img src="/ocfc/circ8.png" alt="80% flow depth circular pipe" />
+			</div>
+			<div class:hide={!(y >= 0.65 * D && y < 0.75 * D)} class:show={y >= 0.65 * D && y < 0.75 * D}>
+				<img src="/ocfc/circ7.png" alt="70% flow depth circular pipe" />
+			</div>
+			<div class:hide={!(y > 0.5 * D && y < 0.65 * D)} class:show={y > 0.5 * D && y < 0.65 * D}>
+				<img src="/ocfc/circ6.png" alt="60% flow depth circular pipe" />
+			</div>
+			<div class:hide={!(y === 0.5 * D)} class:show={y === 0.5 * D}>
+				<img src="/ocfc/circ5.png" alt="50% flow depth circular pipe" />
+			</div>
+			<div class:hide={!(y >= 0.35 * D && y < 0.5 * D)} class:show={y >= 0.35 * D && y < 0.5 * D}>
+				<img src="/ocfc/circ4.png" alt="40% flow depth circular pipe" />
+			</div>
+			<div class:hide={!(y >= 0.25 * D && y < 0.35 * D)} class:show={y >= 0.25 * D && y < 0.35 * D}>
+				<img src="/ocfc/circ3.png" alt="30% flow depth circular pipe" />
+			</div>
+			<div class:hide={!(y >= 0.15 * D && y < 0.25 * D)} class:show={y >= 0.15 * D && y < 0.25 * D}>
+				<img src="/ocfc/circ2.png" alt="20% flow depth circular pipe" />
+			</div>
+			<div class:hide={!(y > 0 && y < 0.15 * D)} class:show={y > 0 && y < 0.15 * D}>
+				<img src="/ocfc/circ1.png" alt="10% flow depth circular pipe" />
+			</div>
+			<div class:hide={!(y === 0)} class:show={!(y === 0)}>
+				<img src="/ocfc/circ0.png" alt="empty circular pipe" />
+			</div>
 		</div>
 
 		<form>
@@ -203,6 +206,8 @@
 			</div>
 		</form>
 	</section>
+
+	getNF: ${getNFfromY(yc)}
 	<section class="results">
 		{#if y === 0}
 			Depth is zero. The pipe is empty and there is no flow. Add some depth for real results.
@@ -409,7 +414,18 @@
 
 			<!-- </section>
 	<section class="results"> -->
-			<!-- <h1>Critical Flow</h1>
+			<h1>Critical Flow</h1>
+			<!-- <Card
+				answer="{ki(`y_c`)} testing"
+				solution={kd(`
+					\\begin{aligned}
+						y_c &= ${yc} \\\\
+						N_F &= ${getNFfromY(yc)} \\checkmark \\\\\\\\
+						\\theta_c &= ${circ.getThetaRadians(yc, r)} \\\\
+						\\theta_c &= ${circ.getThetaDegrees(yc, r)}^\\circ \\\\
+						OA &= 
+					\\end{aligned}
+				`)} /> -->
 			<Card
 				answer="For the {ki(`Q=${sdw(Q)} \\, \\mathsf{m^3\\!/s}`)} above, Critical Depth {ki(
 					`yc=${sds(yc)} \\, \\mathsf{m}`
@@ -426,14 +442,32 @@
 					&= \\frac{512(${Q}\\, \\mathsf{m^3\\!/s})^2}{(${D}\\, \\mathsf{m})^5(${g}\\, \\mathsf{m/s^2})} \\\\\\\\
 					\\frac{(\\theta_c-\\sin \\theta_c)^3}{\\sin(\\theta_c/2)}&= ${thetaCriticalCoeff}
 				\\end{aligned}
-`)} 
-			<div style='width: 85%; margin-left: 7.5%; '>This equation in {ki(
-					`\\theta_c`
-				)} can not be solved analytically. It must be solved for {ki(
-					`\\theta_c`
-				)} numerically (iteratively), using either trial and error, a solver in a calculator (in radian mode!) or by using a function in a spreadsheet. </div>
-			{kd(`\\theta_c = ${thetaCrad}\\, \\mathsf{(radians)}`)}
-			" /> -->
+				`)} 
+				<div style='width: 85%; margin-left: 7.5%; '>This equation in {ki(`\\theta_c`)} can not be solved analytically. It must be solved for {ki(`\\theta_c`)} numerically (iteratively), using either trial and error, a solver in a calculator (in radian mode!) or by using a function in a spreadsheet. </div>
+				{kd(`\\begin{aligned}
+						\\theta_c &= ${thetaCrad}\\;\\textsf{\\textcolor{black}{radians}} \\\\\\\\
+						\\Rightarrow \\alpha_c &= \\frac{${thetaCrad}}{2}\\; \\textsf{\\textcolor{black}{radians}} \\\\
+						&= ${alphaCrad}\\; \\textsf{\\textcolor{black}{radians}} \\\\
+						&= ${alphaCrad}\\cdot \\frac{180^\\circ}{\\pi} \\\\
+						&= ${alphaC}^\\circ \\\\\\\\
+						OA_c &= OB\\cdot\\cos \\alpha_c \\\\
+						&= ${sds(r)}\\, \\mathsf{m}\\cdot \\cos ${alphaC}^\\circ \\\\
+						&= ${sdw(r*Math.cos(alphaCrad))}\\, \\mathsf{m} \\\\\\\\
+						\\Rightarrow y_c &= \\frac{D}{2}-OA_c \\\\
+						&= ${sds(D/2)}\\, \\mathsf{m}-${sdw(r*Math.cos(alphaCrad))}\\, \\mathsf{m} \\\\\\\\
+						\\Rightarrow y_c &= ${yc}\\, \\mathsf{m}
+					\\end{aligned}`)}" />
+			<Card
+          		answer="Critical Velocity: {ki(` v_c = ${sds(vc)}  \\,\\mathsf{m/s}` )}  "
+          		solution={kd(`
+					\\begin{aligned}         
+						A_c &= \\frac{(\\theta_c-\\sin\\theta_c)D^2}{8} \\\\
+						&= \\frac{(${thetaCrad}-\\sin ${thetaC}^\\circ)${D}\\,\\mathsf{m}}{8} \\\\								
+										A_c &= ${Ac} \\,\\mathsf{m^2}\\\\\\\\
+						v_c &= Q/A_c \\\\
+						&= \\frac{${Q}\\,\\mathsf{m^3\\!/s}}{${Ac}\\,\\mathsf{m^2}}\\\\\\\\
+						v_c &= ${vc}\\,\\mathsf{m/s}
+					\\end{aligned}	`)} />
 		{/if}
 	</section>
 </article>

@@ -279,7 +279,7 @@
 				color: white;
 				padding: 0.25em;
 				top: 37%;
-				left: 47.5%;
+				left: 47%;
 				background-color: #088;
 			}
 

@@ -54,7 +54,7 @@
 <article>
 	<section class="fig">
 		<div class="width85">
-			<img src="/ocfc/triangularChannelSectionQ.png" alt="triangular channel section" />
+			<img src="/ocfc/triangularChannelSection.png" alt="triangular channel section" />
 			<img class="super" src="/ocfc/triangularChannelSectionY.png" alt="triangular channel section by depth" />
 		</div>
 		<form>
@@ -281,9 +281,10 @@
 			&.y {
 				color: white;
 				padding: 0.25em;
+				// margin: 0.25em;
 				top: 37%;
-				left: 47%;
-				background-color: transparent;
+				left: 46%;
+				background-color: var(--primaryColor);
 			}
 
 			&.zl {
