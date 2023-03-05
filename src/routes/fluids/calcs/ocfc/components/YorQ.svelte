@@ -1,10 +1,10 @@
 <script>
-    import { ki } from "$lib/utilities";
+	import { ki } from "$lib/utilities";
 	export let typeOfChannel;
-    export let specifyView;
+	export let specifyView;
 
-	let y = typeOfChannel+'Y';
-	let q = typeOfChannel+'Q';
+	let y = typeOfChannel + "Y";
+	let q = typeOfChannel + "Q";
 </script>
 
 <section class="radios">
@@ -17,3 +17,5 @@
 		<span class="radio__label">Specify {@html ki(`Q`)}</span>
 	</label>
 </section>
+
+

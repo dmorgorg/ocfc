@@ -1,14 +1,16 @@
 <script>
 	import Card from "./Card.svelte";
+	import { sigdigs } from "../stores.js";
 	// import { fade } from "svelte/transition";
 	import { ki, kd, fluids, utils, circ } from "$lib/utilities";
 
-	let sdigs = 3,
-		wdigs = 6,
+	// $: sigs = Number($sigdigs.sdigs);
+	let sdigs = $sigdigs.sdigs,
+		wdigs = $sigdigs.wdigs,
+		extraDig = $sigdigs.extraDig,
+		extraWorkingDig = $sigdigs.extraWorkingDig,
 		validS = true,
-		extraDig = true,
-		extraWorkingDig = true,
-		initDepth = 1,
+		initDepth = 1.3,
 		initDiam = 1.5,
 		initSlope = 0.1,
 		initN = 0.013,
@@ -125,9 +127,11 @@
 	$: alphaC = sdw(circ.getAlphaDegrees(yc, r));
 	$: alphaCrad = sdw(circ.getAlphaRadians(yc, r));
 	$: Ac = sdw(circ.getArea(thetaCrad, D));
+	$: Pc = sdw(circ.getP(thetaCrad, D));
+	$: Rc = sdw(fluids.getR(Ac, Pc));
 	$: vc = sdw(fluids.getVfromQandA(Q, Ac));
-	// $: Emin = sdw(fluids.getE(yc, vc, g));
-	// $: Sc = sdw(fluids.getCriticalSlope(n, vc, Rc));
+	$: Emin = sdw(fluids.getE(yc, vc, g));
+	$: Sc = sdw(fluids.getCriticalSlope(n, vc, Rc));
 </script>
 
 <article>
@@ -207,7 +211,8 @@
 		</form>
 	</section>
 
-	getNF: ${getNFfromY(yc)}
+	{$sigdigs.wdigs} <br />
+	{sdigs}
 	<section class="results">
 		{#if y === 0}
 			Depth is zero. The pipe is empty and there is no flow. Add some depth for real results.
@@ -426,11 +431,53 @@
 						OA &= 
 					\\end{aligned}
 				`)} /> -->
-			<Card
-				answer="For the {ki(`Q=${sdw(Q)} \\, \\mathsf{m^3\\!/s}`)} above, Critical Depth {ki(
-					`yc=${sds(yc)} \\, \\mathsf{m}`
-				)}"
-				solution="{kd(`
+			{#if thetaC < 180}
+				// less than half full
+				<Card
+					answer="For the {ki(`Q=${sdw(Q)} \\, \\mathsf{m^3\\!/s}`)} above, Critical Depth {ki(
+						`yc=${sds(yc)} \\, \\mathsf{m}`
+					)}"
+					solution="{kd(`
+						\\begin{aligned}
+							N_F &= 1 \\\\
+							\\Rightarrow v_c &= \\sqrt{ g(A_c/T_c)} \\\\
+							\\Rightarrow \\left(\\frac{Q}{A_c}\\right)^2 &= g(A_c/T_c) \\\\
+							\\Rightarrow \\frac{Q^2}{g} &= \\frac{A_c^3}{T_c} \\\\
+							&= \\frac{\\left((\\theta_c-\\sin \\theta_c)D^2/8\\right)^3}{D\\sin(\\theta_c/2)} \\\\
+							&= \\frac{(\\theta_c-\\sin \\theta_c)^3\\cdot D^5}{512\\sin(\\theta_c/2)} \\\\
+							\\frac{(\\theta_c-\\sin \\theta_c)^3}{\\sin(\\theta_c/2)} &= \\frac{512Q^2}{D^5g} \\\\
+							&= \\frac{512(${Q}\\, \\mathsf{m^3\\!/s})^2}{(${D}\\, \\mathsf{m})^5(${g}\\, \\mathsf{m/s^2})} \\\\\\\\
+							\\frac{(\\theta_c-\\sin \\theta_c)^3}{\\sin(\\theta_c/2)}&= ${thetaCriticalCoeff}
+						\\end{aligned}
+					`)} 
+					<div style='width: 85%; margin-left: 7.5%; '>This equation in {ki(
+						`\\theta_c`
+					)} can not be solved analytically. It must be solved for {ki(
+						`\\theta_c`
+					)} numerically (iteratively), using either trial and error, a solver in a calculator (in radian mode!) or by using a function in a spreadsheet. </div>
+					{kd(`\\begin{aligned}
+						\\theta_c &= ${thetaCrad}\\;\\textsf{\\textcolor{black}{radians}} \\\\
+						 &= ${thetaC}^\\circ
+					\\end{aligned}`)}
+					<div style='width: 55%; margin-left: 22.5%; '>Note that {ki(
+						`\\theta_c<180^\\circ`
+					)} and critical flow is at less than half depth so {ki(`\\theta_c~=~2\\alpha_c`)}:</div>
+					{kd(`\\begin{aligned}
+						\\Rightarrow \\alpha_c &= ${thetaC}^\\circ \\; \\textsf{\\textcolor{black}{radians}} \\\\
+						&= ${alphaC}^\\circ \\\\\\\\
+						OA_c &= OB\\cdot\\cos \\alpha_c \\\\
+						&= ${sds(r)}\\, \\mathsf{m}\\cdot \\cos ${alphaC}^\\circ \\\\
+						&= ${sdw(r * Math.cos(alphaCrad))}\\, \\mathsf{m} \\\\\\\\
+						\\Rightarrow y_c &= \\frac{D}{2}-OA_c \\\\
+						&= ${sds(D / 2)}\\, \\mathsf{m}-${sdw(r * Math.cos(alphaCrad))}\\, \\mathsf{m} \\\\\\\\
+						\\Rightarrow y_c &= ${yc}\\, \\mathsf{m}
+					\\end{aligned}`)}" />
+			{:else if thetaC > 180}
+				<Card
+					answer="For the {ki(`Q=${sdw(Q)} \\, \\mathsf{m^3\\!/s}`)} above, Critical Depth {ki(
+						`yc=${sds(yc)} \\, \\mathsf{m}`
+					)}"
+					solution="{kd(`
 				\\begin{aligned}
 					N_F &= 1 \\\\
 					\\Rightarrow v_c &= \\sqrt{ g(A_c/T_c)} \\\\
@@ -443,23 +490,37 @@
 					\\frac{(\\theta_c-\\sin \\theta_c)^3}{\\sin(\\theta_c/2)}&= ${thetaCriticalCoeff}
 				\\end{aligned}
 				`)} 
-				<div style='width: 85%; margin-left: 7.5%; '>This equation in {ki(`\\theta_c`)} can not be solved analytically. It must be solved for {ki(`\\theta_c`)} numerically (iteratively), using either trial and error, a solver in a calculator (in radian mode!) or by using a function in a spreadsheet. </div>
-				{kd(`\\begin{aligned}
-						\\theta_c &= ${thetaCrad}\\;\\textsf{\\textcolor{black}{radians}} \\\\\\\\
-						\\Rightarrow \\alpha_c &= \\frac{${thetaCrad}}{2}\\; \\textsf{\\textcolor{black}{radians}} \\\\
-						&= ${alphaCrad}\\; \\textsf{\\textcolor{black}{radians}} \\\\
+			<div style='width: 85%; margin-left: 7.5%; '>This equation in {ki(
+						`\\theta_c`
+					)} can not be solved analytically. It must be solved for {ki(
+						`\\theta_c`
+					)} numerically (iteratively), using either trial and error, a solver in a calculator (in radian mode!) or by using a function in a spreadsheet. </div>
+					{kd(`
+					\\begin{aligned}
+						\\theta_c &= ${thetaCrad}\\;\\textsf{\\textcolor{black}{radians}} \\\\
+						 &= ${thetaC}^\\circ 
+					\\end{aligned}
+					`)}
+					<div style='width: 55%; margin-left: 22.5%; '>Note that {ki(
+						`\\theta_c>180^\\circ`
+					)} and critical flow is at more than half depth so {ki(`\\theta_c=2\\pi-2\\alpha_c`)}:</div>
+					{kd(`
+					\\begin{aligned}	
+						\\Rightarrow \\alpha_c &= \\pi-\\theta_c/2 \\\\
+						&= ${alphaC}\\; \\textsf{\\textcolor{black}{radians}} \\\\
 						&= ${alphaCrad}\\cdot \\frac{180^\\circ}{\\pi} \\\\
 						&= ${alphaC}^\\circ \\\\\\\\
 						OA_c &= OB\\cdot\\cos \\alpha_c \\\\
 						&= ${sds(r)}\\, \\mathsf{m}\\cdot \\cos ${alphaC}^\\circ \\\\
-						&= ${sdw(r*Math.cos(alphaCrad))}\\, \\mathsf{m} \\\\\\\\
+						&= ${sdw(r * Math.cos(alphaCrad))}\\, \\mathsf{m} \\\\\\\\
 						\\Rightarrow y_c &= \\frac{D}{2}-OA_c \\\\
-						&= ${sds(D/2)}\\, \\mathsf{m}-${sdw(r*Math.cos(alphaCrad))}\\, \\mathsf{m} \\\\\\\\
-						\\Rightarrow y_c &= ${yc}\\, \\mathsf{m}
+					&= ${sds(D / 2)}\\, \\mathsf{m}-${sdw(r * Math.cos(alphaCrad))}\\, \\mathsf{m} \\\\\\\\
+					\\Rightarrow y_c &= ${yc}\\, \\mathsf{m}
 					\\end{aligned}`)}" />
+			{/if}
 			<Card
-          		answer="Critical Velocity: {ki(` v_c = ${sds(vc)}  \\,\\mathsf{m/s}` )}  "
-          		solution={kd(`
+				answer="Critical Velocity: {ki(` v_c = ${sds(vc)}  \\,\\mathsf{m/s}`)}  "
+				solution={kd(`
 					\\begin{aligned}         
 						A_c &= \\frac{(\\theta_c-\\sin\\theta_c)D^2}{8} \\\\
 						&= \\frac{(${thetaCrad}-\\sin ${thetaC}^\\circ)${D}\\,\\mathsf{m}}{8} \\\\								
@@ -468,6 +529,37 @@
 						&= \\frac{${Q}\\,\\mathsf{m^3\\!/s}}{${Ac}\\,\\mathsf{m^2}}\\\\\\\\
 						v_c &= ${vc}\\,\\mathsf{m/s}
 					\\end{aligned}	`)} />
+			<Card
+				answer="Minimum Specific Energy: {ki(`E_{min} = ${sds(Emin)}\\, \\mathsf{m}`)}"
+				solution={kd(`
+						\\begin{aligned}
+							E_{min} &= y_c+\\frac{ v_c^2 }{ 2g } \\\\
+							&= ${yc}\\, \\mathsf{m}+\\frac{ (${vc}\\, \\mathsf{m/s})^2 }{ 2(${g}\\, \\mathsf{m/s^2}) } \\\\
+							&= ${Emin} \\,\\mathsf{m}
+						\\end{aligned}
+					`)} />
+			<Card
+				answer="Slope for Critical Flow: {ki(`S_c = ${sds(Sc, sdigs, extraDig)}\\%`)}"
+				solution={kd(`
+					\\begin{aligned}
+						A_c &= \\frac{(\\theta_c-\\sin\\theta_c)D^2}{8} \\\\
+						&= \\frac{(${thetaCrad}-\\sin ${thetaC}^\\circ)${sds(D)}\\,\\mathsf{m}}{8} \\\\								
+						A_c &= ${Ac} \\,\\mathsf{m^2}\\\\\\\\
+
+						P &= \\theta_{\\mathsf{rad}}\\cdot\\frac{D}{2}\\\\
+						&= ${thetaCrad}\\cdot\\frac{${sds(D)}\\, \\mathsf{m}}{2} \\\\
+						P &= ${P}\\, \\mathsf{m} \\\\ \\\\
+
+						R_c &= A_c/P_c \\\\
+						&= \\frac{${Ac}\\, \\mathsf{m^2}}{${Pc}\\, \\mathsf{m}} \\\\
+						&= ${Rc}\\,\\mathsf{m}\\\\\\\\
+
+						\\Rightarrow S_c &= \\left(\\frac { nv_c }{ R_c^{2/3} }\\right)^2 \\\\
+						&= \\left(\\frac{${n}\\times ${vc}\\, \\mathsf{m/s} }{ (${Rc}\\, \\mathsf{m})^{2/3} }\\right)^2\\\\
+						&= ${Sc / 100} \\\\\\\\
+						S_c &= ${Sc}\\% 								
+					\\end{aligned}
+				`)} />
 		{/if}
 	</section>
 </article>
@@ -520,5 +612,10 @@
 				}
 			}
 		}
+	}
+	input::-webkit-outer-spin-button,
+	input::-webkit-inner-spin-button {
+		-webkit-appearance: none;
+		margin: 0;
 	}
 </style>

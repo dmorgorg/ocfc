@@ -156,7 +156,8 @@ Navbar
 	font-size: 110%;
 }
 
-.katex-display > .katex {
+.katex-display > .katex,
+.katex-inline > .katex  {
 	color: var(--primaryColor);
 }
 
@@ -211,11 +212,11 @@ label.yQlayout + label.yQlayout {
 
 /* Chrome, Safari, Edge, Opera */
 
-input::-webkit-outer-spin-button,
-input::-webkit-inner-spin-button {
-	-webkit-appearance: none;
-	margin: 0;
-}
+// input::-webkit-outer-spin-button,
+// input::-webkit-inner-spin-button {
+// 	-webkit-appearance: none;
+// 	margin: 0;
+// }
 
 /* Firefox */
 
