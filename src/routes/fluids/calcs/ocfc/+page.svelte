@@ -1,28 +1,7 @@
-<script>
-  import NavigationHeader from "./components/NavigationHeader.svelte";
-  import Rectangular from "./components/Rectangular.svelte";
-  import Triangular from "./components/Triangular.svelte";
-  import Trapezoidal from "./components/Trapezoidal.svelte";
-  import Circular from "./components/Circular.svelte";
+<main>
+  <h1>Open Channel Flow Calculator:</h1>
 
-  let channelType = "circular";
-</script>
-
-<div class="container">
-  <NavigationHeader bind:channelType />
-
-  <main>
-    <div class:hide={channelType !== "rectangular"}>
-      <Rectangular />
-    </div>
-    <div class:hide={channelType !== "triangular"}>
-      <Triangular />
-    </div>
-    <div class:hide={channelType !== "trapezoidal"}>
-      <Trapezoidal />
-    </div>
-    <div class:hide={channelType !== "circular"}>
-      <Circular />
-    </div>
-  </main>
-</div>
+  It has moved to more permanent resting place &nbsp;<a href="../../fluids/ocfc"
+    >here</a
+  >. You may want to update your bookmarks.
+</main>
