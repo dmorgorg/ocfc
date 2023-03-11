@@ -49,49 +49,7 @@
   const sds = (num) => {
     return utils.sd(num, sdigs, extraDig);
   };
-  const processChange = utils.debounce((e) => {
-    if (e.target.id === "diam") {
-      if (e.target.value === "") {
-        Ds = Math.max(y, initDiam);
-      }
-      Ds = Ds < ys ? ys : Ds;
-      D = Number(Ds);
-      Ds = sds(Ds);
-    }
-    if (e.target.id === "depth") {
-      if (e.target.value === "") {
-        ys = Math.min(initDepth, D);
-      }
-      ys = ys > Ds ? Ds : ys;
-      y = Number(ys);
-      ys = sds(ys);
-    }
-    if (e.target.id === "slope") {
-      if (e.target.value === "") {
-        ss = sds(initSlope);
-      }
-      ss = ss < 0 ? -ss : ss;
-      validS = s === 0 ? false : true;
-      s = Number(ss);
-      ss = sds(ss);
-    }
-    if (e.target.id === "n") {
-      if (e.target.value === "") {
-        ss = sds(initN);
-      }
-      ns = ns < 0 ? -ns : ns;
-      n = Number(ns);
-      ss = sds(ns);
-    }
-    if (e.target.id === "g") {
-      if (e.target.value === "") {
-        ss = sds(initG);
-      }
-      gs = gs < 0 ? -gs : gs;
-      g = Number(gs);
-      ss = sds(gs);
-    }
-  }, 2000);
+  const processChange = fluids.processChange;
 
   // variables ending in s are string inputs, bound to numerical input fields
   $: Ds = sds(initDiam);
@@ -374,7 +332,7 @@
           )}
           solution={kd(`
 					\\begin{aligned}
-						\\theta &= 360\\circ - 2 \\alpha \\\\
+						\\theta &= 360^\\circ - 2 \\alpha \\\\
 						&= 360^\\circ - 2 \\left(${alpha}^\\circ \\right)\\\\
 						&= ${theta}^\\circ \\\\\\\\
 						
@@ -479,7 +437,7 @@
         solution={kd(`
 					\\begin{aligned}
 						E &= y+\\frac{v^2}{2g} \\\\
-						&= ${y}\\, \\mathsf{m}+\\frac{(${v} \\, \\mathsf{m/s)^2} }
+						&= ${sds(y)}\\, \\mathsf{m}+\\frac{(${v} \\, \\mathsf{m/s)^2} }
 								{2(${g}\\, \\mathsf{m/s^2}) } \\\\\\\\
 						E &= ${E}\\,\\mathsf{m}
 					\\end{aligned}
@@ -511,19 +469,8 @@
       <!-- </section>
 	<section class="results"> -->
       <h1>Critical Flow</h1>
-      <!-- <Card
-				answer="{ki(`y_c`)} testing"
-				solution={kd(`
-					\\begin{aligned}
-						y_c &= ${yc} \\\\
-						N_F &= ${getNFfromY(yc)} \\checkmark \\\\\\\\
-						\\theta_c &= ${circ.getThetaRadians(yc, r)} \\\\
-						\\theta_c &= ${circ.getThetaDegrees(yc, r)}^\\circ \\\\
-						OA &= 
-					\\end{aligned}
-				`)} /> -->
+
       {#if thetaC < 180}
-        // less than half full
         <Card
           answer="For the {ki(
             `Q=${sdw(Q)} \\, \\mathsf{m^3\\!/s}`
@@ -626,7 +573,7 @@
         solution={kd(`
 					\\begin{aligned}         
 						A_c &= \\frac{(\\theta_c-\\sin\\theta_c)D^2}{8} \\\\
-						&= \\frac{(${thetaCrad}-\\sin ${thetaC}^\\circ)${D}\\,\\mathsf{m}}{8} \\\\								
+						&= \\frac{(${thetaCrad}-\\sin ${thetaC}^\\circ)${sds(D)}\\,\\mathsf{m}}{8} \\\\								
 										A_c &= ${Ac} \\,\\mathsf{m^2}\\\\\\\\
 						v_c &= Q/A_c \\\\
 						&= \\frac{${Q}\\,\\mathsf{m^3\\!/s}}{${Ac}\\,\\mathsf{m^2}}\\\\\\\\
@@ -665,7 +612,7 @@
 
 						\\Rightarrow S_c &= \\left(\\frac { nv_c }{ R_c^{2/3} }\\right)^2 \\\\
 						&= \\left(\\frac{${n}\\times ${vc}\\, \\mathsf{m/s} }{ (${Rc}\\, \\mathsf{m})^{2/3} }\\right)^2\\\\
-						&= ${Sc / 100} \\\\\\\\
+						&= ${sdw(Sc / 100)} \\\\\\\\
 						S_c &= ${Sc}\\% 								
 					\\end{aligned}
 				`)}
