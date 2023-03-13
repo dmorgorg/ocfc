@@ -1,5 +1,5 @@
 <script>
-  import { fade, fly } from "svelte/transition";
+  import { fly } from "svelte/transition";
   import { ki } from "$lib/utilities";
   export let typeOfChannel = "rectangular";
   $: isVisible = false;
@@ -56,7 +56,7 @@
     {/if}
     <p />
     <br />
-    By default, this calculator uses {@html ki(`3`)} significant digits for input
+    <!-- By default, this calculator uses {@html ki(`3`)} significant digits for input
     values and answers (or {@html ki(`4`)}
     significant digits if the first non-zero digit is a {@html ki(`1`)}, e.g.{@html ki(
       `0.234`
@@ -100,9 +100,9 @@
           {:else}
             No
           {/if}
-        </label>
-      </div>
-    </div>
+        </label> -->
+    <!-- </div> -->
+    <!-- </div> -->
     <p />
   </section>
 {/if}
