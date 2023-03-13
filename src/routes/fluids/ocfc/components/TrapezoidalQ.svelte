@@ -1,18 +1,26 @@
 <script>
   import Card from "./Card.svelte";
-  import { fade } from "svelte/transition";
-  import { ki, kd, fluids, trap, utils } from "$lib/utilities";
+  import { sigdigs } from "../stores.js";
+  import { ki, kd, utils } from "$lib/utilities";
+  import { common, trap } from "$lib/fluids";
 
-  let sdigs = 3,
-    wdigs = 6,
+  let sdigs = $sigdigs.sdigs,
+    wdigs = $sigdigs.wdigs,
+    extraDig = $sigdigs.extraDig,
+    extraWorkingDig = $sigdigs.extraWorkingDig,
     validS = true,
-    extraDig = true,
-    extraWorkingDig = false;
+    initB = 3,
+    initZL = 1.5,
+    initZR = 0.75,
+    initQ = 1.2,
+    initS = 0.1,
+    initN = 0.013,
+    initG = 9.81;
 
   // needs access to n, b, s so has to be in this file?
   $: getQfromY = (y) => {
     var A = trap.getArea(y, zl, b, zr);
-    let v = fluids.getV(n, fluids.getR(A, trap.getP(y, zl, b, zr)), s);
+    let v = common.getV(n, common.getR(A, trap.getP(y, zl, b, zr)), s);
     return A * v;
   };
   $: getYfromQ = (low = 0, high = 100) => {
@@ -23,7 +31,7 @@
       return (low + high) * 0.5;
     }
     // search
-    if (getQfromY(mid) < QQ) {
+    if (getQfromY(mid) < Q) {
       return getYfromQ(mid, high);
     } else {
       return getYfromQ(low, mid);
@@ -32,7 +40,7 @@
   $: getNFfromY = (y) => {
     let A = trap.getArea(y, zl, b, zr);
     let T = trap.getT(y, zl, b, zr);
-    let v = QQ / A;
+    let v = Q / A;
     return v / ((g * A) / T) ** 0.5;
   };
   $: getYCfromQ = (low = 0, high = 100) => {
@@ -49,7 +57,6 @@
     }
   };
 
-  let sd = utils.sd;
   const sdw = (num) => {
     return utils.sd(num, wdigs, extraWorkingDig);
   };
@@ -58,38 +65,97 @@
     return utils.sd(num, sdigs, extraDig);
   };
 
-  const processChange = fluids.processChange;
+  const sd = utils.sd;
+
+  const processChange = utils.debounce((e) => {
+    if (e.target.id === "zl") {
+      if (e.target.value === "") {
+        zls = sds(initZL);
+      }
+      zls = sds(Math.abs(Number(zls)));
+      zl = Number(zls);
+    }
+    if (e.target.id === "zr") {
+      if (e.target.value === "") {
+        zrs = sds(initZR);
+      }
+      zrs = sds(Math.abs(Number(zrs)));
+      zr = Number(zrs);
+    }
+    if (e.target.id === "base") {
+      if (e.target.value === "") {
+        bs = sds(initB);
+      }
+      bs = sds(Math.abs(Number(bs)));
+      b = Number(bs);
+    }
+    if (e.target.id === "flowrate") {
+      if (e.target.value === "") {
+        Qs = sds(initQ);
+      }
+      Qs = sds(Math.abs(Number(Qs)));
+      Q = Number(Qs);
+    }
+    if (e.target.id === "slope") {
+      if (e.target.value === "") {
+        ss = sds(initS);
+      }
+      ss = sds(Math.abs(Number(ss)));
+      validS = s === 0 ? false : true;
+      s = Number(ss);
+    }
+    if (e.target.id === "n") {
+      if (e.target.value === "") {
+        ns = sds(initN);
+      }
+      ns = sds(Math.abs(Number(ns)));
+      n = Number(ns);
+    }
+    if (e.target.id === "g") {
+      if (e.target.value === "") {
+        gs = sds(initG);
+      }
+      gs = Math.abs(Number(gs)).toString();
+      if (gs.length > 4) {
+        // allow g = 9.806
+        gs = sd(Number(gs), 4);
+      } else {
+        gs = sds(gs);
+      }
+      g = Number(gs);
+    }
+  });
 
   // variables ending in s are string inputs, bound to numerical input fields
-  let bs = 3,
-    zls = 1.5,
-    zrs = 1,
-    QQs = 3.25,
-    ss = 0.1,
-    ns = 0.013,
-    gs = 9.81;
+  $: bs = sds(initB);
+  $: zls = sds(initZL);
+  $: zrs = sds(initZR);
+  $: Qs = sds(initQ);
+  $: ss = sds(initS);
+  $: ns = sds(initN);
+  $: gs = sds(initG);
   // inputs
-  $: b = sds(bs);
-  $: zl = sds(zls);
-  $: zr = sds(zrs);
-  $: QQ = sds(QQs);
-  $: n = Number(ns);
-  $: s = Number(ss);
-  $: g = Number(gs);
+  $: b = initB;
+  $: Q = initQ;
+  $: zl = initZL;
+  $: zr = initZR;
+  $: s = initS;
+  $: n = initN;
+  $: g = initG;
   // calculations for Q specified
   $: y = sdw(getYfromQ());
   $: A = sdw(trap.getArea(y, zl, b, zr));
-  $: v = sdw(fluids.getVfromQandA(QQ, A));
-  $: E = sdw(fluids.getE(y, v, g));
+  $: v = sdw(common.getVfromQandA(Q, A));
+  $: E = sdw(common.getE(y, v, g));
   $: T = sdw(trap.getT(y, zl, b, zr));
-  $: NF = sdw(fluids.getNF(v, A, T, g));
+  $: NF = sdw(common.getNF(v, A, T, g));
   $: yc = sdw(getYCfromQ());
   $: Ac = sdw(trap.getArea(yc, zl, b, zr));
-  $: vc = sdw(fluids.getVfromQandA(QQ, Ac));
-  $: Emin = sdw(fluids.getE(yc, vc, g));
+  $: vc = sdw(common.getVfromQandA(Q, Ac));
+  $: Emin = sdw(common.getE(yc, vc, g));
   $: Pc = sdw(trap.getP(yc, zl, b, zr));
-  $: Rc = sdw(fluids.getR(Ac, Pc));
-  $: Sc = sdw(fluids.getCriticalSlope(n, vc, Rc));
+  $: Rc = sdw(common.getR(Ac, Pc));
+  $: Sc = sdw(common.getCriticalSlope(n, vc, Rc));
 </script>
 
 <article>
@@ -106,6 +172,7 @@
         <input
           type="number"
           step="any"
+          id="base"
           bind:value={bs}
           on:input={processChange}
         />
@@ -117,7 +184,8 @@
         <input
           type="number"
           step="any"
-          bind:value={QQs}
+          id="flowrate"
+          bind:value={Qs}
           on:input={processChange}
         />
         {@html ki(`\\mathsf{m^3\\!/s}`)}
@@ -128,6 +196,7 @@
         <input
           type="number"
           step="any"
+          id="zl"
           bind:value={zls}
           on:input={processChange}
         />
@@ -138,6 +207,7 @@
         <input
           type="number"
           step="any"
+          id="zr"
           bind:value={zrs}
           on:input={processChange}
         />
@@ -151,7 +221,7 @@
           <input
             type="number"
             step="any"
-            required
+            id="slope"
             bind:value={ss}
             on:input={processChange}
           />
@@ -163,7 +233,7 @@
           <input
             type="number"
             step="any"
-            required
+            id="n"
             bind:value={ns}
             on:input={processChange}
           />
@@ -174,7 +244,7 @@
           <input
             type="number"
             step="any"
-            required
+            id="g"
             bind:value={gs}
             on:input={processChange}
           />
@@ -203,7 +273,7 @@
 							Q &= \\frac 1n AR^{2/3}S^{1/2}
 							= \\frac 1n A(A/P)^{2/3}S^{1/2} \\\\
 							 &= \\frac 1n \\cdot\\frac{A^{5/3}}{P^{2/3}}\\cdot S^{1/2} \\\\
-							${QQ}\\, \\mathsf{m^3\\!/s} &= \\frac{1}{${n}}  \\cdot\\frac{\\left(\\left(${b}\\, \\mathsf{m}\\!+\\!${sdw(
+							${Q}\\, \\mathsf{m^3\\!/s} &= \\frac{1}{${n}}  \\cdot\\frac{\\left(\\left(${b}\\, \\mathsf{m}\\!+\\!${sdw(
             zl / 2 + zr / 2
           )} y\\right) y\\right)^{5/3}}{\\left(${b}\\, \\mathsf{m}\\!+\\!\\left( \\sqrt{1\\!+\\!${zl}^2}\\!+\\!\\sqrt{1\\!+\\!${zr}^2}\\right) y\\right)^{2/3}}\\!\\cdot\\! (${
             s / 100
@@ -234,7 +304,7 @@
           solution={kd(`
 						\\begin{aligned} 
 							v &= Q/A \\\\
-						 	&= \\frac{${QQ}\\, \\mathsf{m^3\\!/s}}{${A}\\, \\mathsf{m^2}} \\\\					
+						 	&= \\frac{${Q}\\, \\mathsf{m^3\\!/s}}{${A}\\, \\mathsf{m^2}} \\\\					
 							&= ${v} \\, \\mathsf{m/s}
 						\\end{aligned}`)}
         />
@@ -274,7 +344,7 @@
 
           <Card
             answer="For the {ki(
-              `Q=${sds(QQ)} \\, \\mathsf{m^3\\!/s}`
+              `Q=${sds(Q)} \\, \\mathsf{m^3\\!/s}`
             )} above, Critical Depth {ki(`yc=${sds(yc)} \\, \\mathsf{m}`)}"
             solution="{kd(`
                             \\begin{aligned}
@@ -307,7 +377,7 @@
 								&= ${Ac}\\, \\mathsf{m^2}\\\\\\\\
 
 								v_c &= Q/A_c \\\\
-								&= \\frac{${QQ}\\, \\mathsf{m^3\\!/s}}{${Ac}\\, \\mathsf{m^2}} \\\\
+								&= \\frac{${Q}\\, \\mathsf{m^3\\!/s}}{${Ac}\\, \\mathsf{m^2}} \\\\
 								&= ${vc} \\,\\mathsf{m/s}
 							\\end{aligned}	`)}
           />

@@ -1,13 +1,20 @@
 <script>
   import Card from "./Card.svelte";
-  import { fade } from "svelte/transition";
-  import { ki, kd, fluids, tri, utils } from "$lib/utilities";
+  import { sigdigs } from "../stores.js";
+  import { ki, kd, utils } from "$lib/utilities";
+  import { common, tri } from "$lib/fluids";
 
-  let sdigs = 3,
-    wdigs = 6,
+  let sdigs = $sigdigs.sdigs,
+    wdigs = $sigdigs.wdigs,
+    extraDig = $sigdigs.extraDig,
+    extraWorkingDig = $sigdigs.extraWorkingDig,
     validS = true,
-    extraDig = true,
-    extraWorkingDig = false;
+    initZL = 1.5,
+    initZR = 0.75,
+    initQ = 3.25,
+    initS = 0.1,
+    initN = 0.013,
+    initG = 9.81;
 
   $: getYfromQ = (Q, zl, zr, s, n) => {
     let num =
@@ -30,36 +37,88 @@
     return utils.sd(num, sdigs, extraDig);
   };
 
-  const processChange = fluids.processChange;
+  const sd = utils.sd;
+
+  const processChange = utils.debounce((e) => {
+    if (e.target.id === "zl") {
+      if (e.target.value === "") {
+        zls = sds(initZL);
+      }
+      zls = sds(Math.abs(Number(zls)));
+      zl = Number(zls);
+    }
+    if (e.target.id === "zr") {
+      if (e.target.value === "") {
+        zrs = sds(initZR);
+      }
+      zrs = sds(Math.abs(Number(zrs)));
+      zr = Number(zrs);
+    }
+    if (e.target.id === "flowrate") {
+      if (e.target.value === "") {
+        Qs = sds(initQ);
+      }
+      Qs = sds(Math.abs(Number(Qs)));
+      Q = Number(Qs);
+    }
+    if (e.target.id === "slope") {
+      if (e.target.value === "") {
+        ss = sds(initS);
+      }
+      ss = sds(Math.abs(Number(ss)));
+      validS = s === 0 ? false : true;
+      s = Number(ss);
+    }
+    if (e.target.id === "n") {
+      if (e.target.value === "") {
+        ns = sds(initN);
+      }
+      ns = sds(Math.abs(Number(ns)));
+      n = Number(ns);
+    }
+    if (e.target.id === "g") {
+      if (e.target.value === "") {
+        gs = sds(initG);
+      }
+      gs = Math.abs(Number(gs)).toString();
+      if (gs.length > 4) {
+        // allow g = 9.806
+        gs = sd(Number(gs), 4);
+      } else {
+        gs = sds(gs);
+      }
+      g = Number(gs);
+    }
+  });
 
   // variables ending in s are string inputs, bound to numerical input fields
-  let Qs = 3.25,
-    zls = 1,
-    zrs = 1,
-    ss = 0.1,
-    ns = 0.013,
-    gs = 9.81;
+  $: zls = sds(initZL);
+  $: zrs = sds(initZR);
+  $: Qs = sds(initQ);
+  $: ss = sds(initS);
+  $: ns = sds(initN);
+  $: gs = sds(initG);
   // inputs
-  $: Q = sds(Qs);
-  $: zl = sds(zls);
-  $: zr = sds(zrs);
-  $: n = Number(sds(ns));
-  $: s = Number(sds(ss));
-  $: g = Number(sds(gs));
+  $: Q = initQ;
+  $: zl = initZL;
+  $: zr = initZR;
+  $: s = initS;
+  $: n = initN;
+  $: g = initG;
   // calculations for Q specified
   $: y = sdw(getYfromQ(Q, zl, zr, s, n));
   $: A = sdw(tri.getArea(y, zl, zr));
-  $: v = sdw(fluids.getVfromQandA(Q, A));
-  $: E = sdw(fluids.getE(y, v, g));
+  $: v = sdw(common.getVfromQandA(Q, A));
+  $: E = sdw(common.getE(y, v, g));
   $: T = sds(tri.getT(y, zl, zr));
-  $: NF = sdw(fluids.getNF(v, A, T, g));
+  $: NF = sdw(common.getNF(v, A, T, g));
   $: yc = sdw(getYCfromQ(Q, zl, zr, g));
   $: Ac = sdw(tri.getArea(yc, zl, zr));
-  $: vc = sdw(fluids.getVfromQandA(Q, Ac));
-  $: Emin = sdw(fluids.getE(yc, vc, g));
+  $: vc = sdw(common.getVfromQandA(Q, Ac));
+  $: Emin = sdw(common.getE(yc, vc, g));
   $: Pc = sdw(tri.getP(yc, zl, zr));
-  $: Rc = sdw(fluids.getR(Ac, Pc));
-  $: Sc = sdw(fluids.getCriticalSlope(n, vc, Rc));
+  $: Rc = sdw(common.getR(Ac, Pc));
+  $: Sc = sdw(common.getCriticalSlope(n, vc, Rc));
 </script>
 
 <article>
@@ -76,6 +135,7 @@
         <input
           type="number"
           step="any"
+          id="zl"
           bind:value={zls}
           on:input={processChange}
         />
@@ -85,6 +145,7 @@
         <input
           type="number"
           step="any"
+          id="zr"
           bind:value={zrs}
           on:input={processChange}
         />
@@ -95,6 +156,7 @@
         <input
           type="number"
           step="any"
+          id="flowrate"
           bind:value={Qs}
           on:input={processChange}
         />
@@ -109,7 +171,7 @@
           <input
             type="number"
             step="any"
-            required
+            id="s"
             bind:value={ss}
             on:input={processChange}
           />
@@ -121,7 +183,7 @@
           <input
             type="number"
             step="any"
-            required
+            id="n"
             bind:value={ns}
             on:input={processChange}
           />
@@ -132,7 +194,7 @@
           <input
             type="number"
             step="any"
-            required
+            id="g"
             bind:value={gs}
             on:input={processChange}
           />

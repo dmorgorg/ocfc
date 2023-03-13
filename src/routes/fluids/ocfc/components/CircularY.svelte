@@ -1,18 +1,17 @@
 <script>
   import Card from "./Card.svelte";
   import { sigdigs } from "../stores.js";
-  // import { fade } from "svelte/transition";
-  import { ki, kd, fluids, utils, circ } from "$lib/utilities";
+  import { ki, kd, utils } from "$lib/utilities";
+  import { common, circ } from "$lib/fluids";
 
-  // $: sigs = Number($sigdigs.sdigs);
   let sdigs = $sigdigs.sdigs,
     wdigs = $sigdigs.wdigs,
     extraDig = $sigdigs.extraDig,
     extraWorkingDig = $sigdigs.extraWorkingDig,
     validS = true,
-    initDepth = 1.3,
-    initDiam = 1.5,
-    initSlope = 0.1,
+    initY = 1.3,
+    initD = 1.5,
+    initS = 0.1,
     initN = 0.013,
     initG = 9.81;
 
@@ -24,7 +23,7 @@
     const T = circ.getT(alpha, D);
     const A = circ.getArea(thetaRad, D);
     const v = Q / A;
-    return fluids.getNF(v, A, T, g);
+    return common.getNF(v, A, T, g);
   };
 
   $: getYc = (shallow = 0, deep = D) => {
@@ -49,35 +48,80 @@
   const sds = (num) => {
     return utils.sd(num, sdigs, extraDig);
   };
-  const processChange = fluids.processChange;
+  const sd = utils.sd;
+
+  const processChange = utils.debounce((e) => {
+    if (e.target.id === "diam") {
+      if (e.target.value === "") {
+        Ds = sds(Math.max(y, initD));
+      }
+      Ds = sds(Ds < ys ? ys : Ds);
+      D = Number(Ds);
+    }
+    if (e.target.id === "depth") {
+      if (e.target.value === "") {
+        ys = Math.min(initY, D);
+      }
+      ys = Math.abs(ys);
+      ys = sds(ys > Ds ? Ds : ys);
+      y = Number(ys);
+    }
+    if (e.target.id === "slope") {
+      if (e.target.value === "") {
+        ss = sds(initS);
+      }
+      ss = sds(Math.abs(Number(ss)));
+      validS = s === 0 ? false : true;
+      s = Number(ss);
+    }
+    if (e.target.id === "n") {
+      if (e.target.value === "") {
+        ns = sds(initN);
+      }
+      ns = sds(Math.abs(Number(ns)));
+      n = Number(ns);
+    }
+    if (e.target.id === "g") {
+      if (e.target.value === "") {
+        gs = sds(initG);
+      }
+      gs = Math.abs(Number(gs)).toString();
+      if (gs.length > 4) {
+        gs = sd(Number(gs), 4);
+      } else {
+        gs = sds(gs);
+      }
+      g = Number(gs);
+    }
+  });
 
   // variables ending in s are string inputs, bound to numerical input fields
-  $: Ds = sds(initDiam);
-  $: ys = sds(initDepth);
-  $: ss = sds(initSlope);
+  $: Ds = sds(initD);
+  $: ys = sds(initY);
+  $: ss = sds(initS);
   $: ns = sds(initN);
   $: gs = sds(initG);
 
-  $: D = initDiam;
-  $: y = initDepth;
-  $: s = Number(ss);
-  $: n = Number(ns);
-  $: g = Number(gs);
+  // I'm not sure why but if I initialise these to string values, debounce doesn't delay update of calculations
+  $: D = initD;
+  $: y = initY;
+  $: s = initS;
+  $: n = initN;
+  $: g = initG;
 
   $: r = sds(D / 2);
-
-  $: alphaRad = sdw(circ.getAlphaRadians(y, r));
+  // $: alphaRad = sdw(circ.getAlphaRadians(y, r));
   $: alpha = sdw(circ.getAlphaDegrees(y, r));
   $: thetaRad = sdw(circ.getThetaRadians(y, r));
   $: theta = sdw(circ.getThetaDegrees(y, r));
   $: A = sdw(circ.getArea(thetaRad, D));
   $: P = sdw(circ.getP(thetaRad, D));
-  $: R = sdw(fluids.getR(A, P));
-  $: v = sdw(fluids.getV(n, R, s));
-  $: Q = sdw(fluids.getQfromAandV(A, v));
-  $: E = sdw(fluids.getE(y, v, g));
+  $: R = sdw(common.getR(A, P));
+  $: v = sdw(common.getV(n, R, s));
+  $: Q = sdw(common.getQfromAandV(A, v));
+  $: E = sdw(common.getE(y, v, g));
   $: T = sdw(circ.getT(alpha, D));
-  $: NF = sdw(fluids.getNF(v, A, T, g));
+  $: NF = sdw(common.getNF(v, A, T, g));
   $: thetaCriticalCoeff = sdw((512 * Q * Q) / D ** 5 / g);
   $: yc = sdw(getYc());
   $: thetaCrad = sdw(circ.getThetaRadians(yc, r));
@@ -86,10 +130,10 @@
   $: alphaCrad = sdw(circ.getAlphaRadians(yc, r));
   $: Ac = sdw(circ.getArea(thetaCrad, D));
   $: Pc = sdw(circ.getP(thetaCrad, D));
-  $: Rc = sdw(fluids.getR(Ac, Pc));
-  $: vc = sdw(fluids.getVfromQandA(Q, Ac));
-  $: Emin = sdw(fluids.getE(yc, vc, g));
-  $: Sc = sdw(fluids.getCriticalSlope(n, vc, Rc));
+  $: Rc = sdw(common.getR(Ac, Pc));
+  $: vc = sdw(common.getVfromQandA(Q, Ac));
+  $: Emin = sdw(common.getE(yc, vc, g));
+  $: Sc = sdw(common.getCriticalSlope(n, vc, Rc));
 </script>
 
 <article>
@@ -200,6 +244,7 @@
           />
           {@html ki(`\\small\\%`)}
         </label>
+
         <label class="n">
           Mannings {@html ki(`\\large n =`)}
           <input
@@ -209,8 +254,8 @@
             bind:value={ns}
             on:input={processChange}
           />
-          {@html ki(`\\mathsf{m}`)}
         </label>
+
         <label class="g">
           {@html ki(`\\large g=`)}
           <input
@@ -228,8 +273,8 @@
 
   <section class="results">
     {#if y === 0}
-      Depth is zero. The pipe is empty and there is no flow. Add some depth for
-      real results.
+      Depth is zero. The pipe is empty and there is no flow. Add some depth to
+      see calculated results.
     {:else}
       <h1>Normal (Uniform) Flow</h1>
       {#if y === D / 2}

@@ -1,13 +1,20 @@
 <script>
   import Card from "./Card.svelte";
-  import { fade } from "svelte/transition";
-  import { ki, kd, fluids, utils, tri } from "$lib/utilities";
+  import { sigdigs } from "../stores.js";
+  import { ki, kd, utils } from "$lib/utilities";
+  import { common, tri } from "$lib/fluids";
 
-  let sdigs = 3,
-    wdigs = 6,
+  let sdigs = $sigdigs.sdigs,
+    wdigs = $sigdigs.wdigs,
+    extraDig = $sigdigs.extraDig,
+    extraWorkingDig = $sigdigs.extraWorkingDig,
     validS = true,
-    extraDig = true,
-    extraWorkingDig = true;
+    initZL = 1.5,
+    initZR = 0.75,
+    initY = 1.75,
+    initS = 0.1,
+    initN = 0.013,
+    initG = 9.81;
 
   const sdw = (num) => {
     return utils.sd(num, wdigs, extraWorkingDig);
@@ -17,38 +24,91 @@
     return utils.sd(num, sdigs, extraDig);
   };
 
-  const processChange = fluids.processChange;
+  const sd = utils.sd;
+
+  const processChange = utils.debounce((e) => {
+    if (e.target.id === "zl") {
+      if (e.target.value === "") {
+        zls = sds(initZL);
+      }
+      zls = sds(Math.abs(Number(zls)));
+      zl = Number(zls);
+    }
+    if (e.target.id === "zr") {
+      if (e.target.value === "") {
+        zrs = sds(initZR);
+      }
+      zrs = sds(Math.abs(Number(zrs)));
+      zr = Number(zrs);
+    }
+    if (e.target.id === "depth") {
+      if (e.target.value === "") {
+        ys = sds(initY);
+      }
+      ys = sds(Math.abs(Number(ys)));
+      y = Number(ys);
+    }
+    if (e.target.id === "slope") {
+      if (e.target.value === "") {
+        ss = sds(initS);
+      }
+      ss = sds(Math.abs(Number(ss)));
+      validS = s === 0 ? false : true;
+      s = Number(ss);
+    }
+    if (e.target.id === "n") {
+      if (e.target.value === "") {
+        ns = sds(initN);
+      }
+      ns = sds(Math.abs(Number(ns)));
+      n = Number(ns);
+    }
+    if (e.target.id === "g") {
+      if (e.target.value === "") {
+        gs = sds(initG);
+      }
+      gs = Math.abs(Number(gs)).toString();
+      if (gs.length > 4) {
+        // allow g = 9.806
+        gs = sd(Number(gs), 4);
+      } else {
+        gs = sds(gs);
+      }
+      g = Number(gs);
+    }
+  });
 
   // variables ending in s are string inputs, bound to numerical input fields
-  let ys = 1.4,
-    zls = 1,
-    zrs = 1,
-    ss = 0.1,
-    ns = 0.013,
-    gs = 9.81;
+  $: zls = sds(initZL);
+  $: zrs = sds(initZR);
+  $: ys = sds(initY);
+  $: ss = sds(initS);
+  $: ns = sds(initN);
+  $: gs = sds(initG);
+
   // inputs
-  $: y = sdw(ys, sdigs, extraDig);
-  $: zl = sdw(zls, sdigs, extraDig);
-  $: zr = sdw(zrs, sdigs, extraDig);
-  $: n = Number(sdw(ns, sdigs, extraDig));
-  $: s = Number(sdw(ss, sdigs, extraDig));
-  $: g = Number(sdw(gs, sdigs, extraDig));
+  $: y = initY;
+  $: zl = initZL;
+  $: zr = initZR;
+  $: s = initS;
+  $: n = initN;
+  $: g = initG;
   // calculations for y specified
   $: A = sdw(tri.getArea(y, zl, zr), wdigs, extraWorkingDig);
   $: P = sdw(tri.getP(y, zl, zr), wdigs, extraWorkingDig);
-  $: R = sdw(fluids.getR(A, P), wdigs, extraWorkingDig);
-  $: v = sdw(fluids.getV(n, R, s), wdigs, extraWorkingDig);
-  $: Q = sdw(fluids.getQfromAandV(A, v), wdigs, extraWorkingDig);
-  $: E = sdw(fluids.getE(y, v, g), wdigs, extraWorkingDig);
+  $: R = sdw(common.getR(A, P), wdigs, extraWorkingDig);
+  $: v = sdw(common.getV(n, R, s), wdigs, extraWorkingDig);
+  $: Q = sdw(common.getQfromAandV(A, v), wdigs, extraWorkingDig);
+  $: E = sdw(common.getE(y, v, g), wdigs, extraWorkingDig);
   $: T = sdw(tri.getT(y, zl, zr), wdigs, extraWorkingDig);
-  $: NF = sdw(fluids.getNF(v, A, T, g), wdigs, extraWorkingDig);
+  $: NF = sdw(common.getNF(v, A, T, g), wdigs, extraWorkingDig);
   $: yc = sdw(tri.getYc(Q, zl, zr, g), wdigs, extraWorkingDig);
   $: Ac = sdw(tri.getArea(yc, zl, zr), wdigs, extraWorkingDig);
-  $: vc = sdw(fluids.getVfromQandA(Q, Ac), wdigs, extraWorkingDig);
-  $: Emin = sdw(fluids.getE(yc, vc, g), wdigs, extraWorkingDig);
+  $: vc = sdw(common.getVfromQandA(Q, Ac), wdigs, extraWorkingDig);
+  $: Emin = sdw(common.getE(yc, vc, g), wdigs, extraWorkingDig);
   $: Pc = sdw(tri.getP(yc, zl, zr), wdigs, extraWorkingDig);
-  $: Rc = sdw(fluids.getR(Ac, Pc), wdigs, extraWorkingDig);
-  $: Sc = sdw(fluids.getCriticalSlope(n, vc, Rc), wdigs, extraWorkingDig);
+  $: Rc = sdw(common.getR(Ac, Pc), wdigs, extraWorkingDig);
+  $: Sc = sdw(common.getCriticalSlope(n, vc, Rc), wdigs, extraWorkingDig);
 </script>
 
 <article>
@@ -70,6 +130,7 @@
         <input
           type="number"
           step="any"
+          id="zl"
           bind:value={zls}
           on:input={processChange}
         />
@@ -79,6 +140,7 @@
         <input
           type="number"
           step="any"
+          id="zr"
           bind:value={zrs}
           on:input={processChange}
         />
@@ -89,6 +151,7 @@
         <input
           type="number"
           step="any"
+          id="depth"
           bind:value={ys}
           on:input={processChange}
         />
@@ -103,7 +166,7 @@
           <input
             type="number"
             step="any"
-            required
+            id="slope"
             bind:value={ss}
             on:input={processChange}
           />
@@ -115,7 +178,7 @@
           <input
             type="number"
             step="any"
-            required
+            id="n"
             bind:value={ns}
             on:input={processChange}
           />
@@ -126,11 +189,11 @@
           <input
             type="number"
             step="any"
-            required
+            id="g"
             bind:value={gs}
             on:input={processChange}
           />
-          {@html ki(`\\small \\mathsf{ m/s^2 }`)}
+          {@html ki(`\\mathsf{m/s^2}`)}
         </label>
       </div>
     </form>

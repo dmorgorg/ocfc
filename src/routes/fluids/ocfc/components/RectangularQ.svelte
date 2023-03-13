@@ -1,22 +1,25 @@
 <script>
   import Card from "./Card.svelte";
+  import { sigdigs } from "../stores.js";
   import { fade } from "svelte/transition";
-  import { ki, kd, fluids, rect, utils } from "$lib/utilities";
+  import { ki, kd, utils } from "$lib/utilities";
+  import { common, rect } from "$lib/fluids";
 
-  let sdigs = 3,
-    wdigs = 6,
+  let sdigs = $sigdigs.sdigs,
+    wdigs = $sigdigs.wdigs,
+    extraDig = $sigdigs.extraDig,
+    extraWorkingDig = $sigdigs.extraWorkingDig,
     validS = true,
-    extraDig = true,
-    extraWorkingDig = false;
+    initB = 3,
+    initQ = 3.25,
+    initS = 0.1,
+    initN = 0.013,
+    initG = 9.81;
 
   // needs access to n, b, s so has to be in this file?
   $: getQfromY = (y) => {
     var A = b * y;
-    let v = fluids.getV(
-      n,
-      fluids.getR(fluids.getArea(b, y), fluids.getP(b, y)),
-      s
-    );
+    let v = common.getV(n, common.getR(rect.getArea(b, y), rect.getP(b, y)), s);
     return A * v;
   };
   $: getYfromQ = (low = 0, high = 100) => {
@@ -27,14 +30,13 @@
       return (low + high) * 0.5;
     }
     // search
-    if (getQfromY(mid) < QQ) {
+    if (getQfromY(mid) < Q) {
       return getYfromQ(mid, high);
     } else {
       return getYfromQ(low, mid);
     }
   };
 
-  let sd = utils.sd;
   const sdw = (num) => {
     return utils.sd(num, wdigs, extraWorkingDig);
   };
@@ -42,34 +44,80 @@
   const sds = (num) => {
     return utils.sd(num, sdigs, extraDig);
   };
-  const processChange = fluids.processChange;
+
+  const sd = utils.sd;
+
+  const processChange = utils.debounce((e) => {
+    if (e.target.id === "base") {
+      if (e.target.value === "") {
+        bs = sds(initB);
+      }
+      bs = sds(Math.abs(Number(bs)));
+      b = Number(bs);
+    }
+    if (e.target.id === "flowrate") {
+      if (e.target.value === "") {
+        Qs = sds(initQ);
+      }
+      Qs = sds(Math.abs(Number(Qs)));
+      Q = Number(Qs);
+    }
+    if (e.target.id === "slope") {
+      if (e.target.value === "") {
+        ss = sds(initS);
+      }
+      ss = sds(Math.abs(Number(ss)));
+      validS = s === 0 ? false : true;
+      s = Number(ss);
+    }
+    if (e.target.id === "n") {
+      if (e.target.value === "") {
+        ns = sds(initN);
+      }
+      ns = sds(Math.abs(Number(ns)));
+      n = Number(ns);
+    }
+    if (e.target.id === "g") {
+      if (e.target.value === "") {
+        gs = sds(initG);
+      }
+      gs = Math.abs(Number(gs)).toString();
+      if (gs.length > 4) {
+        // allow g = 9.806
+        gs = sd(Number(gs), 4);
+      } else {
+        gs = sds(gs);
+      }
+      g = Number(gs);
+    }
+  });
 
   // variables ending in s are string inputs, bound to numerical input fields
-  let bs = 3,
-    QQs = 3.25,
-    ss = 0.1,
-    ns = 0.013,
-    gs = 9.81;
+  $: bs = sds(initB);
+  $: Qs = sds(initQ);
+  $: ss = sds(initS);
+  $: ns = sds(initN);
+  $: gs = sds(initG);
   // inputs
-  $: b = Number(bs);
-  $: QQ = Number(QQs);
-  $: n = Number(ns);
-  $: s = Number(ss);
-  $: g = Number(gs);
+  $: b = initB;
+  $: Q = initQ;
+  $: s = initS;
+  $: n = initN;
+  $: g = initG;
   // calculations for Q specified
   $: y = sdw(getYfromQ());
   $: A = sdw(rect.getArea(b, y));
-  $: v = sdw(fluids.getVfromQandA(QQ, A));
-  $: E = sdw(fluids.getE(y, v, g));
+  $: v = sdw(common.getVfromQandA(Q, A));
+  $: E = sdw(common.getE(y, v, g));
   $: T = sds(b);
-  $: NF = sdw(fluids.getNF(v, A, T, g));
-  $: yc = sdw(rect.getYc(QQ, g, b));
-  $: Pc = sdw(fluids.getP(b, yc));
-  $: Ac = sdw(fluids.getArea(b, yc));
-  $: Rc = sdw(fluids.getR(Ac, Pc));
-  $: vc = sdw(fluids.getVfromQandA(QQ, Ac));
-  $: Emin = sdw(fluids.getE(yc, vc, g));
-  $: Sc = sdw(fluids.getCriticalSlope(n, vc, Rc));
+  $: NF = sdw(common.getNF(v, A, T, g));
+  $: yc = sdw(rect.getYc(Q, g, b));
+  $: Pc = sdw(rect.getP(b, yc));
+  $: Ac = sdw(rect.getArea(b, yc));
+  $: Rc = sdw(common.getR(Ac, Pc));
+  $: vc = sdw(common.getVfromQandA(Q, Ac));
+  $: Emin = sdw(common.getE(yc, vc, g));
+  $: Sc = sdw(common.getCriticalSlope(n, vc, Rc));
 </script>
 
 <article>
@@ -86,6 +134,7 @@
         <input
           type="number"
           step="any"
+          id="base"
           bind:value={bs}
           on:input={processChange}
         />
@@ -97,7 +146,8 @@
         <input
           type="number"
           step="any"
-          bind:value={QQs}
+          id="flowrate"
+          bind:value={Qs}
           on:input={processChange}
         />
         {@html ki(`\\mathsf{m^3\\!/s}`)}
@@ -111,7 +161,7 @@
           <input
             type="number"
             step="any"
-            required
+            id="s"
             bind:value={ss}
             on:input={processChange}
           />
@@ -123,7 +173,7 @@
           <input
             type="number"
             step="any"
-            required
+            id="n"
             bind:value={ns}
             on:input={processChange}
           />
@@ -134,7 +184,7 @@
           <input
             type="number"
             step="any"
-            required
+            id="g"
             bind:value={gs}
             on:input={processChange}
           />
@@ -156,7 +206,7 @@
 						\\begin{aligned}
 							Q &= \\frac 1n AR^{2/3}S^{1/2} \\\\
 							&= \\frac 1n \\cdot by\\cdot\\left(\\frac{by}{b+2y}\\right)^{2/3}\\!\\!\\cdot S^{ 1/2 } \\\\
-							\\Rightarrow ${QQ}\\, \\mathsf{m^3\\!/s} &= \\frac 1{${n}} \\cdot (${b}\\, \\mathsf{m})y\\cdot\\left(\\frac{${b}y}{${b}+2y}\\right)^{2/3}\\!\\!\\cdot\\! (${
+							\\Rightarrow ${Q}\\, \\mathsf{m^3\\!/s} &= \\frac 1{${n}} \\cdot (${b}\\, \\mathsf{m})y\\cdot\\left(\\frac{${b}y}{${b}+2y}\\right)^{2/3}\\!\\!\\cdot\\! (${
             s / 100
           })^{ 1/2 } 
 						\\end{aligned}`)}
@@ -182,7 +232,7 @@
           solution={kd(`
 						\\begin{aligned} 
 							v &= Q/A \\\\
-						 	&= \\frac{${QQ}\\, \\mathsf{m^3\\!/s}}{${A}\\, \\mathsf{m^2}} \\\\					
+						 	&= \\frac{${Q}\\, \\mathsf{m^3\\!/s}}{${A}\\, \\mathsf{m^2}} \\\\					
 							&= ${v} \\, \\mathsf{m/s}
 						\\end{aligned}`)}
         />
@@ -221,19 +271,19 @@
 
           <Card
             answer="For the {ki(
-              `Q=${sdw(QQ)} \\, \\mathsf{m^3\\!/s}`
+              `Q=${sds(Q)} \\, \\mathsf{m^3\\!/s}`
             )} above, Critical Depth {ki(`yc=${sds(yc)} \\, \\mathsf{m}`)}"
             solution={kd(`
-                            \\begin{aligned}
-                               	N_F &= 1 \\\\
+            \\begin{aligned}
+                N_F &= 1 \\\\
 								\\Rightarrow v_c &= \\sqrt{ g(A_c/T_c)} \\\\
 								\\Rightarrow \\left(\\frac{Q}{A_c}\\right)^2 &= g(A_c/T_c) \\\\
-								\\Rightarrow \\frac{Q^2}{g} &= \\frac{A_c^3}{T_c} \\\\
+						    \\Rightarrow \\frac{Q^2}{g} &= \\frac{A_c^3}{T_c} \\\\
 								&= \\frac{\\left(by_c\\right)^3}{b}	\\\\
 								&= b^2y_c^3 \\\\
 								\\Rightarrow y_c^3 &= \\frac{Q^2}{b^2g} \\\\
 								\\Rightarrow y_c &= \\sqrt[3]{\\frac{Q^2}{b^2g}} \\\\
-								\\Rightarrow y_c &= \\sqrt[3]{\\frac{(${QQ}\\, \\mathsf{m^3\\!/s})^2}{(${sds(
+								\\Rightarrow y_c &= \\sqrt[3]{\\frac{(${Q}\\, \\mathsf{m^3\\!/s})^2}{(${sds(
               b
             )}\\, \\mathsf{m} )^2(${g}\\, \\mathsf{m/s^2})}}\\\\
 								&= ${yc}\\, \\mathsf{m}
@@ -251,7 +301,7 @@
 								&= ${sds(b)}\\, \\mathsf{m}\\times ${yc}\\, \\mathsf{m} \\\\
 								&= ${Ac}\\, \\mathsf{m^2}\\\\\\\\
 								v_c &= Q/A_c \\\\
-								&= \\frac{${QQ}\\, \\mathsf{m^3\\!/s}}{${Ac}\\, \\mathsf{m^2}} \\\\
+								&= \\frac{${Q}\\, \\mathsf{m^3\\!/s}}{${Ac}\\, \\mathsf{m^2}} \\\\
 								&= ${vc} \\,\\mathsf{m/s}
 							\\end{aligned}	`)}
           />
