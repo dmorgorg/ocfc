@@ -9,8 +9,8 @@
     extraDig = $sigdigs.extraDig,
     extraWorkingDig = $sigdigs.extraWorkingDig,
     validS = true,
-    initY = 1.3,
-    initD = 1.5,
+    initY = 0.938,
+    initD = 1,
     initS = 0.1,
     initN = 0.013,
     initG = 9.81;

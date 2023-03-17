@@ -1,23 +1,33 @@
 <script>
   import Card from "./Card.svelte";
   import { sigdigs } from "../stores.js";
-  // import { fade } from "svelte/transition";
   import { ki, kd, utils } from "$lib/utilities";
   import { common, circ } from "$lib/fluids";
 
-  // $: sigs = Number($sigdigs.sdigs);
   let sdigs = $sigdigs.sdigs,
     wdigs = $sigdigs.wdigs,
     extraDig = $sigdigs.extraDig,
     extraWorkingDig = $sigdigs.extraWorkingDig,
     validS = true,
-    initY = 1.3,
-    initD = 1.5,
+    initY = 0.938,
+    initD = 1,
     initS = 0.1,
     initN = 0.013,
     initG = 9.81;
 
   // needs access to n, b, s so has to be in this file?
+  $: maxQ = getQfromAll(0.938184 * D, D, s, n, g);
+
+  $: getQfromAll = (y, diam = D, slope = s, mannings = n, gravity = g) => {
+    const alpha = sdw(circ.getAlphaDegrees(y, diam / 2));
+    const thetaRad = sdw(circ.getThetaRadians(y, diam / 2));
+    const A = sdw(circ.getArea(thetaRad, diam));
+    const P = sdw(circ.getP(thetaRad, diam));
+    const R = sdw(common.getR(A, P));
+    const v = sdw(common.getV(mannings, R, slope));
+    const Q = sdw(common.getQfromAandV(A, v));
+    return Q;
+  };
   $: getNFfromY = (y) => {
     const r = D / 2;
     const thetaRad = circ.getThetaRadians(y, r);
@@ -50,7 +60,52 @@
   const sds = (num) => {
     return utils.sd(num, sdigs, extraDig);
   };
-  const processChange = circ.processChange;
+  const sd = utils.sd;
+
+  const processChange = utils.debounce((e) => {
+    if (e.target.id === "diam") {
+      if (e.target.value === "") {
+        Ds = sds(Math.max(y, initD));
+      }
+      Ds = sds(Ds < ys ? ys : Ds);
+      D = Number(Ds);
+    }
+    if (e.target.id === "depth") {
+      if (e.target.value === "") {
+        ys = Math.min(initY, D);
+      }
+      ys = Math.abs(ys);
+      ys = sds(ys > Ds ? Ds : ys);
+      y = Number(ys);
+    }
+    if (e.target.id === "slope") {
+      if (e.target.value === "") {
+        ss = sds(initS);
+      }
+      ss = sds(Math.abs(Number(ss)));
+      validS = s === 0 ? false : true;
+      s = Number(ss);
+    }
+    if (e.target.id === "n") {
+      if (e.target.value === "") {
+        ns = sds(initN);
+      }
+      ns = sds(Math.abs(Number(ns)));
+      n = Number(ns);
+    }
+    if (e.target.id === "g") {
+      if (e.target.value === "") {
+        gs = sds(initG);
+      }
+      gs = Math.abs(Number(gs)).toString();
+      if (gs.length > 4) {
+        gs = sd(Number(gs), 4);
+      } else {
+        gs = sds(gs);
+      }
+      g = Number(gs);
+    }
+  });
 
   // variables ending in s are string inputs, bound to numerical input fields
   $: Ds = sds(initD);
@@ -59,11 +114,12 @@
   $: ns = sds(initN);
   $: gs = sds(initG);
 
-  $: D = Number(initD);
-  $: y = Number(initY);
-  $: s = Number(ss);
-  $: n = Number(ns);
-  $: g = Number(gs);
+  // I'm not sure why but if I initialise these to string values, debounce doesn't delay update of calculations
+  $: D = initD;
+  $: y = initY;
+  $: s = initS;
+  $: n = initN;
+  $: g = initG;
 
   $: r = sds(D / 2);
   // $: alphaRad = sdw(circ.getAlphaRadians(y, r));
@@ -200,6 +256,7 @@
           />
           {@html ki(`\\small\\%`)}
         </label>
+
         <label class="n">
           Mannings {@html ki(`\\large n =`)}
           <input
@@ -209,8 +266,8 @@
             bind:value={ns}
             on:input={processChange}
           />
-          {@html ki(`\\mathsf{m}`)}
         </label>
+
         <label class="g">
           {@html ki(`\\large g=`)}
           <input
@@ -226,14 +283,20 @@
     </form>
   </section>
 
+  <div class="width80">
+    <br /><br />
+    <strong>Note</strong>: The maximum possible flow for this configuration of
+    diameter, slope, Manning's n and gravity is {sds(maxQ)} m^3/s.
+  </div>
+
   <section class="results">
-    {#if y === 0}
-      Depth is zero. The pipe is empty and there is no flow. Add some depth for
-      real results.
-    {:else}
-      <h1>Normal (Uniform) Flow</h1>
-      {#if y === D / 2}
-        <Card
+    <!-- {#if y === 0}
+      Depth is zero. The pipe is empty and there is no flow. Add some depth to
+      see calculated results.
+    {:else} -->
+    <!-- <h1>Normal (Uniform) Flow</h1> -->
+    <!-- {#if y === D / 2} -->
+    <!-- <Card
           answer="Flow Area: {ki(`A = ${sds(A)}\\, \\mathsf{m^2}`)}"
           solution={kd(`
 						\\begin{aligned}
@@ -243,8 +306,8 @@
 							A &= ${A}\\, \\mathsf{m^2}
 						\\end{aligned}
 				`)}
-        />
-        <Card
+        /> -->
+    <!-- <Card
           answer="Wetted Perimeter: {ki(`P = ${sds(P)}\\, \\mathsf m`)}  "
           solution={kd(`
 						\\begin{aligned}
@@ -254,9 +317,9 @@
 							P &= ${P}\\, \\mathsf{m}
 						\\end{aligned}
 				`)}
-        />
-      {:else if y === D}
-        <Card
+        /> -->
+    <!-- {:else if y === D} -->
+    <!-- <Card
           answer="Flow Area: {ki(`A = ${sds(A)}\\, \\mathsf{m^2}`)}"
           solution={kd(`
 						\\begin{aligned}
@@ -266,8 +329,8 @@
 							A &= ${A}\\, \\mathsf{m^2}
 						\\end{aligned}
 				`)}
-        />
-        <Card
+        /> -->
+    <!-- <Card
           answer="Wetted Perimeter: {ki(`P = ${sds(P)}\\, \\mathsf m`)}  "
           solution={kd(`
 						\\begin{aligned}
@@ -277,9 +340,9 @@
 							P &= ${P}\\, \\mathsf{m}
 						\\end{aligned}
 				`)}
-        />
-      {:else if y < D / 2}
-        <Card
+        /> -->
+    <!-- {:else if y < D / 2} -->
+    <!-- <Card
           answer={ki(`\\alpha = ${sdw(alpha)}^\\circ`)}
           solution={kd(`
 						\\begin{aligned}
@@ -291,8 +354,8 @@
 							\\alpha &= ${sdw(alpha)}^\\circ
 						\\end{aligned}
 					`)}
-        />
-        <Card
+        /> -->
+    <!-- <Card
           answer={ki(
             `\\theta = ${sdw(
               theta
@@ -309,9 +372,9 @@
 							\\theta_\\mathsf{rad} &= ${sdw(thetaRad)}
 						\\end{aligned}
 					`)}
-        />
-      {:else if y > D / 2}
-        <Card
+        /> -->
+    <!-- {:else if y > D / 2} -->
+    <!-- <Card
           answer={ki(`\\alpha = ${sdw(alpha)}^\\circ`)}
           solution={kd(`
 				\\begin{aligned}
@@ -323,8 +386,8 @@
 					\\alpha &= ${sdw(alpha)}^\\circ
 				\\end{aligned}
 			`)}
-        />
-        <Card
+        /> -->
+    <!-- <Card
           answer={ki(
             `\\theta = ${sdw(
               theta
@@ -341,11 +404,11 @@
 						\\theta_\\mathsf{rad} &= ${sdw(thetaRad)}
 					\\end{aligned}
 				`)}
-        />
-      {/if}
+        /> -->
+    <!-- {/if}
 
-      {#if y == D / 2 || y == D}
-        <Card
+      {#if y == D / 2 || y == D} -->
+    <!-- <Card
           answer="Hydraulic Radius: {ki(`R = ${sds(R)}\\, \\mathsf m`)}  "
           solution={kd(`
 				\\begin{aligned}
@@ -354,9 +417,9 @@
 					R &= ${R} \\mathsf{m}
 				\\end{aligned}
 			`)}
-        />
-      {:else}
-        <Card
+        /> -->
+    <!-- {:else} -->
+    <!-- <Card
           answer="Flow Area: {ki(`A = ${sds(A)}\\, \\mathsf{m^2}`)}"
           solution="{kd(`
 						\\begin{aligned}
@@ -380,8 +443,8 @@
 								A &= ${A}\\, \\mathsf{m^2}
 							\\end{aligned}
 						`)}"
-        />
-        <Card
+        /> -->
+    <!-- <Card
           answer="Wetted Perimeter: {ki(`P = ${sds(P)}\\, \\mathsf m`)}  "
           solution={kd(`
 						\\begin{aligned}
@@ -390,8 +453,8 @@
 							P &= ${P}\\, \\mathsf{m}
 						\\end{aligned}
 				`)}
-        />
-        <Card
+        /> -->
+    <!-- <Card
           answer="Hydraulic Radius: {ki(`R = ${sds(R)}\\, \\mathsf m`)}  "
           solution="{kd(`
 				\\begin{aligned}
@@ -408,9 +471,9 @@
 					R &= ${R} \\mathsf{m}
 				\\end{aligned}
 			`)}"
-        />
-      {/if}
-      <Card
+        /> -->
+    <!-- {/if} -->
+    <!-- <Card
         answer="Average Flow Velocity: {ki(`v = ${sds(v)}\\, \\mathsf{m/s}`)}  "
         solution={kd(`
 					\\begin{aligned}
@@ -421,8 +484,8 @@
 						v &= ${v} \\, \\mathsf{m/s}
 					\\end{aligned}
 				`)}
-      />
-      <Card
+      /> -->
+    <!-- <Card
         answer="Flow Rate: {ki(`Q = ${sds(Q)}\\, \\mathsf{m^3/s}`)}  "
         solution={kd(`
 					\\begin{aligned}
@@ -431,8 +494,8 @@
 						Q &= ${Q} \\, \\mathsf{m^3/s}
 					\\end{aligned}
 				`)}
-      />
-      <Card
+      /> -->
+    <!-- <Card
         answer="Specific Energy: {ki(`E = ${sds(E)}\\, \\mathsf{m}`)}  "
         solution={kd(`
 					\\begin{aligned}
@@ -442,8 +505,8 @@
 						E &= ${E}\\,\\mathsf{m}
 					\\end{aligned}
 				`)}
-      />
-      <Card
+      /> -->
+    <!-- <Card
         answer="Free Surface: {ki(`T = ${sds(T)}\\, \\mathsf{m}`)}  "
         solution={kd(`
 					\\begin{aligned}
@@ -454,8 +517,8 @@
 						T &= ${T}\\, \\mathsf{m}							
 					\\end{aligned}
 				`)}
-      />
-      <Card
+      /> -->
+    <!-- <Card
         answer="Froude Number: {ki(`N_F = ${sds(NF)}`)}  "
         solution={kd(`
 					\\begin{aligned}
@@ -464,14 +527,12 @@
 						N_F &= ${NF}
 					\\end{aligned}
 				`)}
-      />
+      /> -->
 
-      <!-- </section>
-	<section class="results"> -->
-      <h1>Critical Flow</h1>
+    <!-- <h1>Critical Flow</h1> -->
 
-      {#if thetaC < 180}
-        <Card
+    <!-- {#if thetaC < 180} -->
+    <!-- <Card
           answer="For the {ki(
             `Q=${sdw(Q)} \\, \\mathsf{m^3\\!/s}`
           )} above, Critical Depth {ki(`yc=${sds(yc)} \\, \\mathsf{m}`)}"
@@ -514,9 +575,9 @@
           )}\\, \\mathsf{m} \\\\\\\\
 						\\Rightarrow y_c &= ${yc}\\, \\mathsf{m}
 					\\end{aligned}`)}"
-        />
-      {:else if thetaC > 180}
-        <Card
+        /> -->
+    <!-- {:else if thetaC > 180} -->
+    <!-- <Card
           answer="For the {ki(
             `Q=${sdw(Q)} \\, \\mathsf{m^3\\!/s}`
           )} above, Critical Depth {ki(`yc=${sds(yc)} \\, \\mathsf{m}`)}"
@@ -564,9 +625,9 @@
           )}\\, \\mathsf{m} \\\\\\\\
 					\\Rightarrow y_c &= ${yc}\\, \\mathsf{m}
 					\\end{aligned}`)}"
-        />
-      {/if}
-      <Card
+        /> -->
+    <!-- {/if} -->
+    <!-- <Card
         answer="Critical Velocity: {ki(
           ` v_c = ${sds(vc)}  \\,\\mathsf{m/s}`
         )}  "
@@ -579,8 +640,8 @@
 						&= \\frac{${Q}\\,\\mathsf{m^3\\!/s}}{${Ac}\\,\\mathsf{m^2}}\\\\\\\\
 						v_c &= ${vc}\\,\\mathsf{m/s}
 					\\end{aligned}	`)}
-      />
-      <Card
+      /> -->
+    <!-- <Card
         answer="Minimum Specific Energy: {ki(
           `E_{min} = ${sds(Emin)}\\, \\mathsf{m}`
         )}"
@@ -591,8 +652,8 @@
 							&= ${Emin} \\,\\mathsf{m}
 						\\end{aligned}
 					`)}
-      />
-      <Card
+      /> -->
+    <!-- <Card
         answer="Slope for Critical Flow: {ki(
           `S_c = ${sds(Sc, sdigs, extraDig)}\\%`
         )}"
@@ -616,8 +677,8 @@
 						S_c &= ${Sc}\\% 								
 					\\end{aligned}
 				`)}
-      />
-    {/if}
+      /> -->
+    <!-- {/if} -->
   </section>
 </article>
 

@@ -20,6 +20,5 @@
   <CircularY />
 </div>
 <div class:hide={specifyView !== "circularQ"}>
-  <!-- <CircularQ /> -->
-  Coming soon!
+  <CircularQ />
 </div>
