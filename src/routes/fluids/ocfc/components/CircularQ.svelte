@@ -16,7 +16,6 @@
     initG = 9.81;
 
   // needs access to n, b, s so has to be in this file?
-  $: maxQ = getQfromAll(0.938184 * D, D, s, n, g);
 
   $: getQfromAll = (y, diam = D, slope = s, mannings = n, gravity = g) => {
     const alpha = sdw(circ.getAlphaDegrees(y, diam / 2));
@@ -28,6 +27,24 @@
     const Q = sdw(common.getQfromAandV(A, v));
     return Q;
   };
+  // just run this once when coding to find numerical value for y_max
+  // $: getMax = () => {
+  //   //start at 90%
+  //   let y = 0.9 * D,
+  //     Q = 0;
+  //   for (; ; y = +y + 1 / 10 ** 5) {
+  //     let q = getQfromAll(y);
+  //     console.log(y + ", " + q);
+  //     if (q >= Q) {
+  //       Q = q;
+  //     } else {
+  //       console.log(y + ", " + q);
+  //       break;
+  //     }
+  //   }
+  //   return [y / D, Q];
+  // };
+
   $: getNFfromY = (y) => {
     const r = D / 2;
     const thetaRad = circ.getThetaRadians(y, r);
@@ -53,6 +70,28 @@
       return getYc(mid, deep);
     }
   };
+  $: getYfromQ = (shallow = 0, deep = D) => {
+    const delta = 1 / 10 ** wdigs,
+      mid = (deep + shallow) / 2;
+
+    if (Math.abs(deep - shallow) < delta) {
+      return mid;
+    }
+
+    // do the search
+    if (getNFfromY(mid) < 1) {
+      return getYc(shallow, mid);
+    } else {
+      return getYc(mid, deep);
+    }
+  };
+
+  $: Qfull = getQfromAll(D);
+  // $: max = getMax();
+  // $: yMax = max[0];
+  // $: QMax = max[1];
+  $: QMax = getQfromAll(0.9381 * D);
+  $: yMax = 0.9381 * D;
 
   const sdw = (num) => {
     return utils.sd(num, wdigs, extraWorkingDig);
@@ -283,18 +322,23 @@
     </form>
   </section>
 
-  <div class="width80">
+  <div class="width90">
     <br /><br />
-    <strong>Note</strong>: The maximum possible flow for this configuration of
-    diameter, slope, Manning's n and gravity is {sds(maxQ)} m^3/s.
+    <strong>Note</strong>: The <strong>maximum</strong> possible flow for this
+    configuration of:
+    <br />
+    diameter {@html ki(`D=${sds(D)}\\,\\mathsf{m}`)}, slope {@html ki(
+      `s=${sds(s)}\\%`
+    )},
+    <br />
+    Manning's {@html ki(`n=${sds(n)}`)}
+    and gravity {@html ki(`g=${sds(g)}\\,\\mathsf{m/s^2}`)} is
+    {@html kd(`\\large\\bm{Q_{\\mathsf{max}}=${sds(QMax)}\\,\\mathsf{m^3/s}}`)}.
   </div>
 
   <section class="results">
-    <!-- {#if y === 0}
-      Depth is zero. The pipe is empty and there is no flow. Add some depth to
-      see calculated results.
-    {:else} -->
-    <!-- <h1>Normal (Uniform) Flow</h1> -->
+    <h1>Normal (Uniform) Flow</h1>
+    Coming soon!
     <!-- {#if y === D / 2} -->
     <!-- <Card
           answer="Flow Area: {ki(`A = ${sds(A)}\\, \\mathsf{m^2}`)}"
@@ -678,7 +722,6 @@
 					\\end{aligned}
 				`)}
       /> -->
-    <!-- {/if} -->
   </section>
 </article>
 
