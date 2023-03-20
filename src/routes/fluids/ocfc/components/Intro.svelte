@@ -46,16 +46,17 @@
     {@html ki(`Q`)} is specified, then the corresponding flow depth {@html ki(
       `y`
     )} will be calculated.
-    <p />
+
     {#if typeOfChannel !== "triangular"}
+      <p />
       <span style="font-weight: bold; letter-spacing: -0.05em">Note</span> that,
       for a {typeOfChannel}
       channel, {@html ki(`y`)} cannot be determined analytically from {@html ki(
         `Q`
       )} and is found using an iterative method.
     {/if}
-    <p />
-    <br />
+    <!-- <p />
+    <br /> -->
     <!-- By default, this calculator uses {@html ki(`3`)} significant digits for input
     values and answers (or {@html ki(`4`)}
     significant digits if the first non-zero digit is a {@html ki(`1`)}, e.g.{@html ki(
@@ -118,6 +119,8 @@
   section {
     width: 80%;
     margin: 0 auto;
+    border: 1px solid black;
+    padding: 1em;
   }
   button {
     background: var(--primaryColor);
@@ -130,6 +133,7 @@
     padding: 0.25em 0.75em;
     text-shadow: var(--textShadow);
     margin-bottom: 1em;
+    margin-top: 1em;
 
     &:hover {
       background-color: var(--midGrey);

@@ -206,7 +206,7 @@
 
     <form>
       <label class="diam">
-        {@html ki(`\\large D=`)}
+        {@html ki(`\\large D`)} =
         <input
           type="number"
           step="any"
@@ -672,8 +672,8 @@
 
     form {
       input {
-        width: 4.25rem;
-        font-size: 0.9rem;
+        width: 5rem;
+        font-size: 1.2rem;
         padding-left: 0.1rem;
         padding-right: 0.1rem;
         cursor: pointer;
@@ -685,7 +685,6 @@
       }
 
       label {
-        // font-size: 90%;
         position: absolute;
         padding: 0 0.25em;
 
@@ -699,7 +698,7 @@
         &.diam {
           padding: 0.1em;
           top: 43%;
-          left: 75%;
+          left: 74%;
           background-color: white;
         }
       }
