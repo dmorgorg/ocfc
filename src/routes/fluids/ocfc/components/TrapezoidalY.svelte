@@ -154,7 +154,7 @@
     </div>
     <form>
       <label class="b">
-        {@html ki(`\\large b=`)}
+        {@html ki(`\\large b`)} =
         <input
           type="number"
           step="any"
@@ -166,7 +166,7 @@
       </label>
 
       <label class="y">
-        {@html ki(`\\large y=`)}
+        {@html ki(`\\large y`)} =
         <input
           type="number"
           step="any"
@@ -178,7 +178,7 @@
       </label>
 
       <label class="zl">
-        {@html ki(`\\large z_L=`)}
+        {@html ki(`\\large z_L`)} =
         <input
           type="number"
           step="any"
@@ -188,7 +188,7 @@
         />
       </label>
       <label class="zr">
-        {@html ki(`\\large z_R=`)}
+        {@html ki(`\\large z_R`)} =
         <input
           type="number"
           step="any"
@@ -202,7 +202,7 @@
     <form>
       <div class="lower-inputs">
         <label class="slope">
-          {@html ki(`\\large S=`)}
+          {@html ki(`\\large S`)} =
           <input
             type="number"
             step="any"
@@ -214,7 +214,7 @@
         </label>
 
         <label class="n">
-          Manning's {@html ki(`\\large n=`)}
+          Manning's {@html ki(`\\large n`)} =
           <input
             type="number"
             step="any"
@@ -225,7 +225,7 @@
         </label>
 
         <label class="g">
-          {@html ki(`\\large g=`)}
+          {@html ki(`\\large g`)} =
           <input
             type="number"
             step="any"
@@ -410,20 +410,8 @@
 </article>
 
 <style lang="scss">
-  section.fig form {
-    input {
-      width: 4.25rem;
-      font-size: 0.9rem;
-      padding-left: 0.1rem;
-      padding-right: 0.1rem;
-      cursor: pointer;
-    }
-
+  form {
     label {
-      // font-size: 90%;
-      position: absolute;
-      padding: 0 0.25em;
-
       &.y {
         color: white;
         padding: 0.25em;

@@ -130,7 +130,7 @@
     </div>
     <form>
       <label class="b">
-        {@html ki(`\\large b=`)}
+        {@html ki(`\\large b`)} =
         <input
           type="number"
           step="any"
@@ -142,7 +142,7 @@
       </label>
 
       <label class="Q">
-        {@html ki(`\\large Q=`)}
+        {@html ki(`\\large Q`)} =
         <input
           type="number"
           step="any"
@@ -157,7 +157,7 @@
     <form>
       <div class="lower-inputs">
         <label class="slope">
-          {@html ki(`\\large S=`)}
+          {@html ki(`\\large S`)} =
           <input
             type="number"
             step="any"
@@ -169,7 +169,7 @@
         </label>
 
         <label class="n">
-          Manning's {@html ki(`\\large n=`)}
+          Manning's {@html ki(`\\large n`)} =
           <input
             type="number"
             step="any"
@@ -180,7 +180,7 @@
         </label>
 
         <label class="g">
-          {@html ki(`\\large g=`)}
+          {@html ki(`\\large g`)} =
           <input
             type="number"
             step="any"
@@ -188,7 +188,7 @@
             bind:value={gs}
             on:input={processChange}
           />
-          {@html ki(`\\small \\mathsf{ m/s^2 }`)}
+          {@html ki(`\\mathsf{ m/s^2 }`)}
         </label>
       </div>
     </form>

@@ -219,7 +219,7 @@
       <br />
       {#if D}
         <label class="y">
-          {@html ki(`\\large y=`)}
+          {@html ki(`\\large y`)} =
           <input
             type="number"
             step="any"
@@ -234,7 +234,7 @@
     <form>
       <div class="lower-inputs">
         <label class="slope">
-          {@html ki(`\\large S=`)}
+          {@html ki(`\\large S`)} =
           <input
             type="number"
             step="any"
@@ -246,7 +246,7 @@
         </label>
 
         <label class="n">
-          Mannings {@html ki(`\\large n =`)}
+          Mannings {@html ki(`\\large n`)} =
           <input
             type="number"
             step="any"
@@ -257,7 +257,7 @@
         </label>
 
         <label class="g">
-          {@html ki(`\\large g=`)}
+          {@html ki(`\\large g`)} =
           <input
             type="number"
             step="any"
@@ -671,19 +671,6 @@
     position: relative;
 
     form {
-      input {
-        width: 5rem;
-        font-size: 1.2rem;
-        padding-left: 0.1rem;
-        padding-right: 0.1rem;
-        cursor: pointer;
-
-        &:invalid {
-          color: red;
-          font-weight: bold;
-        }
-      }
-
       label {
         position: absolute;
         padding: 0 0.25em;

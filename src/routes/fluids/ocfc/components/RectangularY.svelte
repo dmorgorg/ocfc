@@ -116,7 +116,7 @@
     </div>
     <form>
       <label class="b">
-        {@html ki(`\\large b=`)}
+        {@html ki(`\\large b`)} =
         <input
           type="number"
           step="any"
@@ -128,7 +128,7 @@
       </label>
 
       <label class="y">
-        {@html ki(`\\large y=`)}
+        {@html ki(`\\large y`)} =
         <input
           type="number"
           step="any"
@@ -143,7 +143,7 @@
     <form>
       <div class="lower-inputs">
         <label class="slope">
-          {@html ki(`\\large S=`)}
+          {@html ki(`\\large S`)} =
           <input
             type="number"
             step="any"
@@ -155,7 +155,7 @@
         </label>
 
         <label class="n">
-          Manning's {@html ki(`\\large n=`)}
+          Manning's {@html ki(`\\large n`)} =
           <input
             type="number"
             step="any"
@@ -166,7 +166,7 @@
         </label>
 
         <label class="g">
-          {@html ki(`\\large g=`)}
+          {@html ki(`\\large g`)} =
           <input
             type="number"
             step="any"

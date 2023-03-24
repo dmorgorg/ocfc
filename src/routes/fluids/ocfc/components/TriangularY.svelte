@@ -126,7 +126,7 @@
     </div>
     <form>
       <label class="zl">
-        {@html ki(`\\large z_L=`)}
+        {@html ki(`\\large z_L`)} =
         <input
           type="number"
           step="any"
@@ -136,7 +136,7 @@
         />
       </label>
       <label class="zr">
-        {@html ki(`\\large z_R=`)}
+        {@html ki(`\\large z_R`)} =
         <input
           type="number"
           step="any"
@@ -147,7 +147,7 @@
       </label>
 
       <label class="y">
-        {@html ki(`\\large y=`)}
+        {@html ki(`\\large y`)} =
         <input
           type="number"
           step="any"
@@ -162,7 +162,7 @@
     <form>
       <div class="lower-inputs">
         <label class="slope">
-          {@html ki(`\\large S=`)}
+          {@html ki(`\\large S`)} =
           <input
             type="number"
             step="any"
@@ -174,7 +174,7 @@
         </label>
 
         <label class="n">
-          Manning's {@html ki(`\\large n=`)}
+          Manning's {@html ki(`\\large n`)} =
           <input
             type="number"
             step="any"
@@ -185,7 +185,7 @@
         </label>
 
         <label class="g">
-          {@html ki(`\\large g=`)}
+          {@html ki(`\\large g`)} =
           <input
             type="number"
             step="any"
@@ -414,15 +414,6 @@
       position: absolute;
       padding: 0 0.25em;
 
-      &.y {
-        color: white;
-        padding: 0.25em;
-        // margin: 0.25em;
-        top: 37%;
-        left: 46%;
-        background-color: var(--primaryColor);
-      }
-
       &.zl {
         top: 64%;
         left: 30%;
@@ -434,6 +425,15 @@
         left: 63%;
         background-color: transparent;
         font-size: 90%;
+      }
+
+      &.y {
+        top: 35%;
+        left: 45.5%;
+        color: white;
+        padding: 0.25em;
+
+        background-color: var(--primaryColor);
       }
     }
     .lower-inputs {
