@@ -39,7 +39,7 @@
     volume flow,
     {@html ki(`Q`)}, in cubic metres per second ({@html ki(
       `\\mathsf{m^3\\!/s}`
-    )}) must be specified. But not both.
+    )}) must be specified. <br />But not both.
     <p />
     If {@html ki(`y`)} is specified, then the corresponding {@html ki(`Q`)} will
     be calculated.<br />If
@@ -55,9 +55,9 @@
         `Q`
       )} and is found using an iterative method.
     {/if}
-    <!-- <p />
-    <br /> -->
-    <!-- By default, this calculator uses {@html ki(`3`)} significant digits for input
+    <p />
+    <br />
+    By default, this calculator uses {@html ki(`3`)} significant digits for input
     values and answers (or {@html ki(`4`)}
     significant digits if the first non-zero digit is a {@html ki(`1`)}, e.g.{@html ki(
       `0.234`
@@ -66,45 +66,53 @@
     avoid the accumulation of rounding errors. You can alter these default
     values here:
     <p />
-    {extraDig}
+
     <div class="digs">
       <div class="sdigs">
         <label>
-          Digits for inputs/answers (2-6):
-          <input type="number" bind:value={sdigs} min="2" max="6" />
-          <input type="range" bind:value={sdigs} min="2" max="6" />
+          <div>Digits for inputs/answers:</div>
+          <div>
+            (2-6)
+            <input type="number" bind:value={sdigs} min="2" max="6" />
+            <input type="range" bind:value={sdigs} min="2" max="6" />
+          </div>
         </label>
 
         <label>
           Extra digit for leading {@html ki(`1`)}:
           <input type="checkbox" bind:checked={extraDig} />
-          {#if extraDig}
+          <!-- {#if extraDig}
             Yes
           {:else}
             No
-          {/if}
+          {/if} -->
         </label>
       </div>
       <br />
       <div class="wdigs">
         <label>
-          Digits for interim calculations ({sdigs}-10):
-          <input type="number" bind:value={wdigs} min={sdigs} max="10" />
-          <input type="range" bind:value={wdigs} min={sdigs} max="10" />
+          <div>Digits for interim calculations:</div>
+          <div>
+            ({sdigs}-10)
+            <input type="number" bind:value={wdigs} min={sdigs} max="10" />
+            <input type="range" bind:value={wdigs} min={sdigs} max="10" />
+          </div>
         </label>
 
         <label>
-          Extra digit for leading {@html ki(`1`)}:
-          <input type="checkbox" bind:checked={extraWorkingDig} />
-          {#if extraWorkingDig}
+          <div>
+            Extra digit for leading {@html ki(`1`)}:
+            <input type="checkbox" bind:checked={extraWorkingDig} />
+          </div>
+          <!-- {#if extraWorkingDig}
             Yes
           {:else}
             No
-          {/if}
-        </label> -->
-    <!-- </div> -->
-    <!-- </div> -->
-    <p />
+          {/if} -->
+        </label>
+        <p />
+      </div>
+    </div>
   </section>
 {/if}
 <button on:click={toggle}>
@@ -117,7 +125,7 @@
 
 <style lang="scss">
   section {
-    width: 80%;
+    width: 90%;
     margin: 0 auto;
     border: 1px solid black;
     padding: 1em;
@@ -144,11 +152,17 @@
   .sdigs,
   .wdigs {
     display: flex;
-    justify-content: center;
+    justify-content: space-between;
+    border: 1px solid black;
   }
 
   input[type="number"]::-webkit-outer-spin-button,
   input[type="number"]::-webkit-inner-spin-button {
     cursor: pointer;
+  }
+  input[type="checkbox"] {
+    margin: 0;
+    padding: 0;
+    background: green;
   }
 </style>
