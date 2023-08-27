@@ -59,9 +59,10 @@ body {
 }
 main {
   margin: 0;
-  margin-bottom: 5rem;
+  // margin-bottom: 10rem;
   overflow-y: auto;
   padding: 1rem;
+  padding-bottom: 10rem;
   text-align: center;
 
   &::-webkit-scrollbar {
